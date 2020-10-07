@@ -1,0 +1,8 @@
+**/*{.,-}min.js
+/.git/
+**/*.sh
+.eslintrc.js
+
+coverage
+dist
+dist-tests
