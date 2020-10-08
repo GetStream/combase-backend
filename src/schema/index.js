@@ -1,11 +1,14 @@
-import "../utils/db";
 import { stitchSchemas } from "@graphql-tools/stitch";
 
-import Agent from "./agent";
 import Organization from "./organization";
-import Team from "./team";
+import Group from "./group";
+import Agent from "./agent";
 import User from "./user";
+import Chat from "./chat";
+import Note from "./note";
+import Tag from "./tag";
+import Faq from "./faq";
 
 export default stitchSchemas({
-  schemas: [Agent, Organization, Team, User],
+  schemas: [Organization, Group, Agent, User, Chat, Note, Tag, Faq],
 });

@@ -1,46 +1,13 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import { composeMongoose } from "graphql-compose-mongoose";
 import { schemaComposer } from "graphql-compose";
-import timestamps from "mongoose-timestamp";
 
-const UserSchema = new Schema(
-  {
-    organization: {
-      type: Schema.Types.ObjectId,
-      ref: "Organization",
-      required: true,
-    },
-    name: {
-      required: true,
-      trim: true,
-      type: String,
-    },
-    email: {
-      type: String,
-      lowercase: true,
-      trim: true,
-      required: true,
-    },
-  },
-  { collection: "users" }
-);
+import UserSchema from "./model";
 
-UserSchema.plugin(timestamps);
-
-UserSchema.index({
-  createdAt: 1,
-  updatedAt: 1,
-});
-
-const User = mongoose.model("User", UserSchema);
+const Model = mongoose.model("User", UserSchema);
 
 const customizationOptions = {};
-const UserTC = composeMongoose(User, customizationOptions);
-
-/*
- * schemaComposer.addTypeDefs();
- * schemaComposer.addResolveMethods();
- */
+const UserTC = composeMongoose(Model, customizationOptions);
 
 schemaComposer.Query.addFields({
   userById: UserTC.mongooseResolvers.findById,
@@ -61,6 +28,4 @@ schemaComposer.Mutation.addFields({
   userRemoveMany: UserTC.mongooseResolvers.removeMany,
 });
 
-const schema = schemaComposer.buildSchema();
-
-export default { schema };
+export default schemaComposer.buildSchema();
