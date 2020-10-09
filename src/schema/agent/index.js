@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 import { composeMongoose } from "graphql-compose-mongoose";
 import { schemaComposer } from "graphql-compose";
 
-//import resolvers from "./resolvers";
+import resolvers from "./resolvers";
+import { typeDefs } from "./typeDefs";
 import AgentSchema from "./model";
 
 const Model = mongoose.model("Agent", AgentSchema);
@@ -29,6 +30,8 @@ schemaComposer.Mutation.addFields({
   agentRemoveMany: AgentTC.mongooseResolvers.removeMany,
 });
 
-//schemaComposer.addResolveMethods(resolvers);
+if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
+
+schemaComposer.addResolveMethods(resolvers);
 
 export default schemaComposer.buildSchema();

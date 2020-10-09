@@ -9,6 +9,7 @@ module.exports = {
   rules: {
     "sort-keys": 0,
     "spaced-comment": 0,
+    "import/namespace": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-unresolved": 0,
     "no-console": 0,
