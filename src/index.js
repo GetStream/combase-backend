@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 
+import "./utils/db";
 import schema from "./schema";
 
 const apollo = new ApolloServer({
@@ -38,7 +39,8 @@ const httpServer = http.createServer(app);
 apollo.installSubscriptionHandlers(httpServer);
 
 httpServer.listen({ port: process.env.PORT || 8080 }, () => {
-  console.log(
-    `API running on http://localhost:${process.env.PORT}${apollo.graphqlPath}`
-  );
+  if (mongoose.connection.readyState > 0) {
+    console.log(`MongoDB connection successful 👨‍🚀`);
+    console.log(`API running on port ${process.env.PORT} 🚀`);
+  }
 });
