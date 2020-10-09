@@ -7,12 +7,14 @@ const AssetSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Organization",
       required: true,
+      description: "Organization the asset is associated with.",
     },
     url: {
       type: String,
       trim: true,
       unqiue: true,
       required: true,
+      description: "Absolute URL to the uploaded asset.",
     },
   },
   { collection: "assets" }

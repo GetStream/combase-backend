@@ -7,6 +7,8 @@ const GroupSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "Organization",
       required: true,
+      description:
+        "A reference to the organization that the group is associated with.",
     },
     name: {
       required: true,
