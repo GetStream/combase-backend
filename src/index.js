@@ -37,11 +37,8 @@ const httpServer = http.createServer(app);
 
 apollo.installSubscriptionHandlers(httpServer);
 
-httpServer.listen({ port: process.env.PORT || "8000" }, () => {
+httpServer.listen({ port: process.env.PORT || 8080 }, () => {
   console.log(
     `API running on http://localhost:${process.env.PORT}${apollo.graphqlPath}`
-  );
-  console.log(
-    `API subscriptions running on ws://localhost:${process.env.PORT}${apollo.subscriptionsPath}`
   );
 });
