@@ -6,7 +6,8 @@ import mongoose from "mongoose";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 
-import "./utils/db";
+import logger from "./utils/logger";
+import mongoConnection from "./utils/db";
 import schema from "./schema";
 
 const apollo = new ApolloServer({
@@ -19,6 +20,8 @@ const apollo = new ApolloServer({
 });
 
 const app = express();
+
+app.disable("x-powered-by");
 
 apollo.applyMiddleware({
   app,
@@ -36,11 +39,19 @@ apollo.applyMiddleware({
 
 const httpServer = http.createServer(app);
 
-apollo.installSubscriptionHandlers(httpServer);
+(async () => {
+  try {
+    await mongoConnection(process.env.MONGODB_URI);
 
-httpServer.listen({ port: process.env.PORT || 8080 }, () => {
-  if (mongoose.connection.readyState > 0) {
-    console.log(`MongoDB connection successful 👨‍🚀`);
-    console.log(`API running on port ${process.env.PORT} 🚀`);
+    httpServer.listen({ port: process.env.PORT || 8080 }, () => {
+      logger.info(`MongoDB connection successful 👨‍🚀`);
+      logger.info(`API running on port ${process.env.PORT} 🚀`);
+    });
+
+    return true;
+  } catch (error) {
+    logger.error(error);
+    // eslint-disable-next-line no-process-exit
+    process.exit(1);
   }
-});
+})();

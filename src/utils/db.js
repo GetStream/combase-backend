@@ -1,9 +1,11 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 
-(async () => {
+import logger from "./utils/logger";
+
+const mongoConnection = async (uri) => {
   try {
-    const client = mongoose.connect(process.env.MONGODB_URI, {
+    const client = mongoose.connect(uri, {
       autoIndex: true,
       useCreateIndex: true,
       useNewUrlParser: true,
@@ -13,8 +15,10 @@ import mongoose from "mongoose";
 
     return await client;
   } catch (error) {
-    console.log(error);
-    // eslint-disable-next-line no-process-exit
-    process.exit(1);
+    logger.error(error);
+
+    return error;
   }
-})();
+};
+
+export default mongoConnection;
