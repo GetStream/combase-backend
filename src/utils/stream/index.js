@@ -3,5 +3,5 @@ import { TokenGenerator } from './TokenGenerator';
 
 export default {
 	StreamClients: new ClientWrapper().init,
-	StreamTokens: new TokenGenerator().get,
+	StreamTokens: new TokenGenerator().init,
 };

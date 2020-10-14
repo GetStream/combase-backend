@@ -9,19 +9,11 @@ class TokenGenerator {
 		this.clients = new ClientWrapper().init;
 	}
 
-	chat() {
-		const token = this.clients.chat.createToken(this.uid);
+	chat = () => this.clients.chat.createToken(this.uid);
 
-		return token;
-	}
+	feeds = () => this.clients.feeds.createUserToken(this.uid);
 
-	feeds() {
-		const token = this.clients.feeds.createUserToken(this.uid);
-
-		return token;
-	}
-
-	get() {
+	init() {
 		return {
 			chat: this.chat(),
 			feeds: this.feeds(),
