@@ -1,7 +1,5 @@
-import { createLogger, transports } from "winston";
+import { createLogger, transports } from 'winston';
 
-const logger = createLogger({
-  transports: [new transports.Console()],
+export const logger = createLogger({
+	transports: [new transports.Console()],
 });
-
-export default logger;

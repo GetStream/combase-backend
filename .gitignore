@@ -62,3 +62,6 @@ dist/
 
 # system
 .DS_Store
+
+# heroku
+heroku.yml

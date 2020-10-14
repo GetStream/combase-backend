@@ -1,7 +1,7 @@
-import * as Query from "./query";
-import * as Mutation from "./mutation";
+import * as Query from './query';
+import * as Mutation from './mutation';
 
 export default {
-  Query: Query.default || Query,
-  Mutation: Mutation.default || Mutation,
+	Query: Query.default || Query,
+	Mutation: Mutation.default || Mutation,
 };
