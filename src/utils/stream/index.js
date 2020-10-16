@@ -1,7 +1,7 @@
-import { ClientWrapper } from './ClientWrapper';
-import { TokenGenerator } from './TokenGenerator';
+import { clientWrapper } from './clientWrapper';
+import { tokenGenerator } from './tokenGenerator';
 
 export default {
-	StreamClients: new ClientWrapper().init,
-	StreamTokens: new TokenGenerator().init,
+	StreamClients: clientWrapper(),
+	StreamTokens: tokenGenerator(),
 };
