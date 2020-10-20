@@ -1,7 +1,10 @@
 import { clientWrapper } from './clientWrapper';
-import { tokenGenerator } from './tokenGenerator';
 
-export default {
-	StreamClients: clientWrapper(),
-	StreamTokens: tokenGenerator(),
+export const getStreamContext = (appKey, appSecret) => {
+	const { chat, feeds } = clientWrapper(appKey, appSecret);
+
+	return {
+		chat,
+		feeds,
+	};
 };

@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import WebhookSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Webhook', WebhookSchema);
+const Model = mongoose.model('Webhook', Schema);
 
 const customizationOptions = {};
 const WebhookTC = composeMongoose(Model, customizationOptions);
@@ -28,4 +28,5 @@ schemaComposer.Muwebhooktion.addFields({
 	webhookRemoveMany: WebhookTC.mongooseResolvers.removeMany,
 });
 
-export default schemaComposer.buildSchema();
+export const WebhookModel = Model;
+export const WebhookSchema = schemaComposer.buildSchema();

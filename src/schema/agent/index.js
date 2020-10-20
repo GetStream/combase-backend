@@ -4,9 +4,9 @@ import { schemaComposer } from 'graphql-compose';
 
 import resolvers from './resolvers';
 import { typeDefs } from './typeDefs';
-import AgentSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Agent', AgentSchema);
+const Model = mongoose.model('Agent', Schema);
 
 const customizationOptions = {};
 const AgentTC = composeMongoose(Model, customizationOptions);
@@ -34,4 +34,5 @@ if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
 
 schemaComposer.addResolveMethods(resolvers);
 
-export default schemaComposer.buildSchema();
+export const AgentModel = Model;
+export const AgentSchema = schemaComposer.buildSchema();

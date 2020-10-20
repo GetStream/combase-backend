@@ -53,10 +53,16 @@ const ChatSchema = new Schema(
 			},
 		],
 		sentiment: {
-			type: String,
-			enum: ['negative', 'nuetral', 'positive'],
-			defualt: 'neutral',
-			description: 'The sentiment of a chat – on a scale of 0 to 2.',
+			score: {
+				type: String,
+				enum: ['negative', 'nuetral', 'positive'],
+				defualt: 'neutral',
+				description: 'The sentiment of a chat – on a scale of 0 to 2.',
+			},
+			collected: {
+				type: Boolean,
+				default: false,
+			},
 		},
 		status: {
 			type: String,

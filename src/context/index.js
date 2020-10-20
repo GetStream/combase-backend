@@ -5,8 +5,11 @@
  */
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
+import { Models } from 'src/schema';
+import { logger } from 'src/utils/logger';
+import { getStreamContext } from 'src/utils/stream';
 
-const authorizeRequest = ({ req, connection }) => {
+const authorizeRequest = async ({ req, connection }) => {
 	try {
 		let token;
 
@@ -20,14 +23,18 @@ const authorizeRequest = ({ req, connection }) => {
 			return {};
 		}
 
-		const { sub: user } = jwt.verify(token, process.env.AUTH_SECRET);
+		const { agent, organization } = jwt.verify(token, process.env.AUTH_SECRET);
 
-		if (!user) {
+		if (!agent || !organization) {
 			return {};
 		}
 
+		const { stream } = await Models.Organization.findOne({ _id: organization }, { stream: 1 });
+
 		return {
-			user,
+			agent,
+			organization,
+			stream,
 		};
 	} catch (error) {
 		throw new AuthenticationError(error);
@@ -35,10 +42,20 @@ const authorizeRequest = ({ req, connection }) => {
 };
 
 export default async ({ connection, req }) => {
-	const context = await authorizeRequest({
-		connection,
-		req,
-	});
+	try {
+		const { agent, organization, stream } = await authorizeRequest({
+			connection,
+			req,
+		});
 
-	return context;
+		return {
+			agent,
+			organization,
+			models: Models,
+			stream: getStreamContext(stream.key, stream.secret),
+		};
+	} catch (error) {
+		logger.error(error);
+		throw new Error(error);
+	}
 };

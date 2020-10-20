@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import OrganizationSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Organization', OrganizationSchema);
+const Model = mongoose.model('Organization', Schema);
 
 const customizationOptions = {};
 const OrganizationTC = composeMongoose(Model, customizationOptions);
@@ -28,4 +28,5 @@ schemaComposer.Mutation.addFields({
 	organizationRemoveMany: OrganizationTC.mongooseResolvers.removeMany,
 });
 
-export default schemaComposer.buildSchema();
+export const OrganizationModel = Model;
+export const OrganizationSchema = schemaComposer.buildSchema();

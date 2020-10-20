@@ -42,6 +42,20 @@ const OrganizationSchema = new Schema(
 				},
 			},
 		},
+		stream: {
+			key: {
+				type: String,
+				trim: true,
+				default: '',
+				description: 'The organization Stream App Key.',
+			},
+			secret: {
+				type: String,
+				trim: true,
+				default: '',
+				description: 'The organization Stream App Secret.',
+			},
+		},
 	},
 	{ collection: 'organizations' }
 );

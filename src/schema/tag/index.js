@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import TagSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Tag', TagSchema);
+const Model = mongoose.model('Tag', Schema);
 
 const customizationOptions = {};
 const TagTC = composeMongoose(Model, customizationOptions);
@@ -28,4 +28,5 @@ schemaComposer.Mutation.addFields({
 	tagRemoveMany: TagTC.mongooseResolvers.removeMany,
 });
 
-export default schemaComposer.buildSchema();
+export const TagModel = Model;
+export const TagSchema = schemaComposer.buildSchema();

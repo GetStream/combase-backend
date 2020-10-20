@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import GroupSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Group', GroupSchema);
+const Model = mongoose.model('Group', Schema);
 
 const customizationOptions = {};
 const GroupTC = composeMongoose(Model, customizationOptions);
@@ -28,4 +28,5 @@ schemaComposer.Mutation.addFields({
 	groupRemoveMany: GroupTC.mongooseResolvers.removeMany,
 });
 
-export default schemaComposer.buildSchema();
+export const GroupModel = Model;
+export const GroupSchema = schemaComposer.buildSchema();

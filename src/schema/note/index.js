@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import NoteSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Note', NoteSchema);
+const Model = mongoose.model('Note', Schema);
 
 const customizationOptions = {};
 const NoteTC = composeMongoose(Model, customizationOptions);
@@ -28,4 +28,5 @@ schemaComposer.Mutation.addFields({
 	noteRemoveMany: NoteTC.mongooseResolvers.removeMany,
 });
 
-export default schemaComposer.buildSchema();
+export const NoteModel = Model;
+export const NoteSchema = schemaComposer.buildSchema();

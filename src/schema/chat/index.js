@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import ChatSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Chat', ChatSchema);
+const Model = mongoose.model('Chat', Schema);
 
 const customizationOptions = {};
 const ChatTC = composeMongoose(Model, customizationOptions);
@@ -28,4 +28,5 @@ schemaComposer.Mutation.addFields({
 	chatRemoveMany: ChatTC.mongooseResolvers.removeMany,
 });
 
-export default schemaComposer.buildSchema();
+export const ChatModel = Model;
+export const ChatSchema = schemaComposer.buildSchema();

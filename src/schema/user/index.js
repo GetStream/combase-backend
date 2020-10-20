@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import UserSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('User', UserSchema);
+const Model = mongoose.model('User', Schema);
 
 const customizationOptions = {};
 const UserTC = composeMongoose(Model, customizationOptions);
@@ -28,4 +28,5 @@ schemaComposer.Mutation.addFields({
 	userRemoveMany: UserTC.mongooseResolvers.removeMany,
 });
 
-export default schemaComposer.buildSchema();
+export const UserModel = Model;
+export const UserSchema = schemaComposer.buildSchema();

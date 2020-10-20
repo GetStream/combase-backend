@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
-import FaqSchema from './model';
+import Schema from './model';
 
-const Model = mongoose.model('Faq', FaqSchema);
+const Model = mongoose.model('Faq', Schema);
 
 const customizationOptions = {};
 const FaqTC = composeMongoose(Model, customizationOptions);
@@ -29,3 +29,6 @@ schemaComposer.Mutation.addFields({
 });
 
 export default schemaComposer.buildSchema();
+
+export const FaqModel = Model;
+export const FaqSchema = schemaComposer.buildSchema();
