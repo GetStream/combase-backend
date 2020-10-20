@@ -13,5 +13,5 @@ export const auth = (req, res, next) => {
 	const decoded = jwt.verify(req.headers.authorization, process.env.AUTH_SECRET);
 
 	return decoded;
-	//return next();
+	// return next();
 };

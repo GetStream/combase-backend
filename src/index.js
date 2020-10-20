@@ -8,21 +8,20 @@ import { ApolloServer } from 'apollo-server-express';
 
 import { logger } from './utils/logger';
 import mongoConnection from './utils/db';
-import auth from './utils/middleware';
+import context from './context';
 import schema from './schema';
 
 const apollo = new ApolloServer({
 	cors: true,
+	context,
 	introspection: process.env.NODE_ENV !== 'production',
 	path: '/',
-	playground: process.env.NODE_ENV !== 'production',
+	playground: true,
 	tracing: process.env.NODE_ENV !== 'production',
 	schema,
 });
 
 const app = express();
-
-app.use(auth);
 
 app.disable('x-powered-by');
 
@@ -48,10 +47,8 @@ const httpServer = http.createServer(app);
 
 		httpServer.listen({ port: process.env.PORT || 8080 }, () => {
 			logger.info(`MongoDB connection successful 👨‍🚀`);
-			logger.info(`API running on port ${process.env.PORT} 🚀`);
+			logger.info(`API running on port ${process.env.PORT || 8080} 🚀`);
 		});
-
-		return true;
 	} catch (error) {
 		logger.error(error);
 		// eslint-disable-next-line no-process-exit
