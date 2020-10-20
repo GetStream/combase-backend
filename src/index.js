@@ -8,6 +8,7 @@ import { ApolloServer } from 'apollo-server-express';
 
 import { logger } from './utils/logger';
 import mongoConnection from './utils/db';
+import auth from './utils/middleware';
 import schema from './schema';
 
 const apollo = new ApolloServer({
@@ -20,6 +21,8 @@ const apollo = new ApolloServer({
 });
 
 const app = express();
+
+app.use(auth);
 
 app.disable('x-powered-by');
 
