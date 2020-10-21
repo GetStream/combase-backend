@@ -52,7 +52,7 @@ export default async ({ connection, req }) => {
 			agent,
 			organization,
 			models: Models,
-			stream: getStreamContext(stream.key, stream.secret),
+			stream: getStreamContext(stream?.key, stream?.secret),
 		};
 	} catch (error) {
 		logger.error(error);
