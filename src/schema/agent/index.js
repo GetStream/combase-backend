@@ -11,6 +11,10 @@ const Model = mongoose.model('Agent', Schema);
 const customizationOptions = {};
 const AgentTC = composeMongoose(Model, customizationOptions);
 
+AgentTC.addFields({
+	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
+});
+
 schemaComposer.Query.addFields({
 	agentById: AgentTC.mongooseResolvers.findById,
 	agentByIds: AgentTC.mongooseResolvers.findByIds,
