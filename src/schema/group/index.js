@@ -1,12 +1,5 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
-
-import Schema from './model';
-
-const Model = mongoose.model('Group', Schema);
-
-const customizationOptions = {};
-const GroupTC = composeMongoose(Model, customizationOptions);
+import resolvers from './resolvers';
+import { GroupTC } from './model';
 
 const Query = {
 	groupById: GroupTC.mongooseResolvers.findById,
@@ -14,6 +7,7 @@ const Query = {
 	groupOne: GroupTC.mongooseResolvers.findOne,
 	groupMany: GroupTC.mongooseResolvers.findMany,
 	groupCount: GroupTC.mongooseResolvers.count,
+	...resolvers.Query,
 };
 
 const Mutation = {
@@ -25,9 +19,11 @@ const Mutation = {
 	groupRemoveById: GroupTC.mongooseResolvers.removeById,
 	groupRemoveOne: GroupTC.mongooseResolvers.removeOne,
 	groupRemoveMany: GroupTC.mongooseResolvers.removeMany,
+	...resolvers.Mutation,
 };
 
-export const GroupModel = Model;
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
 
 export default {
 	Query,

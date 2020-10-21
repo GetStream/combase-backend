@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const WebhookSchema = new Schema(
 	{
@@ -39,4 +40,5 @@ WebhookSchema.index({
 	updatedAt: 1,
 });
 
-export default WebhookSchema;
+export const WebhookModel = mongoose.model('Webhook', WebhookSchema);
+export const WebhookTC = composeMongoose(WebhookModel);

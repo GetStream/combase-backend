@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const OrganizationSchema = new Schema(
 	{
@@ -67,4 +68,5 @@ OrganizationSchema.index({
 	updatedAt: 1,
 });
 
-export default OrganizationSchema;
+export const OrganizationModel = mongoose.model('Organization', OrganizationSchema);
+export const OrganizationTC = composeMongoose(OrganizationModel);

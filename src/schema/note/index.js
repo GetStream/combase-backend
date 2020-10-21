@@ -1,12 +1,5 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
-
-import Schema from './model';
-
-const Model = mongoose.model('Note', Schema);
-
-const customizationOptions = {};
-const NoteTC = composeMongoose(Model, customizationOptions);
+import resolvers from './resolvers';
+import { NoteTC } from './model';
 
 const Query = {
 	noteById: NoteTC.mongooseResolvers.findById,
@@ -14,6 +7,7 @@ const Query = {
 	noteOne: NoteTC.mongooseResolvers.findOne,
 	noteMany: NoteTC.mongooseResolvers.findMany,
 	noteCount: NoteTC.mongooseResolvers.count,
+	...resolvers.Query,
 };
 
 const Mutation = {
@@ -25,9 +19,11 @@ const Mutation = {
 	noteRemoveById: NoteTC.mongooseResolvers.removeById,
 	noteRemoveOne: NoteTC.mongooseResolvers.removeOne,
 	noteRemoveMany: NoteTC.mongooseResolvers.removeMany,
+	...resolvers.Mutation,
 };
 
-export const NoteModel = Model;
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
 
 export default {
 	Query,

@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const NoteSchema = new Schema(
 	{
@@ -32,4 +33,5 @@ NoteSchema.index({
 	updatedAt: 1,
 });
 
-export default NoteSchema;
+export const NoteModel = mongoose.model('Note', NoteSchema);
+export const NoteTC = composeMongoose(NoteModel);

@@ -1,12 +1,5 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
-
-import Schema from './model';
-
-const Model = mongoose.model('Organization', Schema);
-
-const customizationOptions = {};
-const OrganizationTC = composeMongoose(Model, customizationOptions);
+import resolvers from './resolvers';
+import { OrganizationTC } from './model';
 
 const Query = {
 	organizationById: OrganizationTC.mongooseResolvers.findById,
@@ -14,6 +7,7 @@ const Query = {
 	organizationOne: OrganizationTC.mongooseResolvers.findOne,
 	organizationMany: OrganizationTC.mongooseResolvers.findMany,
 	organizationCount: OrganizationTC.mongooseResolvers.count,
+	...resolvers.Query,
 };
 
 const Mutation = {
@@ -25,9 +19,11 @@ const Mutation = {
 	organizationRemoveById: OrganizationTC.mongooseResolvers.removeById,
 	organizationRemoveOne: OrganizationTC.mongooseResolvers.removeOne,
 	organizationRemoveMany: OrganizationTC.mongooseResolvers.removeMany,
+	...resolvers.Mutation,
 };
 
-export const OrganizationModel = Model;
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
 
 export default {
 	Query,

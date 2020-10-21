@@ -1,14 +1,15 @@
 import { SchemaComposer } from 'graphql-compose';
 
-import Organization, { OrganizationModel } from './organization';
 import Agent, { AgentModel } from './agent';
 import Asset, { AssetModel } from './asset';
-import User, { UserModel } from './user';
-import Group, { GroupModel } from './group';
 import Chat, { ChatModel } from './chat';
-import Note, { NoteModel } from './note';
-import Tag, { TagModel } from './tag';
 import Faq, { FaqModel } from './faq';
+import Group, { GroupModel } from './group';
+import Note, { NoteModel } from './note';
+import Organization, { OrganizationModel } from './organization';
+import Tag, { TagModel } from './tag';
+import User, { UserModel } from './user';
+import Webhook, { WebhookModel } from './webhook';
 
 const schemaComposer = new SchemaComposer();
 
@@ -22,6 +23,7 @@ schemaComposer.Query.addFields({
 	...Organization.Query,
 	...Tag.Query,
 	...User.Query,
+	...Webhook.Query,
 });
 
 schemaComposer.Mutation.addFields({
@@ -34,18 +36,20 @@ schemaComposer.Mutation.addFields({
 	...Organization.Mutation,
 	...Tag.Mutation,
 	...User.Mutation,
+	...Webhook.Mutation,
 });
 
 export default schemaComposer.buildSchema();
 
 export const Models = {
-	Organization: OrganizationModel,
 	Agent: AgentModel,
 	Asset: AssetModel,
-	User: UserModel,
-	Group: GroupModel,
 	Chat: ChatModel,
-	Note: NoteModel,
-	Tag: TagModel,
 	Faq: FaqModel,
+	Group: GroupModel,
+	Note: NoteModel,
+	Organization: OrganizationModel,
+	Tag: TagModel,
+	User: UserModel,
+	Webhook: WebhookModel,
 };

@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const FaqSchema = new Schema(
 	{
@@ -40,4 +41,5 @@ FaqSchema.index({
 	updatedAt: 1,
 });
 
-export default FaqSchema;
+export const FaqModel = mongoose.model('Faq', FaqSchema);
+export const FaqTC = composeMongoose(FaqModel);

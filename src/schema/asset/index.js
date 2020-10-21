@@ -1,12 +1,5 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
-
-import Schema from './model';
-
-const Model = mongoose.model('Asset', Schema);
-
-const customizationOptions = {};
-const AssetTC = composeMongoose(Model, customizationOptions);
+import resolvers from './resolvers';
+import { AssetTC } from './model';
 
 const Query = {
 	assetById: AssetTC.mongooseResolvers.findById,
@@ -14,6 +7,7 @@ const Query = {
 	assetOne: AssetTC.mongooseResolvers.findOne,
 	assetMany: AssetTC.mongooseResolvers.findMany,
 	assetCount: AssetTC.mongooseResolvers.count,
+	...resolvers.Query,
 };
 
 const Mutation = {
@@ -25,9 +19,12 @@ const Mutation = {
 	assetRemoveById: AssetTC.mongooseResolvers.removeById,
 	assetRemoveOne: AssetTC.mongooseResolvers.removeOne,
 	assetRemoveMany: AssetTC.mongooseResolvers.removeMany,
+	...resolvers.Mutation,
 };
 
-export const AssetModel = Model;
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
+
 export default {
 	Query,
 	Mutation,

@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const TagSchema = new Schema(
 	{
@@ -32,4 +33,5 @@ TagSchema.index({
 	updatedAt: 1,
 });
 
-export default TagSchema;
+export const TagModel = mongoose.model('Tag', TagSchema);
+export const TagTC = composeMongoose(TagModel);

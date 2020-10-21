@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const AssetSchema = new Schema(
 	{
@@ -27,4 +28,5 @@ AssetSchema.index({
 	updatedAt: 1,
 });
 
-export default AssetSchema;
+export const AssetModel = mongoose.model('Asset', AssetSchema);
+export const AssetTC = composeMongoose(AssetModel);

@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const GroupSchema = new Schema(
 	{
@@ -32,4 +33,5 @@ GroupSchema.index({
 	updatedAt: 1,
 });
 
-export default GroupSchema;
+export const GroupModel = mongoose.model('Group', GroupSchema);
+export const GroupTC = composeMongoose(GroupModel);

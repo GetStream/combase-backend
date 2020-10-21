@@ -1,5 +1,6 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const ChatSchema = new Schema(
 	{
@@ -81,4 +82,5 @@ ChatSchema.index({
 	updatedAt: 1,
 });
 
-export default ChatSchema;
+export const ChatModel = mongoose.model('Chat', ChatSchema);
+export const ChatTC = composeMongoose(ChatModel);

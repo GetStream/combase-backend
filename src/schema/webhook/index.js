@@ -1,23 +1,16 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
+import resolvers from './resolvers';
+import { WebhookTC } from './model';
 
-import Schema from './model';
-
-const Model = mongoose.model('Webhook', Schema);
-
-const customizationOptions = {};
-const WebhookTC = composeMongoose(Model, customizationOptions);
-
-schemaComposer.Query.addFields({
+const Query = {
 	webhookById: WebhookTC.mongooseResolvers.findById,
 	webhookByIds: WebhookTC.mongooseResolvers.findByIds,
 	webhookOne: WebhookTC.mongooseResolvers.findOne,
 	webhookMany: WebhookTC.mongooseResolvers.findMany,
 	webhookCount: WebhookTC.mongooseResolvers.count,
-});
+	...resolvers.Query,
+};
 
-schemaComposer.Muwebhooktion.addFields({
+const Mutation = {
 	webhookCreateOne: WebhookTC.mongooseResolvers.createOne,
 	webhookCreateMany: WebhookTC.mongooseResolvers.createMany,
 	webhookUpdateById: WebhookTC.mongooseResolvers.updateById,
@@ -26,7 +19,13 @@ schemaComposer.Muwebhooktion.addFields({
 	webhookRemoveById: WebhookTC.mongooseResolvers.removeById,
 	webhookRemoveOne: WebhookTC.mongooseResolvers.removeOne,
 	webhookRemoveMany: WebhookTC.mongooseResolvers.removeMany,
-});
+	...resolvers.Mutation,
+};
 
-export const WebhookModel = Model;
-export const WebhookSchema = schemaComposer.buildSchema();
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
+
+export default {
+	Query,
+	Mutation,
+};

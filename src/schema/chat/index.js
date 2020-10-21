@@ -1,12 +1,5 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
-
-import Schema from './model';
-
-const Model = mongoose.model('Chat', Schema);
-
-const customizationOptions = {};
-const ChatTC = composeMongoose(Model, customizationOptions);
+import resolvers from './resolvers';
+import { ChatTC } from './model';
 
 const Query = {
 	chatById: ChatTC.mongooseResolvers.findById,
@@ -14,6 +7,7 @@ const Query = {
 	chatOne: ChatTC.mongooseResolvers.findOne,
 	chatMany: ChatTC.mongooseResolvers.findMany,
 	chatCount: ChatTC.mongooseResolvers.count,
+	...resolvers.Query,
 };
 
 const Mutation = {
@@ -25,9 +19,11 @@ const Mutation = {
 	chatRemoveById: ChatTC.mongooseResolvers.removeById,
 	chatRemoveOne: ChatTC.mongooseResolvers.removeOne,
 	chatRemoveMany: ChatTC.mongooseResolvers.removeMany,
+	...resolvers.Mutation,
 };
 
-export const ChatModel = Model;
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
 
 export default {
 	Query,

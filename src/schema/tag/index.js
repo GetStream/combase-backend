@@ -1,12 +1,5 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
-
-import Schema from './model';
-
-const Model = mongoose.model('Tag', Schema);
-
-const customizationOptions = {};
-const TagTC = composeMongoose(Model, customizationOptions);
+import resolvers from './resolvers';
+import { TagTC } from './model';
 
 const Query = {
 	tagById: TagTC.mongooseResolvers.findById,
@@ -14,6 +7,7 @@ const Query = {
 	tagOne: TagTC.mongooseResolvers.findOne,
 	tagMany: TagTC.mongooseResolvers.findMany,
 	tagCount: TagTC.mongooseResolvers.count,
+	...resolvers.Query,
 };
 
 const Mutation = {
@@ -25,9 +19,11 @@ const Mutation = {
 	tagRemoveById: TagTC.mongooseResolvers.removeById,
 	tagRemoveOne: TagTC.mongooseResolvers.removeOne,
 	tagRemoveMany: TagTC.mongooseResolvers.removeMany,
+	...resolvers.Mutation,
 };
 
-export const TagModel = Model;
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
 
 export default {
 	Query,
