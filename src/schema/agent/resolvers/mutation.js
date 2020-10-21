@@ -1,29 +1,40 @@
 import jwt from 'jsonwebtoken';
 import { getTokenPayload } from 'utils/auth';
 
-export const loginAgent = async (_, { email, password }, { models: { Agent } }) => {
-	if (!email || !password) {
-		throw new Error('Missing arguments.');
-	}
+import { AgentTC } from '../model';
 
-	const agent = await Agent.findOne({ email });
+export const loginAgent = {
+	name: 'loginAgent',
+	type: AgentTC,
+	kind: 'mutation',
+	args: {
+		email: 'String!',
+		password: 'String!',
+	},
+	resolve: async (_, { email, password }, { models: { Agent } }) => {
+		if (!email || !password) {
+			throw new Error('Missing arguments.');
+		}
 
-	if (!agent) {
-		throw new Error('Account does not exist.');
-	}
+		const agent = await Agent.findOne({ email });
 
-	const validate = await agent.verifyPassword(password);
+		if (!agent) {
+			throw new Error('Account does not exist.');
+		}
 
-	if (!validate) {
-		throw new Error('Incorrect password.');
-	}
+		const validate = await agent.verifyPassword(password);
 
-	const token = jwt.sign(getTokenPayload(agent), process.env.AUTH_SECRET);
+		if (!validate) {
+			throw new Error('Incorrect password.');
+		}
 
-	delete agent._doc.password;
+		const token = jwt.sign(getTokenPayload(agent), process.env.AUTH_SECRET);
 
-	return {
-		...agent._doc,
-		token,
-	};
+		delete agent._doc.password;
+
+		return {
+			...agent._doc,
+			token,
+		};
+	},
 };

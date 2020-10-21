@@ -1,6 +1,7 @@
-import { Schema } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'mongoose-bcrypt';
 import timestamps from 'mongoose-timestamp';
+import { composeMongoose } from 'graphql-compose-mongoose';
 
 const AgentSchema = new Schema(
 	{
@@ -71,4 +72,5 @@ AgentSchema.index({
 	updatedAt: 1,
 });
 
-export default AgentSchema;
+export const AgentModel = mongoose.model('Agent', AgentSchema);
+export const AgentTC = composeMongoose(AgentModel);

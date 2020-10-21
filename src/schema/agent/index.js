@@ -1,16 +1,18 @@
-import mongoose from 'mongoose';
-import { composeMongoose } from 'graphql-compose-mongoose';
+import resolvers from './resolvers';
+import { AgentTC } from './model';
 
-import Schema from './model';
-
-const Model = mongoose.model('Agent', Schema);
-
-const customizationOptions = {};
-const AgentTC = composeMongoose(Model, customizationOptions);
-
+/**
+ * Extend Agent Type
+ */
 AgentTC.addFields({
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
 });
+
+AgentTC.removeField('password');
+
+/**
+ * Resolvers
+ */
 
 const Query = {
 	agentById: AgentTC.mongooseResolvers.findById,
@@ -18,7 +20,7 @@ const Query = {
 	agentOne: AgentTC.mongooseResolvers.findOne,
 	agentMany: AgentTC.mongooseResolvers.findMany,
 	agentCount: AgentTC.mongooseResolvers.count,
-	// ...resolvers.Query,
+	...resolvers.Query,
 };
 
 const Mutation = {
@@ -30,14 +32,11 @@ const Mutation = {
 	agentRemoveById: AgentTC.mongooseResolvers.removeById,
 	agentRemoveOne: AgentTC.mongooseResolvers.removeOne,
 	agentRemoveMany: AgentTC.mongooseResolvers.removeMany,
-	// ...resolvers.Mutation,
+	...resolvers.Mutation,
 };
 
-// if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
-
-// schemaComposer.addResolveMethods(resolvers);
-
-export const AgentModel = Model;
+// eslint-disable-next-line no-duplicate-imports
+export * from './model';
 
 export default {
 	Query,
