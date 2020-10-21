@@ -1,5 +1,5 @@
 export const typeDefs = `
     type Mutation {
-        loginAgent: Agent
+        loginAgent(email: String!, password: String!): Agent
     }
 `;
