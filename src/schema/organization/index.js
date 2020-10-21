@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
+import resolvers from './resolvers';
+import { typeDefs } from './typeDefs';
 import Schema from './model';
 
 const Model = mongoose.model('Organization', Schema);
@@ -27,6 +29,10 @@ schemaComposer.Mutation.addFields({
 	organizationRemoveOne: OrganizationTC.mongooseResolvers.removeOne,
 	organizationRemoveMany: OrganizationTC.mongooseResolvers.removeMany,
 });
+
+if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
+
+schemaComposer.addResolveMethods(resolvers);
 
 export const OrganizationModel = Model;
 export const OrganizationSchema = schemaComposer.buildSchema();
