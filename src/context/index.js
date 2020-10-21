@@ -23,7 +23,7 @@ const authorizeRequest = async ({ req, connection }) => {
 			return {};
 		}
 
-		const { agent, organization } = jwt.verify(token, process.env.AUTH_SECRET);
+		const { sub: agent, organization } = jwt.verify(token, process.env.AUTH_SECRET);
 
 		if (!agent || !organization) {
 			return {};
