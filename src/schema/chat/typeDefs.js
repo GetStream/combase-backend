@@ -1,5 +1,5 @@
 export const typeDefs = `
 	type Mutation {
-		createChat: Chat!
+		createChat(organization: MongoID!, user: MongoID!): Chat!
 	}
 `;
