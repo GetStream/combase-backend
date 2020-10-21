@@ -1,5 +1,20 @@
-export const createChat = async (_, args, { user, organization, models: { Chat }, stream }) => {
-	// eslint-disable-next-line no-console
-	console.log(stream, user, organization);
-	await Chat.create({ ...args });
+/**
+ * Takes the User _id (the customer using the widget) and the organization ID as
+ * arguments. Then creates a channel with just the user (ready to be routed to an agent)
+ * and returns the Chat object so we can connect to the channel on the client-side.
+ */
+export const createChat = async (_, { user, organization }, { models: { Chat }, stream }) => {
+	try {
+		const { _doc: chat } = await Chat.create({ organization });
+
+		await stream.chat
+			.channel('messaging', chat._id, {
+				members: [user],
+			})
+			.create();
+
+		return chat;
+	} catch (error) {
+		throw new Error(`Chat creation failed: ${error.message}`);
+	}
 };

@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { schemaComposer } from 'graphql-compose';
 
+import resolvers from './resolvers';
+import { typeDefs } from './typeDefs';
 import Schema from './model';
 
 const Model = mongoose.model('Chat', Schema);
@@ -27,6 +29,10 @@ schemaComposer.Mutation.addFields({
 	chatRemoveOne: ChatTC.mongooseResolvers.removeOne,
 	chatRemoveMany: ChatTC.mongooseResolvers.removeMany,
 });
+
+if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
+
+schemaComposer.addResolveMethods(resolvers);
 
 export const ChatModel = Model;
 export const ChatSchema = schemaComposer.buildSchema();
