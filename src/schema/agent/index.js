@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
 
-import resolvers from './resolvers';
-import { typeDefs } from './typeDefs';
 import Schema from './model';
 
 const Model = mongoose.model('Agent', Schema);
@@ -15,15 +12,16 @@ AgentTC.addFields({
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
 });
 
-schemaComposer.Query.addFields({
+const Query = {
 	agentById: AgentTC.mongooseResolvers.findById,
 	agentByIds: AgentTC.mongooseResolvers.findByIds,
 	agentOne: AgentTC.mongooseResolvers.findOne,
 	agentMany: AgentTC.mongooseResolvers.findMany,
 	agentCount: AgentTC.mongooseResolvers.count,
-});
+	// ...resolvers.Query,
+};
 
-schemaComposer.Mutation.addFields({
+const Mutation = {
 	agentCreateOne: AgentTC.mongooseResolvers.createOne,
 	agentCreateMany: AgentTC.mongooseResolvers.createMany,
 	agentUpdateById: AgentTC.mongooseResolvers.updateById,
@@ -32,11 +30,16 @@ schemaComposer.Mutation.addFields({
 	agentRemoveById: AgentTC.mongooseResolvers.removeById,
 	agentRemoveOne: AgentTC.mongooseResolvers.removeOne,
 	agentRemoveMany: AgentTC.mongooseResolvers.removeMany,
-});
+	// ...resolvers.Mutation,
+};
 
-if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
+// if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
 
-schemaComposer.addResolveMethods(resolvers);
+// schemaComposer.addResolveMethods(resolvers);
 
 export const AgentModel = Model;
-export const AgentSchema = schemaComposer.buildSchema();
+
+export default {
+	Query,
+	Mutation,
+};

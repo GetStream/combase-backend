@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
 
-import resolvers from './resolvers';
-import { typeDefs } from './typeDefs';
 import Schema from './model';
 
 const Model = mongoose.model('Organization', Schema);
@@ -11,15 +8,15 @@ const Model = mongoose.model('Organization', Schema);
 const customizationOptions = {};
 const OrganizationTC = composeMongoose(Model, customizationOptions);
 
-schemaComposer.Query.addFields({
+const Query = {
 	organizationById: OrganizationTC.mongooseResolvers.findById,
 	organizationByIds: OrganizationTC.mongooseResolvers.findByIds,
 	organizationOne: OrganizationTC.mongooseResolvers.findOne,
 	organizationMany: OrganizationTC.mongooseResolvers.findMany,
 	organizationCount: OrganizationTC.mongooseResolvers.count,
-});
+};
 
-schemaComposer.Mutation.addFields({
+const Mutation = {
 	organizationCreateOne: OrganizationTC.mongooseResolvers.createOne,
 	organizationCreateMany: OrganizationTC.mongooseResolvers.createMany,
 	organizationUpdateById: OrganizationTC.mongooseResolvers.updateById,
@@ -28,11 +25,11 @@ schemaComposer.Mutation.addFields({
 	organizationRemoveById: OrganizationTC.mongooseResolvers.removeById,
 	organizationRemoveOne: OrganizationTC.mongooseResolvers.removeOne,
 	organizationRemoveMany: OrganizationTC.mongooseResolvers.removeMany,
-});
-
-if (typeDefs) schemaComposer.addTypeDefs(typeDefs);
-
-schemaComposer.addResolveMethods(resolvers);
+};
 
 export const OrganizationModel = Model;
-export const OrganizationSchema = schemaComposer.buildSchema();
+
+export default {
+	Query,
+	Mutation,
+};

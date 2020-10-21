@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
 
 import Schema from './model';
 
@@ -9,15 +8,15 @@ const Model = mongoose.model('Tag', Schema);
 const customizationOptions = {};
 const TagTC = composeMongoose(Model, customizationOptions);
 
-schemaComposer.Query.addFields({
+const Query = {
 	tagById: TagTC.mongooseResolvers.findById,
 	tagByIds: TagTC.mongooseResolvers.findByIds,
 	tagOne: TagTC.mongooseResolvers.findOne,
 	tagMany: TagTC.mongooseResolvers.findMany,
 	tagCount: TagTC.mongooseResolvers.count,
-});
+};
 
-schemaComposer.Mutation.addFields({
+const Mutation = {
 	tagCreateOne: TagTC.mongooseResolvers.createOne,
 	tagCreateMany: TagTC.mongooseResolvers.createMany,
 	tagUpdateById: TagTC.mongooseResolvers.updateById,
@@ -26,7 +25,11 @@ schemaComposer.Mutation.addFields({
 	tagRemoveById: TagTC.mongooseResolvers.removeById,
 	tagRemoveOne: TagTC.mongooseResolvers.removeOne,
 	tagRemoveMany: TagTC.mongooseResolvers.removeMany,
-});
+};
 
 export const TagModel = Model;
-export const TagSchema = schemaComposer.buildSchema();
+
+export default {
+	Query,
+	Mutation,
+};

@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
 
 import Schema from './model';
 
@@ -9,15 +8,15 @@ const Model = mongoose.model('Note', Schema);
 const customizationOptions = {};
 const NoteTC = composeMongoose(Model, customizationOptions);
 
-schemaComposer.Query.addFields({
+const Query = {
 	noteById: NoteTC.mongooseResolvers.findById,
 	noteByIds: NoteTC.mongooseResolvers.findByIds,
 	noteOne: NoteTC.mongooseResolvers.findOne,
 	noteMany: NoteTC.mongooseResolvers.findMany,
 	noteCount: NoteTC.mongooseResolvers.count,
-});
+};
 
-schemaComposer.Mutation.addFields({
+const Mutation = {
 	noteCreateOne: NoteTC.mongooseResolvers.createOne,
 	noteCreateMany: NoteTC.mongooseResolvers.createMany,
 	noteUpdateById: NoteTC.mongooseResolvers.updateById,
@@ -26,7 +25,11 @@ schemaComposer.Mutation.addFields({
 	noteRemoveById: NoteTC.mongooseResolvers.removeById,
 	noteRemoveOne: NoteTC.mongooseResolvers.removeOne,
 	noteRemoveMany: NoteTC.mongooseResolvers.removeMany,
-});
+};
 
 export const NoteModel = Model;
-export const NoteSchema = schemaComposer.buildSchema();
+
+export default {
+	Query,
+	Mutation,
+};

@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
 
 import Schema from './model';
 
@@ -9,15 +8,15 @@ const Model = mongoose.model('Asset', Schema);
 const customizationOptions = {};
 const AssetTC = composeMongoose(Model, customizationOptions);
 
-schemaComposer.Query.addFields({
+const Query = {
 	assetById: AssetTC.mongooseResolvers.findById,
 	assetByIds: AssetTC.mongooseResolvers.findByIds,
 	assetOne: AssetTC.mongooseResolvers.findOne,
 	assetMany: AssetTC.mongooseResolvers.findMany,
 	assetCount: AssetTC.mongooseResolvers.count,
-});
+};
 
-schemaComposer.Muwebhooktion.addFields({
+const Mutation = {
 	assetCreateOne: AssetTC.mongooseResolvers.createOne,
 	assetCreateMany: AssetTC.mongooseResolvers.createMany,
 	assetUpdateById: AssetTC.mongooseResolvers.updateById,
@@ -26,7 +25,10 @@ schemaComposer.Muwebhooktion.addFields({
 	assetRemoveById: AssetTC.mongooseResolvers.removeById,
 	assetRemoveOne: AssetTC.mongooseResolvers.removeOne,
 	assetRemoveMany: AssetTC.mongooseResolvers.removeMany,
-});
+};
 
 export const AssetModel = Model;
-export const AssetSchema = schemaComposer.buildSchema();
+export default {
+	Query,
+	Mutation,
+};

@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
 
 import Schema from './model';
 
@@ -9,15 +8,15 @@ const Model = mongoose.model('Group', Schema);
 const customizationOptions = {};
 const GroupTC = composeMongoose(Model, customizationOptions);
 
-schemaComposer.Query.addFields({
+const Query = {
 	groupById: GroupTC.mongooseResolvers.findById,
 	groupByIds: GroupTC.mongooseResolvers.findByIds,
 	groupOne: GroupTC.mongooseResolvers.findOne,
 	groupMany: GroupTC.mongooseResolvers.findMany,
 	groupCount: GroupTC.mongooseResolvers.count,
-});
+};
 
-schemaComposer.Mutation.addFields({
+const Mutation = {
 	groupCreateOne: GroupTC.mongooseResolvers.createOne,
 	groupCreateMany: GroupTC.mongooseResolvers.createMany,
 	groupUpdateById: GroupTC.mongooseResolvers.updateById,
@@ -26,7 +25,11 @@ schemaComposer.Mutation.addFields({
 	groupRemoveById: GroupTC.mongooseResolvers.removeById,
 	groupRemoveOne: GroupTC.mongooseResolvers.removeOne,
 	groupRemoveMany: GroupTC.mongooseResolvers.removeMany,
-});
+};
 
 export const GroupModel = Model;
-export const GroupSchema = schemaComposer.buildSchema();
+
+export default {
+	Query,
+	Mutation,
+};
