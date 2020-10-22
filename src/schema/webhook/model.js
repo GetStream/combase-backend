@@ -13,7 +13,6 @@ const WebhookSchema = new Schema(
 		url: {
 			type: String,
 			trim: true,
-			required: true,
 			description: 'Absolute URL to send a payload to via an HTTP post.',
 		},
 		name: {
@@ -28,6 +27,19 @@ const WebhookSchema = new Schema(
 			default: '',
 			required: false,
 			description: 'Simple description of what this webhook URL will handle.',
+		},
+		triggers: [
+			{
+				required: true,
+				trim: true,
+				type: String,
+				description: 'The action triggered by this webhook event.',
+			},
+		],
+		type: {
+			enum: ['inbound', 'outbound'],
+			type: String,
+			required: true,
 		},
 		active: {
 			type: Boolean,
