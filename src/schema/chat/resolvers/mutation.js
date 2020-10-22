@@ -1,3 +1,4 @@
+import pubsub from 'utils/pubsub';
 import { ChatTC } from '../model';
 
 /**
@@ -21,13 +22,19 @@ export const createChat = {
 				user,
 			});
 
+			const cid = chat._id.toString();
+
 			await stream.chat
-				.channel('messaging', chat._id, {
+				.channel('messaging', cid, {
 					members: [user],
 				})
 				.create();
 
-			// Fire internal PubSub to trigger the routing mechanism.
+			// Fire internal PubSub to trigger the routing mechanism. Figure out how to send to the right queue...
+			pubsub.publish('INTERNAL_EVENT.CHAT_CREATED', {
+				chat: cid,
+			});
+
 			return chat;
 		} catch (error) {
 			throw new Error(`Chat creation failed: ${error.message}`);

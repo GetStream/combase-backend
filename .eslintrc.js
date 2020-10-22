@@ -12,6 +12,7 @@ module.exports = {
     "import/namespace": 0,
     "import/no-extraneous-dependencies": 0,
     "import/no-unresolved": 0,
+    "import/order": 0,
     "no-warning-comments": 0,
     "no-empty-function": 0,
     "node/no-extraneous-import": 0,

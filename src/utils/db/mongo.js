@@ -1,11 +1,10 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
+import { logger } from 'utils/logger';
 
-import { logger } from './logger';
-
-const mongoConnection = async uri => {
+const mongoConnection = async (URI = process.env.MONGODB_URI) => {
 	try {
-		const client = mongoose.connect(uri, {
+		const client = mongoose.connect(URI, {
 			autoIndex: true,
 			useCreateIndex: true,
 			useNewUrlParser: true,
@@ -21,4 +20,4 @@ const mongoConnection = async uri => {
 	}
 };
 
-export default mongoConnection;
+export { mongoConnection };

@@ -1,10 +1,23 @@
 import 'dotenv/config';
-import { RedisPubSub } from 'graphql-redis-subscriptions';
-import Redis from 'ioredis';
+import { AMQPPubSub } from 'graphql-amqp-subscriptions';
+import { rabbitConnection } from 'utils/db';
 
-const pubsub = new RedisPubSub({
-	publisher: new Redis(process.env.REDIS_URI),
-	subscriber: new Redis(process.env.REDIS_URI),
-});
+import { logger } from './logger';
+
+const pubsub = async () => {
+	try {
+		const amqp = await rabbitConnection();
+
+		const client = new AMQPPubSub({
+			connection: amqp,
+		});
+
+		return client;
+	} catch (error) {
+		logger.error(error);
+
+		return error;
+	}
+};
 
 export default pubsub;
