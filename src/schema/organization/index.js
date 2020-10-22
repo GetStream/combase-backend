@@ -3,7 +3,7 @@ import resolvers from './resolvers';
 import { OrganizationTC } from './model';
 
 /**
- * Extend Agent Type
+ * Extend Organization Type
  */
 OrganizationTC.removeField('stream');
 
