@@ -1,5 +1,4 @@
-import { OrganizationTC } from '../organization/model';
-
+import './relations';
 import resolvers from './resolvers';
 import { AgentTC } from './model';
 
@@ -11,13 +10,6 @@ AgentTC.addFields({
 });
 
 AgentTC.removeField('password');
-
-AgentTC.addRelation('organization', {
-	prepareArgs: {
-		_id: source => source.organization,
-	},
-	resolver: OrganizationTC.mongooseResolvers.findById,
-});
 
 /**
  * Resolvers
