@@ -4,6 +4,26 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { fieldEncryption } from 'mongoose-field-encryption';
 
+const StreamCredentialsSchema = new Schema({
+	key: {
+		type: String,
+		trim: true,
+		default: '',
+		description: 'The Stream App Key associated with the organization.',
+	},
+	secret: {
+		type: String,
+		trim: true,
+		default: '',
+		description: 'The Stream App Secret associated with the organization.',
+	},
+});
+
+StreamCredentialsSchema.plugin(fieldEncryption, {
+	fields: ['key', 'secret'],
+	secret: process.env.AUTH_SECRET,
+});
+
 const OrganizationSchema = new Schema(
 	{
 		name: {
@@ -45,29 +65,12 @@ const OrganizationSchema = new Schema(
 				},
 			},
 		},
-		stream: {
-			key: {
-				type: String,
-				trim: true,
-				default: '',
-				description: 'The Stream App Key associated with the organization.',
-			},
-			secret: {
-				type: String,
-				trim: true,
-				default: '',
-				description: 'The Stream App Secret associated with the organization.',
-			},
-		},
+		stream: StreamCredentialsSchema,
 	},
 	{ collection: 'organizations' }
 );
 
 OrganizationSchema.plugin(timestamps);
-OrganizationSchema.plugin(fieldEncryption, {
-	fields: ['stream'],
-	secret: process.env.AUTH_SECRET,
-});
 
 OrganizationSchema.index({
 	createdAt: 1,

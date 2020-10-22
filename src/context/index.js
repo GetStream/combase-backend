@@ -6,7 +6,6 @@
 import 'dotenv/config';
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
-import { decryptFieldsSync } from 'mongoose-field-encryption';
 import { Models } from 'schema';
 import { logger } from 'utils/logger';
 import { getStreamContext } from 'utils/stream';
@@ -36,7 +35,7 @@ const authorizeRequest = async ({ req, connection }) => {
 		return {
 			agent,
 			organization,
-			stream: decryptFieldsSync(stream, process.env.AUTH_SECRET),
+			stream,
 		};
 	} catch (error) {
 		throw new AuthenticationError(error);
