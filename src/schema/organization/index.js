@@ -5,7 +5,7 @@ import { OrganizationTC } from './model';
 /**
  * Extend Organization Type
  */
-OrganizationTC.removeField('stream');
+OrganizationTC.removeField('stream.secret');
 
 /**
  * Resolvers
