@@ -40,8 +40,8 @@ export const loginAgent = {
 
 /**
  * Below we modify the AgentInput type on the fly for this one resolver
- * to allow a null organization value, as this resolver will enrich the agent
- * with the created org ID before it runs agentCreateOne.
+ * to allow a null/undefined organization value, as this resolver will
+ * enrich the agent with the created org ID before it runs agentCreateOne.
  */
 export const createAgentAndOrganization = {
 	name: 'createAgentAndOrganization',
