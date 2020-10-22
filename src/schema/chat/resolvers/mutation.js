@@ -35,6 +35,15 @@ export const createChat = {
 				chat: cid,
 			});
 
+			const PubSub = await pubsub();
+
+			PubSub.publish('event', {
+				event: 'CHAT_CREATED',
+				payload: {
+					chat: cid,
+				},
+			});
+
 			return chat;
 		} catch (error) {
 			throw new Error(`Chat creation failed: ${error.message}`);

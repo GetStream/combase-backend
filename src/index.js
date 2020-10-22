@@ -5,7 +5,6 @@ import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 
 import { mongoConnection } from 'utils/db';
-import pubsub from 'utils/pubsub';
 import { logger } from './utils/logger';
 import context from './context';
 import schema from './schema';
@@ -22,8 +21,6 @@ const apollo = new ApolloServer({
 });
 
 const app = express();
-
-app.disable('x-powered-by');
 
 apollo.applyMiddleware({
 	app,
@@ -48,10 +45,6 @@ apollo.installSubscriptionHandlers(httpServer);
 (async () => {
 	try {
 		await mongoConnection();
-
-		const PubSub = await pubsub();
-
-		PubSub.publish('event', { type: 'user.created' });
 
 		httpServer.listen({ port: process.env.PORT || 8080 }, () => {
 			logger.info(`🚀 Server ready at http(s)://<HOSTNAME>:${process.env.PORT}${apollo.graphqlPath}`);

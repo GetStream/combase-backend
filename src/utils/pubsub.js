@@ -12,6 +12,19 @@ const pubsub = async () => {
 
 		const client = new AMQPPubSub({
 			connection: amqpConn,
+			exchange: {
+				name: 'event',
+				type: 'topic',
+				options: {
+					durable: true,
+				},
+			},
+			queue: {
+				name: 'event',
+				options: {
+					durable: true,
+				},
+			},
 		});
 
 		return client;
