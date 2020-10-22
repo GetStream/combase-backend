@@ -13,15 +13,20 @@ const WebhookSchema = new Schema(
 		url: {
 			type: String,
 			trim: true,
-			unqiue: true,
 			required: true,
 			description: 'Absolute URL to send a payload to via an HTTP post.',
+		},
+		name: {
+			type: String,
+			trim: true,
+			required: true,
+			description: 'Short name describing the webhook usecase.',
 		},
 		description: {
 			type: String,
 			trim: true,
-			unqiue: true,
-			required: true,
+			default: '',
+			required: false,
 			description: 'Simple description of what this webhook URL will handle.',
 		},
 		active: {
