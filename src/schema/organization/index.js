@@ -1,3 +1,4 @@
+import './relations';
 import resolvers from './resolvers';
 import { OrganizationTC } from './model';
 
