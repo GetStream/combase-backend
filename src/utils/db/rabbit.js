@@ -11,7 +11,14 @@ const rabbitConnection = async (URI = process.env.AMQP_URI) => {
 				[vhost]: {
 					connection: URI,
 					exchanges: {
-						exchange: {
+						event: {
+							assert: true,
+							check: true,
+							options: {
+								durable: true,
+							},
+						},
+						webhook: {
 							assert: true,
 							check: true,
 							options: {
@@ -35,16 +42,19 @@ const rabbitConnection = async (URI = process.env.AMQP_URI) => {
 							},
 						},
 					},
+					bindings: ['event[event] -> event', 'webhook[webhook] -> webhook'],
 					publications: {
 						event: {
 							vhost,
 							queue: 'event',
+							routingKey: 'event',
 							timeout: 10000,
 							confirm: true,
 						},
 						webhook: {
 							vhost,
 							queue: 'webhook',
+							routingKey: 'webhook',
 							timeout: 10000,
 							confirm: true,
 						},
@@ -61,20 +71,6 @@ const rabbitConnection = async (URI = process.env.AMQP_URI) => {
 							contentType: 'application/json',
 						},
 					},
-					bindings: {
-						event: {
-							source: 'exchange',
-							destination: 'event',
-							destinationType: 'queue',
-							bindingKey: 'event',
-						},
-						webhook: {
-							source: 'exchange',
-							destination: 'webhook',
-							destinationType: 'queue',
-							bindingKey: 'webhook',
-						},
-					},
 				},
 			},
 		};
@@ -89,7 +85,10 @@ const rabbitConnection = async (URI = process.env.AMQP_URI) => {
 				logger.error(error);
 			});
 
-		return client;
+		return {
+			client,
+			conn: config.vhosts[vhost].connection,
+		};
 	} catch (error) {
 		logger.error(error);
 

@@ -31,7 +31,7 @@ export const createChat = {
 				.create();
 
 			// Fire internal PubSub to trigger the routing mechanism. Figure out how to send to the right queue...
-			pubsub.publish('INTERNAL_EVENT.CHAT_CREATED', {
+			await pubsub.publish('INTERNAL_EVENT.CHAT_CREATED', {
 				chat: cid,
 			});
 
