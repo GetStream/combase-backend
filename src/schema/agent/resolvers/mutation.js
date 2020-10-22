@@ -38,3 +38,11 @@ export const loginAgent = {
 		};
 	},
 };
+
+/*
+ * export const adminCreate = {
+ * 	name: 'adminCreate',
+ * 	type: AgentTC,
+ * 	kind: 'mutation',
+ * };
+ */

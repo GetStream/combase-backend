@@ -1,15 +1,25 @@
 import { SchemaComposer } from 'graphql-compose';
 
-import Agent, { AgentModel } from './agent';
-import Asset, { AssetModel } from './asset';
-import Chat, { ChatModel } from './chat';
-import Faq, { FaqModel } from './faq';
-import Group, { GroupModel } from './group';
-import Note, { NoteModel } from './note';
-import Organization, { OrganizationModel } from './organization';
-import Tag, { TagModel } from './tag';
-import User, { UserModel } from './user';
-import Webhook, { WebhookModel } from './webhook';
+import Agent from './agent';
+import Asset from './asset';
+import Chat from './chat';
+import Faq from './faq';
+import Group from './group';
+import Note from './note';
+import Organization from './organization';
+import Tag from './tag';
+import User from './user';
+import Webhook from './webhook';
+import { AgentModel } from './agent/model';
+import { AssetModel } from './asset/model';
+import { ChatModel } from './chat/model';
+import { FaqModel } from './faq/model';
+import { GroupModel } from './group/model';
+import { NoteModel } from './note/model';
+import { OrganizationModel } from './organization/model';
+import { TagModel } from './tag/model';
+import { UserModel } from './user/model';
+import { WebhookModel } from './webhook/model';
 
 const schemaComposer = new SchemaComposer();
 

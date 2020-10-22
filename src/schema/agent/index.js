@@ -35,9 +35,6 @@ const Mutation = {
 	...resolvers.Mutation,
 };
 
-// eslint-disable-next-line no-duplicate-imports
-export * from './model';
-
 export default {
 	Query,
 	Mutation,
