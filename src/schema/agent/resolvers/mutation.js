@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { getTokenPayload } from 'utils/auth';
 
+import { OrganizationTC } from '../../organization/model';
 import { AgentTC } from '../model';
 
 export const loginAgent = {
@@ -28,9 +29,7 @@ export const loginAgent = {
 			throw new Error('Incorrect password.');
 		}
 
-		const token = jwt.sign(getTokenPayload(agent), process.env.AUTH_SECRET);
-
-		delete agent._doc.password;
+		const token = jwt.sign(getTokenPayload(agent._doc), process.env.AUTH_SECRET);
 
 		return {
 			...agent._doc,
@@ -39,10 +38,34 @@ export const loginAgent = {
 	},
 };
 
-/*
- * export const adminCreate = {
- * 	name: 'adminCreate',
- * 	type: AgentTC,
- * 	kind: 'mutation',
- * };
+/**
+ * Below we modify the AgentInput type on the fly for this one resolver
+ * to allow a null organization value, as this resolver will enrich the agent
+ * with the created org ID before it runs agentCreateOne.
  */
+export const createAgentAndOrganization = {
+	name: 'createAgentAndOrganization',
+	type: AgentTC,
+	kind: 'mutation',
+	args: {
+		agent: AgentTC.getInputTypeComposer().makeFieldNullable('organization'),
+		organization: OrganizationTC.getInputType(),
+	},
+	resolve: async (_, args, { models: { Agent, Organization } }) => {
+		const { _id } = await Organization.create(args.organization);
+
+		const agent = {
+			...args.agent,
+			organization: _id,
+		};
+
+		const agentDoc = await Agent.create(agent);
+
+		const token = jwt.sign(getTokenPayload(agentDoc._doc), process.env.AUTH_SECRET);
+
+		return {
+			...agentDoc._doc,
+			token,
+		};
+	},
+};

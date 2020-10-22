@@ -30,12 +30,12 @@ const authorizeRequest = async ({ req, connection }) => {
 			return {};
 		}
 
-		const { stream } = await Models.Organization.findOne({ _id: organization }, { stream: true });
+		const org = await Models.Organization.findOne({ _id: organization }, { stream: true });
 
 		return {
 			agent,
 			organization,
-			stream,
+			stream: org?.stream,
 		};
 	} catch (error) {
 		throw new AuthenticationError(error);

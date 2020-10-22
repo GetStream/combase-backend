@@ -8,7 +8,6 @@ import { AgentTC } from './model';
 AgentTC.addFields({
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
 });
-
 AgentTC.removeField('password');
 
 /**
