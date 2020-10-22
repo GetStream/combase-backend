@@ -3,8 +3,10 @@
  * here we process the users JWT, add their userID to the context
  * object available in each resolver.
  */
+import 'dotenv/config';
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
+import { decryptFieldsSync } from 'mongoose-field-encryption';
 import { Models } from 'schema';
 import { logger } from 'utils/logger';
 import { getStreamContext } from 'utils/stream';
@@ -29,12 +31,12 @@ const authorizeRequest = async ({ req, connection }) => {
 			return {};
 		}
 
-		const { stream } = await Models.Organization.findOne({ _id: organization }, { stream: 1 });
+		const { stream } = await Models.Organization.findOne({ _id: organization }, { stream: true });
 
 		return {
 			agent,
 			organization,
-			stream,
+			stream: decryptFieldsSync(stream, process.env.AUTH_SECRET),
 		};
 	} catch (error) {
 		throw new AuthenticationError(error);

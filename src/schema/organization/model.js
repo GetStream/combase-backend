@@ -1,6 +1,8 @@
+import 'dotenv/config';
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
+import { fieldEncryption } from 'mongoose-field-encryption';
 
 const OrganizationSchema = new Schema(
 	{
@@ -48,13 +50,13 @@ const OrganizationSchema = new Schema(
 				type: String,
 				trim: true,
 				default: '',
-				description: 'The organization Stream App Key.',
+				description: 'The Stream App Key associated with the organization.',
 			},
 			secret: {
 				type: String,
 				trim: true,
 				default: '',
-				description: 'The organization Stream App Secret.',
+				description: 'The Stream App Secret associated with the organization.',
 			},
 		},
 	},
@@ -62,6 +64,10 @@ const OrganizationSchema = new Schema(
 );
 
 OrganizationSchema.plugin(timestamps);
+OrganizationSchema.plugin(fieldEncryption, {
+	fields: ['stream'],
+	secret: process.env.AUTH_SECRET,
+});
 
 OrganizationSchema.index({
 	createdAt: 1,
