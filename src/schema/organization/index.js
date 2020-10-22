@@ -1,6 +1,15 @@
 import resolvers from './resolvers';
 import { OrganizationTC } from './model';
 
+/**
+ * Extend Agent Type
+ */
+OrganizationTC.removeField('stream');
+
+/**
+ * Resolvers
+ */
+
 const Query = {
 	organizationById: OrganizationTC.mongooseResolvers.findById,
 	organizationByIds: OrganizationTC.mongooseResolvers.findByIds,
@@ -21,9 +30,6 @@ const Mutation = {
 	organizationRemoveMany: OrganizationTC.mongooseResolvers.removeMany,
 	...resolvers.Mutation,
 };
-
-// eslint-disable-next-line no-duplicate-imports
-export * from './model';
 
 export default {
 	Query,
