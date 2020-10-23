@@ -8,7 +8,6 @@ import { mongoConnection } from 'utils/db';
 import { logger } from './utils/logger';
 import context from './context';
 import schema from './schema';
-import middleware from './middleware';
 
 const apollo = new ApolloServer({
 	cors: true,
@@ -35,8 +34,6 @@ apollo.applyMiddleware({
 		}),
 	path: '/graphql',
 });
-
-app.use(middleware);
 
 const httpServer = http.createServer(app);
 
