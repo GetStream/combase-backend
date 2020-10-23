@@ -1,4 +1,5 @@
 import { ChatTC } from '../model';
+import { PubSub } from 'utils/pubsub';
 
 /**
  * Takes the User _id (the customer using the widget) and the organization ID as
@@ -28,23 +29,12 @@ export const createChat = {
 				.create();
 
 			/*
-			 * TEMP: Not working "pubsub.publish is not a function"
-			 * Fire internal PubSub to trigger the routing mechanism. Figure out how to send to the right queue...
-			 * await pubsub.publish('INTERNAL_EVENT.CHAT_CREATED', {
-			 * 	chat: cid,
-			 * });
+			 *
+			 * Fire internal PubSub to trigger the routing mechanism.
 			 */
-
-			// const PubSub = await pubsub();
-
-			/*
-			 * PubSub.publish('event', {
-			 * 	event: 'CHAT_CREATED',
-			 * 	payload: {
-			 * 		chat: cid,
-			 * 	},
-			 * });
-			 */
+			await PubSub.publish('INTERNAL_EVENT.CHAT_CREATED', {
+				chat: cid,
+			});
 
 			return chat;
 		} catch (error) {
