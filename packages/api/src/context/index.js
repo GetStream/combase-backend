@@ -20,22 +20,31 @@ const authorizeRequest = async ({ req, connection }) => {
 			token = req.headers.authorization ? req.headers.authorization.replace(/^Bearer\s/u, '') : '';
 		}
 
+		let scopes = {};
+
 		if (!token) {
-			return {};
+			// User
+			scopes = { organization: req.headers['combase-organization'] };
+		} else {
+			// Agent
+
+			const { sub: agent, organization } = jwt.verify(token, process.env.AUTH_SECRET);
+
+			scopes = {
+				agent,
+				organization,
+			};
 		}
 
-		const { sub: agent, organization } = jwt.verify(token, process.env.AUTH_SECRET);
+		let orgData;
 
-		if (!agent || !organization) {
-			return {};
+		if (scopes?.organization) {
+			orgData = await Models.Organization.findOne({ _id: scopes.organization }, { stream: true });
 		}
-
-		const org = await Models.Organization.findOne({ _id: organization }, { stream: true });
 
 		return {
-			agent,
-			organization,
-			stream: org?.stream,
+			...scopes,
+			stream: orgData?.stream,
 		};
 	} catch (error) {
 		throw new AuthenticationError(error);

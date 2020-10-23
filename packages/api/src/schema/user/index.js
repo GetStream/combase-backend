@@ -1,6 +1,16 @@
 import resolvers from './resolvers';
 import { UserTC } from './model';
 
+/**
+ * Extend Agent Type
+ */
+UserTC.addFields({
+	streamToken: {
+		type: 'String',
+		resolve: ({ _id }, _, { stream: { chat } }) => chat?.createToken(_id.toString()),
+	},
+});
+
 const Query = {
 	userById: UserTC.mongooseResolvers.findById,
 	userByIds: UserTC.mongooseResolvers.findByIds,
