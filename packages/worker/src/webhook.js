@@ -34,10 +34,8 @@ export const worker = async () => {
 						data: content,
 					});
 
-					const error = 'error'; // TEMP: Error is undefined, cant commit
-
 					if (code !== 200) {
-						ackOrNack(error, [
+						ackOrNack([
 							{
 								strategy: 'republish',
 								defer: 1000,
@@ -49,7 +47,6 @@ export const worker = async () => {
 						]);
 					} else {
 						ackOrNack({ strategy: 'ack' });
-						throw new Error(error);
 					}
 				})();
 			})
