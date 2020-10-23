@@ -1,64 +1,65 @@
 {
-    "name": "combase",
-    "private": true,
-    "workspaces": {
-        "packages": [
-            "packages/*"
-        ],
-        "nohoist": [
-            "**/babel-loader"
-        ]
-    },
-    "repository": "https://github.com/GetStream/combase-backend.git",
-    "scripts": {
-        "bootstrap": "npx lerna bootstrap --use-workspaces",
-        "build": "npx lerna exec --parallel -- yarn build",
-        "lerna:clean": "npx lerna clean",
-        "lerna:changed": "npx lerna changed",
-        "lerna:version": "npx lerna version",
-        "start:api": "yarn workspace @combase/api start",
-        "start:worker": "yarn workspace @combase/worker start",
-        "lint": "eslint . --ext .js --fix"
-    },
-    "author": "GetStream <support@getstream.io>",
-    "license": "SEE LICENSE IN LICENSE",
-    "devDependencies": {
-        "@babel/cli": "^7.12.1",
-        "@babel/core": "^7.12.3",
-        "@babel/node": "^7.12.1",
-        "@babel/plugin-proposal-class-properties": "^7.12.1",
-        "@babel/plugin-transform-runtime": "^7.12.1",
-        "@babel/preset-env": "^7.12.1",
-        "babel-eslint": "^10.1.0",
-        "babel-loader": "^8.1.0",
-        "babel-plugin-module-resolver": "^4.0.0",
-        "babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
-        "babel-preset-env": "^1.7.0",
-        "eslint": "^7.11.0",
-        "eslint-config-get-off-my-lawn": "^5.0.1",
-        "eslint-import-resolver-lerna": "^1.1.0",
-        "eslint-plugin-babel": "^5.3.1",
-        "eslint-plugin-import": "^2.22.1",
-        "eslint-plugin-monorepo": "^0.2.1",
-        "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-prettier": "^3.1.4",
-        "eslint-plugin-promise": "^4.2.1",
-        "husky": "^4.3.0",
-        "lerna": "^3.22.1",
-        "lint-staged": "^10.4.2",
-        "nodemon": "^2.0.6",
-        "plop": "^2.7.4",
-        "prettier": "^2.1.2"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "*.{js,json,md,yml}": [
-            "prettier --write",
-            "yarn lint"
-        ]
-    }
+	"name": "combase",
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		],
+		"nohoist": [
+			"**/babel-loader"
+		]
+	},
+	"repository": "https://github.com/GetStream/combase-backend.git",
+	"scripts": {
+		"bootstrap": "npx lerna bootstrap --use-workspaces",
+		"build": "npx lerna exec --parallel -- yarn build",
+		"dev:api": "yarn workspace @combase/api dev",
+		"lerna:clean": "npx lerna clean",
+		"lerna:changed": "npx lerna changed",
+		"lerna:version": "npx lerna version",
+		"start:api": "yarn workspace @combase/api start",
+		"start:worker": "yarn workspace @combase/worker start",
+		"lint": "eslint . --ext .js --fix"
+	},
+	"author": "GetStream <support@getstream.io>",
+	"license": "SEE LICENSE IN LICENSE",
+	"devDependencies": {
+		"@babel/cli": "^7.12.1",
+		"@babel/core": "^7.12.3",
+		"@babel/node": "^7.12.1",
+		"@babel/plugin-proposal-class-properties": "^7.12.1",
+		"@babel/plugin-transform-runtime": "^7.12.1",
+		"@babel/preset-env": "^7.12.1",
+		"babel-eslint": "^10.1.0",
+		"babel-loader": "^8.1.0",
+		"babel-plugin-module-resolver": "^4.0.0",
+		"babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
+		"babel-preset-env": "^1.7.0",
+		"eslint": "^7.11.0",
+		"eslint-config-get-off-my-lawn": "^5.0.1",
+		"eslint-import-resolver-lerna": "^1.1.0",
+		"eslint-plugin-babel": "^5.3.1",
+		"eslint-plugin-import": "^2.22.1",
+		"eslint-plugin-monorepo": "^0.2.1",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-prettier": "^3.1.4",
+		"eslint-plugin-promise": "^4.2.1",
+		"husky": "^4.3.0",
+		"lerna": "^3.22.1",
+		"lint-staged": "^10.4.2",
+		"nodemon": "^2.0.6",
+		"plop": "^2.7.4",
+		"prettier": "^2.1.2"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.{js,json,md,yml}": [
+			"prettier --write",
+			"yarn lint"
+		]
+	}
 }
