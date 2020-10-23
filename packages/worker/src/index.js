@@ -4,6 +4,6 @@ import worker from './worker';
 	try {
 		await worker();
 	} catch (error) {
-		console.error(error);
+		console.error(error); // eslint-disable-line no-console
 	}
 })();

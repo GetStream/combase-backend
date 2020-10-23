@@ -34,6 +34,8 @@ export const worker = async () => {
 						data: content,
 					});
 
+					const error = ''; // TEMP: Error is undefined here, wouldn't let me commit but not sure where it should be coming from.
+
 					if (code !== 200) {
 						ackOrNack(error, [
 							{
