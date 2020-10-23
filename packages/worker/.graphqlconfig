@@ -1,0 +1,11 @@
+{
+  "name": "CombaseQL",
+  "extensions": {
+    "endpoints": {
+      "Combase API": {
+        "url": "http://localhost:8080",
+        "introspect": true
+      }
+    }
+  }
+}

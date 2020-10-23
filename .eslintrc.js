@@ -15,6 +15,8 @@ module.exports = {
     "import/order": 0,
     "no-warning-comments": 0,
     "no-empty-function": 0,
+    "eslint-comments/no-unused-disable": 0,
+    "no-process-exit": 0,
     "node/no-extraneous-import": 0,
     "node/no-unpublished-import": 0,
   },

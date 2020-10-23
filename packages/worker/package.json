@@ -1,0 +1,26 @@
+{
+	"name": "@combase/worker",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "git@github.com:GetStream/combase-backend.git",
+	"engines": {
+		"node": ">=14.x"
+	},
+	"scripts": {
+		"preinstall": "yarn global add pm2",
+		"postinstall": "rm -rf dist && yarn run build",
+		"build": "babel src --out-dir dist",
+		"start": "pm2-runtime start ecosystem.prod.config.js",
+		"dev": "nodemon --exec npx babel-node ./src/index.js --inspect"
+	},
+	"author": "GetStream <support@getstream.io>",
+	"license": "SEE LICENSE IN LICENSE",
+	"eslintConfig": {
+		"extends": "../../.eslintrc.js"
+	},
+	"dependencies": {
+		"dotenv": "^8.2.0",
+		"rascal": "^10.2.6",
+		"winston": "^3.3.3"
+	}
+}

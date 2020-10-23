@@ -1,86 +1,64 @@
 {
-	"name": "api",
-	"version": "1.0.0",
-	"main": "index.js",
-	"repository": "git@github.com:GetStream/combase-api.git",
-	"author": "Nick Parsons <nparsons08@gmail.com>",
-	"license": "MIT",
-	"engines": {
-		"node": ">=14.x"
-	},
-	"scripts": {
-		"preinstall": "yarn global add pm2",
-		"postinstall": "rm -rf dist && yarn run build",
-		"build": "babel src --out-dir dist",
-		"start": "pm2-runtime start ecosystem.prod.config.js",
-		"dev": "nodemon --exec npx babel-node ./src/index.js --inspect",
-		"dev:pm2": "pm2 start ecosystem.dev.config.js && pm2 log",
-		"lint": "eslint . --ext .js --fix"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	},
-	"lint-staged": {
-		"*.{js,json,md,yml}": [
-			"prettier --write",
-			"yarn lint"
-		]
-	},
-	"dependencies": {
-		"@graphql-tools/stitch": "^6.2.4",
-		"add": "^2.0.6",
-		"amqplib": "^0.6.0",
-		"apollo-server-express": "^2.18.2",
-		"aws-sdk": "^2.773.0",
-		"body-parser": "^1.19.0",
-		"cors": "^2.8.5",
-		"crypto-js": "^4.0.0",
-		"dotenv": "^8.2.0",
-		"express": "^4.17.1",
-		"fs-extra": "^9.0.1",
-		"getstream": "^6.2.0",
-		"graphql": "^15.3.0",
-		"graphql-amqp-subscriptions": "^1.1.1",
-		"graphql-compose": "^7.21.5",
-		"graphql-compose-mongoose": "^9.0.0",
-		"http": "^0.0.1-security",
-		"ioredis": "^4.17.3",
-		"jsonwebtoken": "^8.5.1",
-		"mongoose": "^5.10.8",
-		"mongoose-bcrypt": "^1.9.0",
-		"mongoose-field-encryption": "^4.0.0",
-		"mongoose-timestamp": "^0.6.0",
-		"nodemailer": "^6.4.13",
-		"nodemailer-postmark-transport": "^4.0.0",
-		"rascal": "^10.2.6",
-		"shortid": "^2.2.15",
-		"stream-chat": "^2.5.0",
-		"winston": "^3.3.3",
-		"yarn": "^1.22.10"
-	},
-	"devDependencies": {
-		"@babel/cli": "^7.11.6",
-		"@babel/core": "^7.11.6",
-		"@babel/node": "^7.10.5",
-		"@babel/plugin-proposal-class-properties": "^7.10.4",
-		"@babel/preset-env": "^7.11.5",
-		"babel-eslint": "^10.1.0",
-		"babel-loader": "^8.1.0",
-		"babel-plugin-module-resolver": "^4.0.0",
-		"babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
-		"babel-preset-env": "^1.7.0",
-		"eslint": "^7.10.0",
-		"eslint-config-get-off-my-lawn": "^5.0.1",
-		"eslint-plugin-babel": "^5.3.1",
-		"eslint-plugin-import": "^2.22.1",
-		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-prettier": "^3.1.4",
-		"eslint-plugin-promise": "^4.2.1",
-		"husky": "^4.3.0",
-		"lint-staged": "^10.4.0",
-		"nodemon": "^2.0.4",
-		"prettier": "^2.1.2"
-	}
+    "name": "combase",
+    "private": true,
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ],
+        "nohoist": [
+            "**/babel-loader"
+        ]
+    },
+    "repository": "https://github.com/GetStream/combase-backend.git",
+    "scripts": {
+        "bootstrap": "npx lerna bootstrap --use-workspaces",
+        "build": "npx lerna exec --parallel -- yarn build",
+        "lerna:clean": "npx lerna clean",
+        "lerna:changed": "npx lerna changed",
+        "lerna:version": "npx lerna version",
+        "start:api": "yarn workspace @combase/api start",
+        "start:worker": "yarn workspace @combase/worker start",
+        "lint": "eslint . --ext .js --fix"
+    },
+    "author": "GetStream <support@getstream.io>",
+    "license": "SEE LICENSE IN LICENSE",
+    "devDependencies": {
+        "@babel/cli": "^7.12.1",
+        "@babel/core": "^7.12.3",
+        "@babel/node": "^7.12.1",
+        "@babel/plugin-proposal-class-properties": "^7.12.1",
+        "@babel/plugin-transform-runtime": "^7.12.1",
+        "@babel/preset-env": "^7.12.1",
+        "babel-eslint": "^10.1.0",
+        "babel-loader": "^8.1.0",
+        "babel-plugin-module-resolver": "^4.0.0",
+        "babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
+        "babel-preset-env": "^1.7.0",
+        "eslint": "^7.11.0",
+        "eslint-config-get-off-my-lawn": "^5.0.1",
+        "eslint-import-resolver-lerna": "^1.1.0",
+        "eslint-plugin-babel": "^5.3.1",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-monorepo": "^0.2.1",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^3.1.4",
+        "eslint-plugin-promise": "^4.2.1",
+        "husky": "^4.3.0",
+        "lerna": "^3.22.1",
+        "lint-staged": "^10.4.2",
+        "nodemon": "^2.0.6",
+        "plop": "^2.7.4",
+        "prettier": "^2.1.2"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{js,json,md,yml}": [
+            "prettier --write",
+            "yarn lint"
+        ]
+    }
 }
