@@ -3,12 +3,11 @@
  * here we process the users JWT, add their userID to the context
  * object available in each resolver.
  */
-import 'dotenv/config';
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import { Models } from 'schema';
-import { logger } from 'utils/logger';
-import { getStreamContext } from 'utils/stream';
+import { logger } from '@utils/logger';
+import { getStreamContext } from '@utils/stream';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {

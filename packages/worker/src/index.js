@@ -1,8 +1,8 @@
-import worker from './worker';
+import { webhook } from './webhook';
 
 (async () => {
 	try {
-		await worker();
+		await webhook();
 	} catch (error) {
 		console.error(error); // eslint-disable-line no-console
 	}

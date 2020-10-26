@@ -1,16 +1,14 @@
 {
-	"name": "@combase/worker",
+	"name": "@combase/utils",
 	"version": "1.0.0",
-	"main": "index.js",
+	"main": "dist/index.js",
 	"repository": "git@github.com:GetStream/combase-backend.git",
 	"engines": {
 		"node": ">=14.x"
 	},
 	"scripts": {
-		"preinstall": "if-env NODE_ENV=production && yarn global add pm2 || echo 'Skipping PM2 dependency installation...'",
 		"postinstall": "rm -rf dist && yarn run build",
 		"build": "babel src --out-dir dist",
-		"start": "pm2-runtime start ecosystem.prod.config.js",
 		"dev": "nodemon --exec npx babel-node ./src/index.js --inspect"
 	},
 	"author": "GetStream <support@getstream.io>",
@@ -20,10 +18,13 @@
 	},
 	"dependencies": {
 		"amqplib": "^0.6.0",
+		"aws-sdk": "^2.779.0",
 		"dotenv": "^8.2.0",
-		"if-env": "^1.0.4",
-		"phin": "^3.5.0",
+		"getstream": "^6.2.0",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^5.10.11",
 		"rascal": "^10.2.6",
+		"stream-chat": "^2.7.1",
 		"winston": "^3.3.3"
 	}
 }

@@ -1,5 +1,4 @@
 import { ChatTC } from '../model';
-import { PubSub } from 'utils/pubsub';
 
 /**
  * Takes the User _id (the customer using the widget) and the organization ID as
@@ -19,22 +18,12 @@ export const createChat = {
 				user,
 			});
 
-			const cid = chat._id.toString();
-
 			await stream.chat
-				.channel('messaging', cid, {
+				.channel('messaging', chat._id.toString(), {
 					created_by_id: user, // eslint-disable-line camelcase
 					members: [user],
 				})
 				.create();
-
-			/*
-			 *
-			 * Fire internal PubSub to trigger the routing mechanism.
-			 */
-			await PubSub.publish('INTERNAL_EVENT.CHAT_CREATED', {
-				chat: cid,
-			});
 
 			return chat;
 		} catch (error) {

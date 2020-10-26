@@ -1,8 +1,6 @@
-import 'dotenv/config';
 import rascal, { BrokerAsPromised as Broker } from 'rascal';
-import { logger } from 'utils/logger';
 
-const rabbitConnection = async (URI = process.env.AMQP_URI) => {
+const rabbit = async (URI = process.env.AMQP_URI) => {
 	try {
 		const vhost = URI.split('.com/')[1];
 
@@ -79,21 +77,16 @@ const rabbitConnection = async (URI = process.env.AMQP_URI) => {
 
 		client
 			.on('blocked', error => {
-				logger.error(error);
+				throw new Error(error);
 			})
 			.on('error', error => {
-				logger.error(error);
+				throw new Error(error);
 			});
 
-		return {
-			client,
-			conn: config.vhosts[vhost].connection,
-		};
+		return { client };
 	} catch (error) {
-		logger.error(error);
-
-		return error;
+		throw new Error(error);
 	}
 };
 
-export { rabbitConnection };
+export { rabbit };

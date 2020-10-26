@@ -1,13 +1,10 @@
-import 'dotenv/config';
 import p from 'phin';
 import sha256 from 'crypto-js/sha256';
-import { BrokerAsPromised as Broker } from 'rascal';
+import { rabbit } from '@utils/db';
 
-import config from './config';
-
-export const worker = async () => {
+const webhook = async () => {
 	try {
-		const broker = await Broker.create(config);
+		const broker = await rabbit();
 
 		broker
 			.on('blocked', error => {
@@ -17,7 +14,7 @@ export const worker = async () => {
 				throw new Error(error);
 			});
 
-		const subscription = await broker.subscribe('worker');
+		const subscription = await broker.subscribe('webhook');
 
 		subscription
 			.on('message', (message, content, ackOrNack) => {
@@ -65,3 +62,5 @@ export const worker = async () => {
 		throw new Error(error);
 	}
 };
+
+export { webhook };

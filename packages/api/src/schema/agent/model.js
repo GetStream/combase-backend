@@ -3,6 +3,8 @@ import bcrypt from 'mongoose-bcrypt';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import { events } from '@utils/mongoose-plugins';
+
 const AgentSchema = new Schema(
 	{
 		organization: {
@@ -66,6 +68,7 @@ const AgentSchema = new Schema(
 
 AgentSchema.plugin(bcrypt);
 AgentSchema.plugin(timestamps);
+AgentSchema.plugin(events);
 
 AgentSchema.index({
 	createdAt: 1,

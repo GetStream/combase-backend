@@ -1,8 +1,6 @@
-import 'dotenv/config';
 import mongoose from 'mongoose';
-import { logger } from 'utils/logger';
 
-const mongoConnection = async (URI = process.env.MONGODB_URI) => {
+const mongo = async (URI = process.env.MONGODB_URI) => {
 	try {
 		const client = mongoose.connect(URI, {
 			autoIndex: true,
@@ -14,10 +12,8 @@ const mongoConnection = async (URI = process.env.MONGODB_URI) => {
 
 		return await client;
 	} catch (error) {
-		logger.error(error);
-
-		return error;
+		throw new Error(error);
 	}
 };
 
-export { mongoConnection };
+export { mongo };

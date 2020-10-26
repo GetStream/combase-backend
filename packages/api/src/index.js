@@ -1,11 +1,11 @@
-import 'dotenv/config';
 import http from 'http';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 
-import { mongoConnection } from 'utils/db';
-import { logger } from './utils/logger';
+import { mongo } from '@utils/db';
+import { logger } from '@utils/logger';
+
 import context from './context';
 import schema from './schema';
 
@@ -41,7 +41,7 @@ apollo.installSubscriptionHandlers(httpServer);
 
 (async () => {
 	try {
-		await mongoConnection();
+		await mongo();
 
 		httpServer.listen({ port: process.env.PORT || 8080 }, () => {
 			logger.info(`🚀 Server ready at http(s)://<HOSTNAME>:${process.env.PORT}${apollo.graphqlPath}`);

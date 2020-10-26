@@ -1,6 +1,5 @@
 import path from 'path';
 
-import 'dotenv/config';
 import S3 from 'aws-sdk/clients/s3';
 import { v4 as uuid } from 'uuid';
 

@@ -9,5 +9,15 @@ module.exports = {
 			},
 		],
 	],
-	plugins: [['module-resolver', { root: ['./src'] }], 'transform-optional-chaining'],
+	plugins: [
+		['module-resolver', { root: ['./src'] }],
+		'transform-optional-chaining',
+		'@babel/proposal-class-properties',
+		[
+			'inline-dotenv',
+			{
+				path: '../../.env',
+			},
+		],
+	],
 };

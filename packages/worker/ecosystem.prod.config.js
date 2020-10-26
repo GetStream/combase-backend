@@ -3,7 +3,7 @@ module.exports = {
 	apps: [
 		{
 			name: 'worker',
-			script: 'dist/index.js',
+			script: '-r dotenv/config dist/index.js dotenv_config_path=../../.env',
 			output: '/dev/stdout',
 			error: '/dev/stderr',
 			merge_logs: true,
