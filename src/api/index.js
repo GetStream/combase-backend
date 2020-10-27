@@ -36,8 +36,6 @@ apollo.applyMiddleware({
 
 const httpServer = http.createServer(app);
 
-apollo.installSubscriptionHandlers(httpServer);
-
 (async () => {
 	try {
 		await mongodb();
