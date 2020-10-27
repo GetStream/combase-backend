@@ -5,7 +5,7 @@
  */
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
-import { Models } from 'schema';
+import { Models } from '../schema';
 import { logger } from 'utils/logger';
 import { stream as streamCtx } from 'utils/stream';
 
