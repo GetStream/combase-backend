@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { getTokenPayload } from 'utils/auth';
+import { getTokenPayload } from 'utils';
 
 import { OrganizationTC } from '../../organization/model';
 import { AgentTC } from '../model';

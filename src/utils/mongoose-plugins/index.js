@@ -1,6 +1,6 @@
 import PubSub from '../PubSub';
 
-const events = schema => {
+const mongooseEvents = schema => {
 	const {
 		options: { collection: name },
 	} = schema;
@@ -24,4 +24,4 @@ const events = schema => {
 	});
 };
 
-export { events };
+export { mongooseEvents };

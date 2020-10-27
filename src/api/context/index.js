@@ -6,8 +6,7 @@
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import { Models } from '../schema';
-import { logger } from 'utils/logger';
-import { stream as streamCtx } from 'utils/stream';
+import logger, { stream as streamCtx } from 'utils';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {
@@ -23,7 +22,7 @@ const authorizeRequest = async ({ req, connection }) => {
 
 		if (!token) {
 			// User
-			scopes = { organization: req.headers['combase-organization'] };
+			scopes = { organization: req.headers['combase-organization'] }; // TODO: use referrer from headers...
 		} else {
 			// Agent
 

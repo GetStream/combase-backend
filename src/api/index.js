@@ -3,8 +3,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 
-import { mongodb } from 'utils/db';
-import { logger } from 'utils/logger';
+import { mongodb, logger } from 'utils';
 
 import context from './context';
 import schema from './schema';

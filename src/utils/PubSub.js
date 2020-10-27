@@ -1,4 +1,4 @@
-import { rabbitmq } from 'utils/db';
+import { rabbitmq } from 'utils';
 
 export default class PubSub {
 	constructor(event, payload) {
