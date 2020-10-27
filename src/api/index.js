@@ -3,8 +3,8 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 
-import { mongo } from '@utils/db';
-import { logger } from '@utils/logger';
+import { mongodb } from 'utils/db';
+import { logger } from 'utils/logger';
 
 import context from './context';
 import schema from './schema';
@@ -41,7 +41,7 @@ apollo.installSubscriptionHandlers(httpServer);
 
 (async () => {
 	try {
-		await mongo();
+		await mongodb();
 
 		httpServer.listen({ port: process.env.PORT || 8080 }, () => {
 			logger.info(`🚀 Server ready at http(s)://<HOSTNAME>:${process.env.PORT}${apollo.graphqlPath}`);

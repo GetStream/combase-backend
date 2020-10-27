@@ -1,6 +1,6 @@
 import rascal, { BrokerAsPromised as Broker } from 'rascal';
 
-const rabbit = async (URI = process.env.AMQP_URI) => {
+const rabbitmq = async (URI = process.env.AMQP_URI) => {
 	try {
 		const vhost = URI.split('.com/')[1];
 
@@ -89,4 +89,4 @@ const rabbit = async (URI = process.env.AMQP_URI) => {
 	}
 };
 
-export { rabbit };
+export { rabbitmq };

@@ -1,4 +1,4 @@
-import { mongo, rabbit } from './db';
+import { mongodb, rabbitmq } from './db';
 import { events } from './mongoose-plugins';
 import { getTokenPayload } from './auth';
 import { logger } from './logger';
@@ -6,10 +6,10 @@ import PubSub from './PubSub';
 import { s3 } from './s3';
 import { stream } from './stream';
 
-const utils = {
+export default {
 	db: {
-		mongo,
-		rabbit,
+		mongodb,
+		rabbitmq,
 	},
 	mongoose: {
 		plugins: { events },
@@ -20,5 +20,3 @@ const utils = {
 	s3,
 	stream,
 };
-
-export default utils;

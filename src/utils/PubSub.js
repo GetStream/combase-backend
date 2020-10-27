@@ -1,9 +1,9 @@
-import { rabbit } from './db';
+import { rabbitmq } from 'utils/db';
 
 export default class PubSub {
 	constructor(event, payload) {
 		return (async () => {
-			this.client = await rabbit();
+			this.client = await rabbitmq();
 
 			this.event = event;
 			this.payload = payload;

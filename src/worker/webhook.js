@@ -1,10 +1,10 @@
 import p from 'phin';
 import sha256 from 'crypto-js/sha256';
-import { rabbit } from '@utils/db';
+import { rabbitmq } from 'utils/db';
 
 const webhook = async () => {
 	try {
-		const broker = await rabbit();
+		const broker = await rabbitmq();
 
 		broker
 			.on('blocked', error => {

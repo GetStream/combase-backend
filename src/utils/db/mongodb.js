@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const mongo = async (URI = process.env.MONGODB_URI) => {
+const mongodb = async (URI = process.env.MONGODB_URI) => {
 	try {
 		const client = mongoose.connect(URI, {
 			autoIndex: true,
@@ -16,4 +16,4 @@ const mongo = async (URI = process.env.MONGODB_URI) => {
 	}
 };
 
-export { mongo };
+export { mongodb };
