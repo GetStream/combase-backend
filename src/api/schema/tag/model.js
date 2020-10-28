@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
+
 const TagSchema = new Schema(
 	{
 		organization: {
@@ -27,6 +29,7 @@ const TagSchema = new Schema(
 );
 
 TagSchema.plugin(timestamps);
+TagSchema.plugin(events);
 
 TagSchema.index({
 	createdAt: 1,

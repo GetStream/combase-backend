@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
+
 const WebhookSchema = new Schema(
 	{
 		organization: {
@@ -51,6 +53,7 @@ const WebhookSchema = new Schema(
 );
 
 WebhookSchema.plugin(timestamps);
+WebhookSchema.plugin(events);
 
 WebhookSchema.index({
 	createdAt: 1,

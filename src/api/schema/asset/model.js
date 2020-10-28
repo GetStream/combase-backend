@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
+
 const AssetSchema = new Schema(
 	{
 		organization: {
@@ -22,6 +24,7 @@ const AssetSchema = new Schema(
 );
 
 AssetSchema.plugin(timestamps);
+AssetSchema.plugin(events);
 
 AssetSchema.index({
 	createdAt: 1,

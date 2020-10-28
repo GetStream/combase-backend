@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
+
 const NoteSchema = new Schema(
 	{
 		chat: {
@@ -27,6 +29,7 @@ const NoteSchema = new Schema(
 );
 
 NoteSchema.plugin(timestamps);
+NoteSchema.plugin(events);
 
 NoteSchema.index({
 	createdAt: 1,

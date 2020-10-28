@@ -3,7 +3,7 @@ import bcrypt from 'mongoose-bcrypt';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
-import { mongooseEvents as events } from 'utils';
+import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const AgentSchema = new Schema(
 	{

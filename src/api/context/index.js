@@ -5,8 +5,9 @@
  */
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
+import { logger } from 'utils/logger';
+import { stream as streamCtx } from 'utils/stream';
 import { Models } from '../schema';
-import logger, { stream as streamCtx } from 'utils';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {

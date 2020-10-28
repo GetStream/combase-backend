@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
+
 const ChatSchema = new Schema(
 	{
 		organization: {
@@ -76,6 +78,7 @@ const ChatSchema = new Schema(
 );
 
 ChatSchema.plugin(timestamps);
+ChatSchema.plugin(events);
 
 ChatSchema.index({
 	createdAt: 1,

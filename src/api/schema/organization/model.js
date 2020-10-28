@@ -3,6 +3,8 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { fieldEncryption } from 'mongoose-field-encryption';
 
+import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
+
 const StreamCredentialsSchema = new Schema({
 	key: {
 		type: String,
@@ -70,6 +72,7 @@ const OrganizationSchema = new Schema(
 );
 
 OrganizationSchema.plugin(timestamps);
+OrganizationSchema.plugin(events);
 
 OrganizationSchema.index({
 	createdAt: 1,

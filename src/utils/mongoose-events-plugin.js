@@ -1,6 +1,8 @@
-import PubSub from '../PubSub';
+import { pubsub } from './pubsub';
 
-const mongooseEvents = schema => {
+const mongooseEventsPlugin = schema => {
+	const PubSub = pubsub();
+
 	const {
 		options: { collection: name },
 	} = schema;
@@ -17,11 +19,10 @@ const mongooseEvents = schema => {
 			collection: name,
 		};
 
-		// eslint-disable-next-line no-unused-expressions
-		new PubSub(event, payload).publish;
+		PubSub.publish(event, payload);
 
 		next();
 	});
 };
 
-export { mongooseEvents };
+export { mongooseEventsPlugin };

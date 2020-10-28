@@ -3,7 +3,8 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 
-import { mongodb, logger } from 'utils';
+import { mongodb } from 'utils/mongodb';
+import { logger } from 'utils/logger';
 
 import context from './context';
 import schema from './schema';
@@ -35,6 +36,8 @@ apollo.applyMiddleware({
 });
 
 const httpServer = http.createServer(app);
+
+apollo.installSubscriptionHandlers(httpServer);
 
 (async () => {
 	try {
