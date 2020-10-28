@@ -1,15 +1,17 @@
+import 'dotenv/config';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import Redis from 'ioredis';
 
-const pubsub = (URI = process.env.REDIS_URI) => {
-	const instance = new Redis(URI);
+const createClient = (URI = process.env.REDIS_URI) => {
+	const publisher = new Redis(URI);
+	const subscriber = new Redis(URI);
 
 	const client = new RedisPubSub({
-		publisher: instance,
-		subscriber: instance,
+		publisher,
+		subscriber,
 	});
 
 	return client;
 };
 
-export { pubsub };
+export const PubSub = createClient();

@@ -49,6 +49,10 @@ schemaComposer.Mutation.addFields({
 	...Webhook.Mutation,
 });
 
+schemaComposer.Subscription.addFields({
+	...Agent.Subscription,
+});
+
 export default schemaComposer.buildSchema();
 
 export const Models = {

@@ -1,6 +1,7 @@
 import './relations';
 import resolvers from './resolvers';
 import { AgentTC } from './model';
+import { PubSub } from 'utils/pubsub';
 
 /**
  * Extend Agent Type
@@ -35,7 +36,16 @@ const Mutation = {
 	...resolvers.Mutation,
 };
 
+const Subscription = {
+	agentUpdated: {
+		type: 'JSON', // TODO Add a new type for the subscription response.
+		resolve: payload => payload,
+		subscribe: () => PubSub.asyncIterator('INTERNAL_EVENT.AGENT_UPDATED'),
+	},
+};
+
 export default {
 	Query,
 	Mutation,
+	Subscription,
 };
