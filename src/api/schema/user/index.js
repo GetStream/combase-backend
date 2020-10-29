@@ -9,6 +9,11 @@ UserTC.addFields({
 		type: 'String',
 		resolve: ({ _id }, _, { stream: { chat } }) => chat?.createToken(_id.toString()),
 	},
+	// TODO: Maybe move this somewhere better.
+	timeline: {
+		type: 'JSON',
+		resolve: ({ _id }, __, { stream: { feeds } }) => feeds.feed('user', _id).get(),
+	},
 });
 
 const Query = {

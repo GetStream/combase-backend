@@ -25,11 +25,8 @@ const schemaComposer = new SchemaComposer();
 
 // TODO TEMP: going to move these.
 schemaComposer.addTypeDefs(`
-	interface InternalEvent {
-		_id: MongoID!
-	}
-
-	type DocumentCreated implements InternalEvent {
+	type InternalEntityMutationEvent {
+		_id: String!
 		ref: String!
 		collection: String!
 	}
@@ -41,6 +38,28 @@ schemaComposer.addTypeDefs(`
 		time: String
 		to: [String!] 
 		foreign_id: String
+	}
+
+	type ActivityItem implements StreamFeedsActivity {
+		actor: String!
+		verb: String!
+		object: String!
+		time: String
+		to: [String!] 
+		foreign_id: String
+	}
+
+	type FeedSubscriptionPayload {
+		deleted: [ActivityItem]
+		deleted_foreign_ids: [String]
+		feed: String!
+		new: [ActivityItem]
+	}
+	
+	type FlatFeedPayload {
+		duration: String!
+		next: String!
+		results: [ActivityItem]
 	}
 `);
 
@@ -73,6 +92,7 @@ schemaComposer.Mutation.addFields({
 schemaComposer.Subscription.addFields({
 	...Agent.Subscription,
 	...Organization.Subscription,
+	...User.Subscription,
 });
 
 export default schemaComposer.buildSchema();

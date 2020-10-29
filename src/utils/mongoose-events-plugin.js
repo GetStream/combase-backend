@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { PubSub } from './pubsub';
 import { stream as streamCtx } from 'utils/stream';
 
-const stream = streamCtx(process.env.STREAM_KEY, process.env.STREAM_SECRET, process.env.STREAM_TOKEN);
+const stream = streamCtx(process.env.STREAM_KEY, process.env.STREAM_SECRET, process.env.STREAM_ID);
 
 const mongooseEventsPlugin = schema => {
 	const {
@@ -12,9 +12,12 @@ const mongooseEventsPlugin = schema => {
 	const ref = name.toUpperCase();
 
 	schema.post('save', async (doc, next) => {
-		const state = doc.new ? 'CREATED' : 'UPDATED';
+		const operation = doc.new ? 'CREATED' : 'UPDATED';
+		const entity = ref.slice(0, -1);
 
-		const event = `INTERNAL_EVENT.${ref.slice(0, -1)}_${state}`;
+		const eventName = `${entity}_${operation}`;
+
+		const event = `INTERNAL_EVENT.${eventName}`;
 
 		const payload = {
 			_id: doc._id,
@@ -24,11 +27,38 @@ const mongooseEventsPlugin = schema => {
 
 		PubSub.publish(event, payload);
 
-		await stream.feeds.feed('agent', doc._id).addActivity({
-			object: `${ref.slice(0, -1)}_${state}`,
-			verb: 'event',
-			actor: doc._id,
-		});
+		// TODO This is kinda janky rn.
+		const _id = doc._id.toString();
+
+		if (entity === 'AGENT') {
+			await stream.feeds.addToMany(
+				{
+					object: eventName,
+					verb: 'event',
+					actor: _id,
+				},
+				[`${entity.toLowerCase()}:${_id}`, `organization:${doc.organization}`]
+			);
+		}
+
+		if (entity === 'USER') {
+			await stream.feeds.addToMany(
+				{
+					object: eventName,
+					verb: 'event',
+					actor: _id,
+				},
+				[`${entity.toLowerCase()}:${_id}`, `organization:${doc.organization}`]
+			);
+		}
+
+		if (entity === 'ORGANIZATION') {
+			await stream.feeds.feed(entity.toLowerCase(), _id).addActivity({
+				object: eventName,
+				verb: 'event',
+				actor: _id,
+			});
+		}
 
 		next();
 	});
