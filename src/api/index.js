@@ -2,12 +2,16 @@ import http from 'http';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
+import { RenameTypes } from '@graphql-tools/wrap';
 
 import { mongodb } from 'utils/mongodb';
 import { logger } from 'utils/logger';
 
+import { schema as streamSchema } from './plugins/graphql-stream';
+
 import context from './context';
 import schema from './schema';
+import { stitchSchemas } from '@graphql-tools/stitch';
 
 const apollo = new ApolloServer({
 	cors: true,
@@ -16,7 +20,15 @@ const apollo = new ApolloServer({
 	path: '/',
 	playground: true,
 	tracing: process.env.NODE_ENV !== 'production',
-	schema,
+	schema: stitchSchemas({
+		subschemas: [
+			schema,
+			{
+				schema: streamSchema,
+				transforms: [new RenameTypes(name => `Stream${name}`)],
+			},
+		],
+	}),
 });
 
 const app = express();
