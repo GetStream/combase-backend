@@ -15,13 +15,13 @@ const WebhookSchema = new Schema(
 		url: {
 			type: String,
 			trim: true,
-			description: 'Absolute URL to send a payload to via an HTTP post.',
+			description: 'Absolute URL to send a payload to via an HTTP POST.',
 		},
 		name: {
 			type: String,
 			trim: true,
 			required: true,
-			description: 'Short name describing the webhook usecase.',
+			description: 'Short name describing the webhook use-case.',
 		},
 		description: {
 			type: String,
@@ -35,13 +35,15 @@ const WebhookSchema = new Schema(
 				required: true,
 				trim: true,
 				type: String,
-				description: 'The action triggered by this webhook event.',
+				description: 'The action triggered by this webhook event (function to call).',
 			},
 		],
-		type: {
-			enum: ['inbound', 'outbound'],
-			type: String,
-			required: true,
+		auth: {
+			type: {
+				type: String,
+				enum: ['query', 'header'],
+				default: 'query',
+			},
 		},
 		active: {
 			type: Boolean,
