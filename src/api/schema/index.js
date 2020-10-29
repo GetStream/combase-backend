@@ -1,4 +1,8 @@
 import { SchemaComposer } from 'graphql-compose';
+import { mergeSchemas } from '@graphql-tools/merge';
+import { RenameTypes, transformSchema } from 'graphql-tools';
+
+import { schema as streamSchema } from 'api/plugins/graphql-stream';
 
 import Agent from './agent';
 import Asset from './asset';
@@ -29,37 +33,6 @@ schemaComposer.addTypeDefs(`
 		_id: String!
 		ref: String!
 		collection: String!
-	}
-
-	interface StreamFeedsActivity {
-		actor: String!
-		verb: String!
-		object: String!
-		time: String
-		to: [String!] 
-		foreign_id: String
-	}
-
-	type ActivityItem implements StreamFeedsActivity {
-		actor: String!
-		verb: String!
-		object: String!
-		time: String
-		to: [String!] 
-		foreign_id: String
-	}
-
-	type FeedSubscriptionPayload {
-		deleted: [ActivityItem]
-		deleted_foreign_ids: [String]
-		feed: String!
-		new: [ActivityItem]
-	}
-	
-	type FlatFeedPayload {
-		duration: String!
-		next: String!
-		results: [ActivityItem]
 	}
 `);
 
@@ -95,7 +68,11 @@ schemaComposer.Subscription.addFields({
 	...User.Subscription,
 });
 
-export default schemaComposer.buildSchema();
+const schema = schemaComposer.buildSchema();
+
+export default mergeSchemas({
+	schemas: [transformSchema(streamSchema, [new RenameTypes(name => `Stream${name}`)]), schema],
+});
 
 export const Models = {
 	Agent: AgentModel,

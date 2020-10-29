@@ -1,6 +1,9 @@
 import './relations';
 import resolvers from './resolvers';
 import { OrganizationTC } from './model';
+import { delegateToSchema } from '@graphql-tools/delegate';
+
+import { schema as streamSchema } from 'api/plugins/graphql-stream';
 
 /**
  * Extend Organization Type
@@ -10,8 +13,19 @@ OrganizationTC.removeField('stream.secret');
 OrganizationTC.addFields({
 	// TODO: Maybe move this somewhere better.
 	timeline: {
-		type: 'JSON',
-		resolve: ({ _id }, __, { stream: { feeds } }) => feeds.feed('organization', _id).get(),
+		type: streamSchema.getType('FlatFeedPayload'),
+		resolve: (source, _, context, info) =>
+			delegateToSchema({
+				schema: streamSchema,
+				operation: 'query',
+				fieldName: 'flatFeed',
+				args: {
+					slug: 'organization',
+					id: source._id,
+				},
+				context,
+				info,
+			}),
 	},
 });
 

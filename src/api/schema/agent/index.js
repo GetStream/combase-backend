@@ -1,6 +1,9 @@
 import './relations';
 import resolvers from './resolvers';
 import { AgentTC } from './model';
+import { delegateToSchema } from '@graphql-tools/delegate';
+
+import { schema as streamSchema } from 'api/plugins/graphql-stream';
 
 /**
  * Extend Agent Type
@@ -8,8 +11,19 @@ import { AgentTC } from './model';
 AgentTC.addFields({
 	// TODO: Maybe move this somewhere better.
 	timeline: {
-		type: 'JSON',
-		resolve: ({ _id }, __, { stream: { feeds } }) => feeds.feed('agent', _id).get(),
+		type: streamSchema.getType('FlatFeedPayload'),
+		resolve: (source, args, context, info) =>
+			delegateToSchema({
+				schema: streamSchema,
+				operation: 'query',
+				fieldName: 'flatFeed',
+				args: {
+					slug: 'agent',
+					id: source._id,
+				},
+				context,
+				info,
+			}),
 	},
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
 });

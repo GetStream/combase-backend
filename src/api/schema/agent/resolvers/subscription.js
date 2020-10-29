@@ -14,7 +14,7 @@ export const agentUpdated = {
 };
 
 export const agentActivity = {
-	type: 'FeedSubscriptionPayload',
+	type: 'JSON',
 	args: { _id: 'String!' },
 	resolve: payload => payload,
 	subscribe: (_, { _id }, { stream }) => stream.subscriptions.feeds.asyncIterator(`agent:${_id}`),
