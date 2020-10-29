@@ -7,9 +7,9 @@ export const agentUpdated = {
 	subscribe: () => PubSub.asyncIterator('INTERNAL_EVENT.AGENT_UPDATED'),
 };
 
-export const agentActivity = {
+export const organizationActivity = {
 	type: 'JSON',
-	args: { _id: 'String!' },
+	args: { _id: 'String' },
 	resolve: payload => payload,
-	subscribe: (_, { _id }, { stream }) => stream.subscriptions.feeds.asyncIterator(`agent:${_id}`),
+	subscribe: (_, { _id }, { organization, stream }) => stream.subscriptions.feeds.asyncIterator(`organization:${_id || organization}`),
 };

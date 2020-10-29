@@ -23,6 +23,7 @@ import { WebhookModel } from './webhook/model';
 
 const schemaComposer = new SchemaComposer();
 
+// TODO TEMP: going to move these.
 schemaComposer.addTypeDefs(`
 	interface InternalEvent {
 		_id: MongoID!
@@ -62,6 +63,7 @@ schemaComposer.Mutation.addFields({
 
 schemaComposer.Subscription.addFields({
 	...Agent.Subscription,
+	...Organization.Subscription,
 });
 
 export default schemaComposer.buildSchema();

@@ -7,6 +7,14 @@ import { OrganizationTC } from './model';
  */
 OrganizationTC.removeField('stream.secret');
 
+OrganizationTC.addFields({
+	// TODO: Maybe move this somewhere better.
+	timeline: {
+		type: 'JSON',
+		resolve: ({ _id }, __, { stream: { feeds } }) => feeds.feed('organization', _id).get(),
+	},
+});
+
 /**
  * Resolvers
  */
@@ -32,7 +40,12 @@ const Mutation = {
 	...resolvers.Mutation,
 };
 
+const Subscription = {
+	...resolvers.Subscription,
+};
+
 export default {
 	Query,
 	Mutation,
+	Subscription,
 };
