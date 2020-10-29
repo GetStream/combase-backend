@@ -28,15 +28,6 @@ const schemaComposer = new SchemaComposer();
 
 schemaComposer.merge(transformSchema(streamSchema, [new RenameTypes(name => `Stream${name}`)]));
 
-// TODO TEMP: going to move these.
-schemaComposer.addTypeDefs(`
-	type InternalEntityMutationEvent {
-		_id: String!
-		ref: String!
-		collection: String!
-	}
-`);
-
 schemaComposer.Query.addFields({
 	...Agent.Query,
 	...Asset.Query,

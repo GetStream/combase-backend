@@ -1,5 +1,3 @@
-import 'dotenv/config';
-import { PubSub } from './pubsub';
 import { streamCtx } from 'api/plugins/graphql-stream';
 
 const stream = streamCtx(process.env.STREAM_KEY, process.env.STREAM_SECRET, process.env.STREAM_ID);
@@ -16,16 +14,6 @@ const mongooseEventsPlugin = schema => {
 		const entity = ref.slice(0, -1);
 
 		const eventName = `${entity}_${operation}`;
-
-		const event = `INTERNAL_EVENT.${eventName}`;
-
-		const payload = {
-			_id: doc._id,
-			ref,
-			collection: name,
-		};
-
-		PubSub.publish(event, payload);
 
 		// TODO This is kinda janky rn.
 		const _id = doc._id.toString();

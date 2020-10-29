@@ -1,18 +1,3 @@
-import 'dotenv/config';
-import { PubSub } from 'utils/pubsub';
-
-export const organizationCreated = {
-	type: 'InternalEntityMutationEvent',
-	resolve: payload => payload,
-	subscribe: () => PubSub.asyncIterator('INTERNAL_EVENT.ORGANIZATION_CREATED'),
-};
-
-export const organizationUpdated = {
-	type: 'InternalEntityMutationEvent',
-	resolve: payload => payload,
-	subscribe: () => PubSub.asyncIterator('INTERNAL_EVENT.ORGANIZATION_UPDATED'),
-};
-
 export const organizationActivity = {
 	type: 'StreamFlatFeedSubscription',
 	args: { _id: 'String' },
