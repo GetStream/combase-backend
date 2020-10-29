@@ -8,14 +8,14 @@ export class FeedsSubscriber extends PubSubEngine {
 
 	subRefMap = {};
 
-	constructor(keyOrClient, secret, appId) {
+	constructor(keyOrClient, token, appId) {
 		super();
 
 		if (!appId && typeof keyOrClient === 'string') {
-			throw new Error('Missing app id, which is needed to subscribe, use new FeedsSubscriber(key, secret, appId);');
+			throw new Error('Missing app id, which is needed to subscribe, use new FeedsSubscriber(key, token, appId);');
 		}
 
-		this.client = typeof keyOrClient === 'string' ? streamFeedsClient(keyOrClient, secret, appId) : keyOrClient;
+		this.client = typeof keyOrClient === 'string' ? streamFeedsClient(keyOrClient, token, appId) : keyOrClient;
 	}
 
 	publish = () => Promise.resolve();
