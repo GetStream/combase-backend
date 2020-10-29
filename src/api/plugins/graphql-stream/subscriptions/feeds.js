@@ -1,7 +1,7 @@
 import { connect as streamFeedsClient } from 'getstream';
 import { PubSubEngine } from 'graphql-subscriptions';
 
-export class FeedsSubscriber extends PubSubEngine {
+export class FeedsSubscription extends PubSubEngine {
 	currentSubscriptionId = 0;
 
 	subscriptions = {};

@@ -56,6 +56,7 @@ schemaComposer.Mutation.addFields({
 
 schemaComposer.Subscription.addFields({
 	...Agent.Subscription,
+	...Chat.Subscription,
 	...Organization.Subscription,
 	...User.Subscription,
 });

@@ -13,26 +13,32 @@ import { Models } from '../schema';
 const authorizeRequest = async ({ req, connection }) => {
 	try {
 		let token;
+		let organization;
 
 		if (connection) {
 			token = connection.context.Authorization ? connection.context.Authorization.replace(/^Bearer\s/u, '') : '';
+			organization = connection.context['combase-organization'] ? connection.context['combase-organization'] : '';
 		} else {
 			token = req.headers.authorization ? req.headers.authorization.replace(/^Bearer\s/u, '') : '';
+			organization = req.headers['combase-organization'] ? req.headers['combase-organization'] : '';
 		}
 
 		let scopes = {};
 
 		if (!token) {
 			// User
-			scopes = { organization: req.headers['combase-organization'] }; // TODO: use referrer from headers...
+			scopes = {
+				organization,
+				user: '5f9b375c04893107a5ec6646',
+			}; // TODO: use referrer from headers...
 		} else {
 			// Agent
 
-			const { sub: agent, organization } = jwt.verify(token, process.env.AUTH_SECRET);
+			const payload = jwt.verify(token, process.env.AUTH_SECRET);
 
 			scopes = {
-				agent,
-				organization,
+				agent: payload.sub,
+				organization: payload.organization,
 			};
 		}
 
@@ -53,7 +59,7 @@ const authorizeRequest = async ({ req, connection }) => {
 
 export default async ({ connection, req }) => {
 	try {
-		const { agent, organization, stream } = await authorizeRequest({
+		const { agent, organization, stream, user } = await authorizeRequest({
 			connection,
 			req,
 		});
@@ -63,6 +69,7 @@ export default async ({ connection, req }) => {
 			organization,
 			models: Models,
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
+			user,
 		};
 	} catch (error) {
 		logger.error(error);
