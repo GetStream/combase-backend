@@ -6,6 +6,11 @@ import { AgentTC } from './model';
  * Extend Agent Type
  */
 AgentTC.addFields({
+	// TODO: Maybe move this somewhere bettter.
+	timeline: {
+		type: 'JSON',
+		resolve: ({ _id }, __, { stream: { feeds } }) => feeds.feed('agent', _id).get(),
+	},
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
 });
 AgentTC.removeField('password');

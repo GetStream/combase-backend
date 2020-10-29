@@ -24,7 +24,7 @@ const mongooseEventsPlugin = schema => {
 
 		PubSub.publish(event, payload);
 
-		await stream.feeds.feed('agent', 'test').addActivity({
+		await stream.feeds.feed('agent', doc._id).addActivity({
 			object: `${ref.slice(0, -1)}_${state}`,
 			verb: 'event',
 			actor: doc._id,
