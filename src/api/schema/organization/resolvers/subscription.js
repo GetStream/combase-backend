@@ -14,7 +14,7 @@ export const organizationUpdated = {
 };
 
 export const organizationActivity = {
-	type: 'JSON',
+	type: 'StreamFlatFeedSubscription',
 	args: { _id: 'String' },
 	resolve: payload => payload,
 	subscribe: (_, { _id }, { organization, stream }) => stream.subscriptions.feeds.asyncIterator(`organization:${_id || organization}`),

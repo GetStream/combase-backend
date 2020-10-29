@@ -1,6 +1,5 @@
 import { SchemaComposer } from 'graphql-compose';
-import { stitchSchemas } from '@graphql-tools/stitch';
-import { RenameTypes } from 'graphql-tools';
+import { RenameTypes, transformSchema } from 'graphql-tools';
 
 import { schema as streamSchema } from 'api/plugins/graphql-stream';
 
@@ -26,6 +25,8 @@ import { UserModel } from './user/model';
 import { WebhookModel } from './webhook/model';
 
 const schemaComposer = new SchemaComposer();
+
+schemaComposer.merge(transformSchema(streamSchema, [new RenameTypes(name => `Stream${name}`)]));
 
 // TODO TEMP: going to move these.
 schemaComposer.addTypeDefs(`
@@ -68,18 +69,7 @@ schemaComposer.Subscription.addFields({
 	...User.Subscription,
 });
 
-const schema = schemaComposer.buildSchema();
-
-export default stitchSchemas({
-	subschemas: [
-		{
-			schema: streamSchema,
-			transforms: [new RenameTypes(name => `Stream${name}`)],
-		},
-		schema,
-	],
-	mergeTypes: true,
-});
+export default schemaComposer.buildSchema();
 
 export const Models = {
 	Agent: AgentModel,
