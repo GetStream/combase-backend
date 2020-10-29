@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { PubSub } from './pubsub';
-import { stream as streamCtx } from 'utils/stream';
+import { streamCtx } from 'api/plugins/graphql-stream';
 
 const stream = streamCtx(process.env.STREAM_KEY, process.env.STREAM_SECRET, process.env.STREAM_ID);
 

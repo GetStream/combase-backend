@@ -6,7 +6,8 @@
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import { logger } from 'utils/logger';
-import { stream as streamCtx } from 'utils/stream';
+import { streamCtx } from 'api/plugins/graphql-stream';
+
 import { Models } from '../schema';
 
 const authorizeRequest = async ({ req, connection }) => {

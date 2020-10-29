@@ -1,8 +1,9 @@
 import { connect as streamFeedsClient } from 'getstream';
 import { StreamChat as StreamChatClient } from 'stream-chat';
-import { FeedsSubscriber } from './stream-subscriptions';
 
-const stream = (appKey, appSecret, appId) => {
+import { FeedsSubscriber } from '../subscriptions';
+
+export const streamCtx = (appKey, appSecret, appId) => {
 	if (!appKey || !appSecret || !appId) return {};
 
 	return {
@@ -13,5 +14,3 @@ const stream = (appKey, appSecret, appId) => {
 		},
 	};
 };
-
-export { stream };
