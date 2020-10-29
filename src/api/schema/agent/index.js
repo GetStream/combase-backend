@@ -11,7 +11,7 @@ import { schema as streamSchema } from 'api/plugins/graphql-stream';
 AgentTC.addFields({
 	// TODO: Maybe move this somewhere better.
 	timeline: {
-		type: streamSchema.getType('FlatFeedPayload'),
+		type: 'JSON',
 		resolve: (source, args, context, info) =>
 			delegateToSchema({
 				schema: streamSchema,

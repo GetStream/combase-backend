@@ -13,7 +13,7 @@ OrganizationTC.removeField('stream.secret');
 OrganizationTC.addFields({
 	// TODO: Maybe move this somewhere better.
 	timeline: {
-		type: streamSchema.getType('FlatFeedPayload'),
+		type: 'JSON',
 		resolve: (source, _, context, info) =>
 			delegateToSchema({
 				schema: streamSchema,

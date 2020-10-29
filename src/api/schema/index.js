@@ -1,6 +1,6 @@
 import { SchemaComposer } from 'graphql-compose';
-import { mergeSchemas } from '@graphql-tools/merge';
-import { RenameTypes, transformSchema } from 'graphql-tools';
+import { stitchSchemas } from '@graphql-tools/stitch';
+import { RenameTypes } from 'graphql-tools';
 
 import { schema as streamSchema } from 'api/plugins/graphql-stream';
 
@@ -70,8 +70,15 @@ schemaComposer.Subscription.addFields({
 
 const schema = schemaComposer.buildSchema();
 
-export default mergeSchemas({
-	schemas: [transformSchema(streamSchema, [new RenameTypes(name => `Stream${name}`)]), schema],
+export default stitchSchemas({
+	subschemas: [
+		{
+			schema: streamSchema,
+			transforms: [new RenameTypes(name => `Stream${name}`)],
+		},
+		schema,
+	],
+	mergeTypes: true,
 });
 
 export const Models = {
