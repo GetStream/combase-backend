@@ -6,6 +6,12 @@ import { fieldEncryption } from 'mongoose-field-encryption';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const StreamCredentialsSchema = new Schema({
+	appId: {
+		type: String,
+		trim: true,
+		default: '',
+		description: 'The Stream App ID associated with the organization.',
+	},
 	key: {
 		type: String,
 		trim: true,

@@ -32,7 +32,12 @@ const Mutation = {
 	...resolvers.Mutation,
 };
 
+const Subscription = {
+	...resolvers.Subscription,
+};
+
 export default {
 	Query,
 	Mutation,
+	Subscription,
 };

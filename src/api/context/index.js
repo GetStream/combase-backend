@@ -61,7 +61,7 @@ export default async ({ connection, req }) => {
 			agent,
 			organization,
 			models: Models,
-			stream: streamCtx(stream?.key, stream?.secret),
+			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
 		};
 	} catch (error) {
 		logger.error(error);

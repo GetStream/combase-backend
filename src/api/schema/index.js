@@ -23,6 +23,17 @@ import { WebhookModel } from './webhook/model';
 
 const schemaComposer = new SchemaComposer();
 
+schemaComposer.addTypeDefs(`
+	interface InternalEvent {
+		_id: MongoID!
+	}
+
+	type DocumentCreated implements InternalEvent {
+		ref: String!
+		collection: String!
+	}
+`);
+
 schemaComposer.Query.addFields({
 	...Agent.Query,
 	...Asset.Query,
