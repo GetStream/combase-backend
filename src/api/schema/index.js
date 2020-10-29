@@ -33,6 +33,15 @@ schemaComposer.addTypeDefs(`
 		ref: String!
 		collection: String!
 	}
+
+	interface StreamFeedsActivity {
+		actor: String!
+		verb: String!
+		object: String!
+		time: String
+		to: [String!] 
+		foreign_id: String
+	}
 `);
 
 schemaComposer.Query.addFields({
