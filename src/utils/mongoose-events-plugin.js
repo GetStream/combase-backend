@@ -33,8 +33,8 @@ const mongooseEventsPlugin = schema => {
 		if (entity === 'AGENT') {
 			await stream.feeds.addToMany(
 				{
-					object: eventName,
-					verb: 'event',
+					object: _id,
+					verb: eventName,
 					actor: _id,
 				},
 				[`${entity.toLowerCase()}:${_id}`, `organization:${doc.organization}`]
@@ -44,8 +44,8 @@ const mongooseEventsPlugin = schema => {
 		if (entity === 'USER') {
 			await stream.feeds.addToMany(
 				{
-					object: eventName,
-					verb: 'event',
+					object: _id,
+					verb: eventName,
 					actor: _id,
 				},
 				[`${entity.toLowerCase()}:${_id}`, `organization:${doc.organization}`]
@@ -54,8 +54,8 @@ const mongooseEventsPlugin = schema => {
 
 		if (entity === 'ORGANIZATION') {
 			await stream.feeds.feed(entity.toLowerCase(), _id).addActivity({
-				object: eventName,
-				verb: 'event',
+				object: _id,
+				verb: eventName,
 				actor: _id,
 			});
 		}
