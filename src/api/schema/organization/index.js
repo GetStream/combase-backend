@@ -10,7 +10,7 @@ OrganizationTC.removeField('stream.secret');
 OrganizationTC.addFields({
 	// TODO: Maybe move this somewhere better.
 	timeline: {
-		type: 'FlatFeed',
+		type: 'JSON',
 		args: {},
 		resolve: ({ _id }, __, { stream: { feeds } }) => feeds.feed('organization', _id).get(),
 	},

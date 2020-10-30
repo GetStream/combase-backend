@@ -11,7 +11,7 @@ UserTC.addFields({
 	},
 	// TODO: Maybe move this somewhere better.
 	timeline: {
-		type: 'FlatFeed',
+		type: 'JSON',
 		args: {},
 		resolve: ({ _id }, _, { stream: { feeds } }) => feeds.feed('user', _id).get(),
 	},

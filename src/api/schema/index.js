@@ -1,5 +1,4 @@
-import { SchemaComposer } from 'graphql-compose';
-import { RenameTypes, transformSchema } from 'graphql-tools';
+import { schemaComposer } from 'graphql-compose';
 
 import { schema as streamSchema } from 'api/plugins/graphql-stream';
 
@@ -23,8 +22,7 @@ import { OrganizationModel } from './organization/model';
 import { TagModel } from './tag/model';
 import { UserModel } from './user/model';
 import { WebhookModel } from './webhook/model';
-
-const schemaComposer = new SchemaComposer();
+import { RenameTypes, transformSchema } from 'apollo-server-express';
 
 schemaComposer.merge(transformSchema(streamSchema, [new RenameTypes(name => `Stream${name}`)]));
 
@@ -61,7 +59,9 @@ schemaComposer.Subscription.addFields({
 	...User.Subscription,
 });
 
-export default schemaComposer.buildSchema();
+const schema = schemaComposer.buildSchema();
+
+export default schema;
 
 export const Models = {
 	Agent: AgentModel,

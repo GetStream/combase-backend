@@ -1,4 +1,8 @@
-const Subscription = {
+import { SchemaComposer } from 'graphql-compose';
+
+const chatSchema = new SchemaComposer();
+
+chatSchema.Subscription.addFields({
 	channelEvents: {
 		type: 'JSON',
 		args: {
@@ -15,8 +19,6 @@ const Subscription = {
 		resolve: payload => payload,
 		subscribe: (_, __, { stream: { chat, ChatSubscription }, user }) => new ChatSubscription(chat, user).asyncIterator('*'),
 	},
-};
+});
 
-export default {
-	Subscription,
-};
+export default chatSchema.buildSchema();

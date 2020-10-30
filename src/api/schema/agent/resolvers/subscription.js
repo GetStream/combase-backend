@@ -1,6 +1,6 @@
 export const agentActivity = {
-	type: 'StreamFlatFeedSubscription',
+	type: 'StreamFeed',
 	args: { _id: 'String!' },
 	resolve: payload => payload,
-	subscribe: (_, { _id }, { stream: { feeds, FeedsSubscription } }) => new FeedsSubscription(feeds).asyncIterator(`agent:${_id}`),
+	subscribe: (_, { _id }, { stream }) => new stream.FeedsSubscription(stream.feeds).asyncIterator(`agent:${_id}`),
 };

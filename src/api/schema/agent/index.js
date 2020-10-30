@@ -1,24 +1,7 @@
 import './relations';
+import './extend';
 import resolvers from './resolvers';
 import { AgentTC } from './model';
-
-/**
- * Extend Agent Type
- */
-AgentTC.addFields({
-	// TODO: Maybe move this somewhere better.
-	timeline: {
-		type: 'FlatFeed',
-		args: {},
-		resolve: ({ _id }, _, { stream: { feeds } }) => feeds.feed('agent', _id).get(),
-	},
-	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
-});
-AgentTC.removeField('password');
-
-/**
- * Resolvers
- */
 
 const Query = {
 	agentById: AgentTC.mongooseResolvers.findById,
