@@ -10,20 +10,32 @@ export const createChat = {
 	name: 'createChat',
 	type: ChatTC,
 	kind: 'mutation',
-	args: { user: 'String!' },
-	resolve: async (_, { user }, { models: { Chat }, organization, stream }) => {
+	args: {
+		message: 'String!',
+		user: 'String!',
+	},
+	resolve: async (_, { message, user }, { models: { Chat }, organization, stream }) => {
 		try {
 			const { _doc: chat } = await Chat.create({
 				organization,
 				user,
 			});
 
-			await stream.chat
-				.channel('messaging', chat._id.toString(), {
-					created_by_id: user, // eslint-disable-line camelcase
-					members: [user],
-				})
-				.create();
+			await stream.chat.setUser({ id: user });
+
+			const channel = stream.chat.channel('messaging', chat._id.toString(), {
+				created_by_id: user, // eslint-disable-line camelcase
+				members: [user],
+			});
+
+			await channel.create();
+
+			channel.sendMessage({
+				text: message,
+				user_id: user, // eslint-disable-line camelcase
+			});
+
+			stream.chat.disconnect();
 
 			return chat;
 		} catch (error) {
