@@ -2,7 +2,7 @@ const webhook = (req, res, next) => {
 	try {
 		const {
 			path,
-			authorization: { headers: auth },
+			headers: { authorization: auth },
 		} = req;
 
 		if (path !== '/hooks') return next();

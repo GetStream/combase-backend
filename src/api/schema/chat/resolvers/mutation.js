@@ -12,7 +12,7 @@ export const createChat = {
 	kind: 'mutation',
 	args: {
 		message: 'String!',
-		user: 'String!',
+		user: 'MongoID!',
 	},
 	resolve: async (_, { message, user }, { models: { Chat }, organization, stream }) => {
 		try {
@@ -41,5 +41,20 @@ export const createChat = {
 		} catch (error) {
 			throw new Error(`Chat creation failed: ${error.message}`);
 		}
+	},
+};
+
+export const addToChat = {
+	name: 'addToChat',
+	type: ChatTC,
+	kind: 'Mutation',
+	args: {
+		agent: 'MongoID!',
+		chat: 'MongoID!',
+	},
+	resolve: async (_, { chat, agent }, { models: { Chat }, stream }) => {
+		await stream.chat.channel('messaging', chat.toString()).addMembers([agent.toString()]);
+
+		return Chat.updateById(chat, { $push: { agents: [agent] } }, { new: true }).lean();
 	},
 };

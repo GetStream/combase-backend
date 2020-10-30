@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 import { mongodb } from 'utils/mongodb';
 import { logger } from 'utils/logger';
-// import { webhook } from 'utils/webhook';
+import { webhook } from 'utils/webhook';
 
 import context from './context';
 import schema from './schema';
@@ -22,8 +22,6 @@ const apollo = new ApolloServer({
 
 const app = express();
 
-// app.use(webhook);
-
 apollo.applyMiddleware({
 	app,
 	cors: true,
@@ -37,6 +35,8 @@ apollo.applyMiddleware({
 		}),
 	path: '/graphql',
 });
+
+app.use(webhook);
 
 const httpServer = http.createServer(app);
 

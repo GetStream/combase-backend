@@ -26,13 +26,12 @@ const authorizeRequest = async ({ req, connection }) => {
 		let scopes = {};
 
 		if (!token) {
-			// User
+			// Widget
 			scopes = {
 				organization,
-				user: '5f9b375c04893107a5ec6646',
 			}; // TODO: use referrer from headers...
 		} else {
-			// Agent
+			// Dashboard
 
 			const payload = jwt.verify(token, process.env.AUTH_SECRET);
 
@@ -59,7 +58,7 @@ const authorizeRequest = async ({ req, connection }) => {
 
 export default async ({ connection, req }) => {
 	try {
-		const { agent, organization, stream, user } = await authorizeRequest({
+		const { agent, organization, stream } = await authorizeRequest({
 			connection,
 			req,
 		});
@@ -69,7 +68,6 @@ export default async ({ connection, req }) => {
 			organization,
 			models: Models,
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
-			user,
 		};
 	} catch (error) {
 		logger.error(error);

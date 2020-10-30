@@ -57,6 +57,7 @@ export class ChatSubscription extends PubSubEngine {
 		if (!channel) {
 			this.client.off(handler);
 		} else {
+			channel.stopWatching();
 			channel.off(handler);
 		}
 	}
