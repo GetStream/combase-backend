@@ -18,11 +18,3 @@ export const me = {
 		return Agent.findById(agent, { password: false }).lean();
 	},
 };
-
-export const agentTimeline = {
-	name: 'agentTimeline',
-	type: 'StreamFeed',
-	kind: 'query',
-	args: {},
-	resolve: ({ _id }, _, { stream: { feeds } }) => feeds.feed('agent', _id).get(),
-};

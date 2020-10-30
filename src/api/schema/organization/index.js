@@ -1,24 +1,7 @@
 import './relations';
+import './extend';
 import resolvers from './resolvers';
 import { OrganizationTC } from './model';
-
-/**
- * Extend Organization Type
- */
-OrganizationTC.removeField('stream.secret');
-
-OrganizationTC.addFields({
-	// TODO: Maybe move this somewhere better.
-	timeline: {
-		type: 'JSON',
-		args: {},
-		resolve: ({ _id }, __, { stream: { feeds } }) => feeds.feed('organization', _id).get(),
-	},
-});
-
-/**
- * Resolvers
- */
 
 const Query = {
 	organizationById: OrganizationTC.mongooseResolvers.findById,
