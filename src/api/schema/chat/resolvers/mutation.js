@@ -11,7 +11,7 @@ export const createChat = {
 	type: ChatTC,
 	kind: 'mutation',
 	args: {
-		message: 'String!',
+		message: 'String',
 		user: 'MongoID!',
 	},
 	resolve: async (_, { message, user }, { models: { Chat }, organization, stream }) => {
@@ -30,10 +30,12 @@ export const createChat = {
 
 			await channel.create();
 
-			channel.sendMessage({
-				text: message,
-				user_id: user, // eslint-disable-line camelcase
-			});
+			if (message) {
+				channel.sendMessage({
+					text: message,
+					user_id: user, // eslint-disable-line camelcase
+				});
+			}
 
 			stream.chat.disconnect();
 
@@ -53,8 +55,12 @@ export const addToChat = {
 		chat: 'MongoID!',
 	},
 	resolve: async (_, { chat, agent }, { models: { Chat }, stream }) => {
-		await stream.chat.channel('messaging', chat.toString()).addMembers([agent.toString()]);
+		try {
+			await stream.chat.channel('messaging', chat.toString()).addMembers([agent.toString()]);
 
-		return Chat.updateById(chat, { $push: { agents: [agent] } }, { new: true }).lean();
+			return Chat.findByIdAndUpdate(chat, { $push: { agents: [agent] } }, { new: true }).lean();
+		} catch (error) {
+			throw new Error(error.message);
+		}
 	},
 };
