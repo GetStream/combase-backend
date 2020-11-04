@@ -55,7 +55,7 @@ export const addToChat = {
 	args: {
 		agent: 'MongoID!',
 		chat: 'MongoID!',
-		status: 'String!', // TODO Enum
+		status: 'EnumChatStatus',
 	},
 	// TODO Show markOpen as default
 	resolve: async (_, { chat, agent, status }, { models: { Agent, Chat }, stream }) => {
