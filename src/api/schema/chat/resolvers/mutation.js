@@ -16,9 +16,12 @@ export const createChat = {
 	},
 	resolve: async (_, { message, user }, { models: { Chat }, organization, stream }) => {
 		try {
+			const status = 'unassigned';
+
 			const { _doc: chat } = await Chat.create({
 				organization,
 				user,
+				status,
 			});
 
 			await stream.chat.setUser({ id: user });
@@ -26,6 +29,7 @@ export const createChat = {
 			const channel = stream.chat.channel('messaging', chat._id.toString(), {
 				created_by_id: user, // eslint-disable-line camelcase
 				members: [user],
+				status,
 			});
 
 			await channel.create();
@@ -36,8 +40,6 @@ export const createChat = {
 					user_id: user, // eslint-disable-line camelcase
 				});
 			}
-
-			stream.chat.disconnect();
 
 			return chat;
 		} catch (error) {
@@ -53,6 +55,7 @@ export const addToChat = {
 	args: {
 		agent: 'MongoID!',
 		chat: 'MongoID!',
+		status: 'String!', // TODO Enum
 	},
 	// TODO Show markOpen as default
 	resolve: async (_, { chat, agent, status }, { models: { Agent, Chat }, stream }) => {
@@ -69,13 +72,23 @@ export const addToChat = {
 
 			// TODO: We should creete 'sub-types' of system messages with a custom field so we can render them differently, would be cool to show the agent avatar when they get added etc.
 			const updateChannel = channel.update(updates, {
+				subtype: 'agent_added',
 				text: `${agentName?.display || 'An agent'} joined the chat.`,
 				user_id: agent, // eslint-disable-line camelcase
 			});
 
 			await Promise.all([addMember, updateChannel]);
 
-			return Chat.findByIdAndUpdate(chat, { $push: { agents: [agent] } }, { new: true }).lean();
+			return Chat.findByIdAndUpdate(
+				chat,
+				{
+					$push: {
+						agents: [agent],
+					},
+					...updates,
+				},
+				{ new: true }
+			).lean();
 		} catch (error) {
 			throw new Error(error.message);
 		}

@@ -69,7 +69,7 @@ const ChatSchema = new Schema(
 		},
 		status: {
 			type: String,
-			enum: ['open', 'closed', 'archived'],
+			enum: ['open', 'closed', 'archived', 'unassigned'],
 			default: 'open',
 			description: 'The status of the chat.',
 		},
