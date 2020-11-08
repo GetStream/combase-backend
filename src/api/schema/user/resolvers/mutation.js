@@ -4,7 +4,7 @@ export const getOrCreateUser = {
 	name: 'getOrCreateUser',
 	description: 'Creates a new user, or returns existing user if the orgId & email match',
 	type: UserTC,
-	args: { record: 'CreateOneUserInput!' },
+	args: { record: UserTC.getInputTypeComposer().makeFieldNullable('organization') },
 	resolve: async (_, { record }, { models: { User }, organization, stream }) => {
 		if (!organization) {
 			throw new Error('Unauthorized.');

@@ -57,8 +57,8 @@ export const addToChat = {
 		chat: 'MongoID!',
 		status: 'EnumChatStatus',
 	},
-	// TODO Show markOpen as default
-	resolve: async (_, { chat, agent, status }, { models: { Agent, Chat }, stream }) => {
+	// TODO Show status has a default of open
+	resolve: async (_, { chat, agent, status = 'open' }, { models: { Agent, Chat }, stream }) => {
 		try {
 			const channel = stream.chat.channel('messaging', chat.toString());
 
@@ -68,7 +68,7 @@ export const addToChat = {
 
 			const { name: agentName } = await Agent.findById(agent, { 'name.display': true });
 
-			const addMember = channel.addMembers([agent.toString()]);
+			const addMember = channel.addModerators([agent.toString()]);
 
 			// TODO: We should creete 'sub-types' of system messages with a custom field so we can render them differently, would be cool to show the agent avatar when they get added etc.
 			const updateChannel = channel.update(updates, {
