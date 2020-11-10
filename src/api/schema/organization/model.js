@@ -11,18 +11,21 @@ const StreamCredentialsSchema = new Schema({
 		trim: true,
 		default: '',
 		description: 'The Stream App ID associated with the organization.',
+		required: true,
 	},
 	key: {
 		type: String,
 		trim: true,
 		default: '',
 		description: 'The Stream App Key associated with the organization.',
+		required: true,
 	},
 	secret: {
 		type: String,
 		trim: true,
 		default: '',
 		description: 'The Stream App Secret associated with the organization.',
+		required: true,
 	},
 });
 
@@ -73,6 +76,10 @@ const OrganizationSchema = new Schema(
 			},
 		},
 		stream: StreamCredentialsSchema,
+		theme: {
+			description: "The organization's custom theme values to be merged with the client-side theme.",
+			type: JSON,
+		},
 	},
 	{ collection: 'organizations' }
 );
