@@ -7,22 +7,20 @@ const mongooseEventsPlugin = schema => {
 		options: { collection: name },
 	} = schema;
 
-	const ref = name.toUpperCase();
+	const entity = name.toUpperCase().slice(0, -1);
 
 	schema.post('save', async (doc, next) => {
-		const operation = doc.new ? 'CREATED' : 'UPDATED';
-		const entity = ref.slice(0, -1);
-
-		const eventName = `${entity}_${operation}`;
-
-		// TODO This is kinda janky rn.
 		const _id = doc._id.toString();
+		const isNew = doc.createdAt === doc.updatedAt;
+
+		const operation = isNew ? 'CREATED' : 'UPDATED';
+		const event = `${entity}_${operation}`;
 
 		if (entity === 'AGENT') {
 			await stream.feeds.addToMany(
 				{
 					object: _id,
-					verb: eventName,
+					verb: event,
 					actor: _id,
 				},
 				[`${entity.toLowerCase()}:${_id}`, `organization:${doc.organization}`]
@@ -33,7 +31,7 @@ const mongooseEventsPlugin = schema => {
 			await stream.feeds.addToMany(
 				{
 					object: _id,
-					verb: eventName,
+					verb: event,
 					actor: _id,
 				},
 				[`${entity.toLowerCase()}:${_id}`, `organization:${doc.organization}`]
@@ -43,7 +41,7 @@ const mongooseEventsPlugin = schema => {
 		if (entity === 'ORGANIZATION') {
 			await stream.feeds.feed(entity.toLowerCase(), _id).addActivity({
 				object: _id,
-				verb: eventName,
+				verb: event,
 				actor: _id,
 			});
 		}
