@@ -23,6 +23,7 @@ export const createChat = {
 				organization,
 				user,
 				status,
+				tags,
 			});
 
 			await stream.chat.setUser({ id: user });
