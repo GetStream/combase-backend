@@ -17,6 +17,7 @@ export const createChat = {
 	resolve: async (_, { message, user }, { models: { Chat }, organization, stream }) => {
 		try {
 			const status = 'unassigned';
+			const tags = [];
 
 			const { _doc: chat } = await Chat.create({
 				organization,
@@ -30,6 +31,7 @@ export const createChat = {
 				created_by_id: user, // eslint-disable-line camelcase
 				members: [user],
 				status,
+				tags,
 			});
 
 			await channel.create();
