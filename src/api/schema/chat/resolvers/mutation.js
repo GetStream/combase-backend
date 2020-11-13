@@ -97,3 +97,84 @@ export const addToChat = {
 		}
 	},
 };
+
+export const chatAddLabel = {
+	name: 'chatAddLabel',
+	description: 'Add labels to a chat channel.',
+	type: ChatTC,
+	kind: 'mutation',
+	args: {
+		chat: 'MongoID!',
+		label: 'EnumChatLabels!',
+	},
+	resolve: async (_, { chat, label }, { models: { Chat }, stream }) => {
+		try {
+			const channel = stream.chat.channel('messaging', chat);
+
+			await channel.watch();
+
+			/*
+			 * Ensure that labels are always unique, if the user calls chatAddLabel
+			 * again for the same toggle, it will result in no change.
+			 */
+			const currentLabels = channel?.data?.labels ?? [];
+			const labels = [...new Set([...currentLabels, label])];
+
+			await channel.update({
+				labels,
+			});
+
+			return Chat.findByIdAndUpdate(
+				chat,
+				{
+					labels,
+				},
+				{
+					new: true,
+				}
+			);
+		} catch (error) {
+			throw new Error(error.message);
+		}
+	},
+};
+
+export const chatRemoveLabel = {
+	name: 'chatAddLabel',
+	description: 'Add labels to a chat channel.',
+	type: ChatTC,
+	kind: 'mutation',
+	args: {
+		chat: 'MongoID!',
+		label: 'EnumChatLabels!',
+	},
+	resolve: async (_, { chat, label }, { models: { Chat }, stream }) => {
+		try {
+			const channel = stream.chat.channel('messaging', chat);
+
+			await channel.watch();
+
+			if (channel?.data?.labels?.length) {
+				const labels = channel?.data?.labels?.filter(existing => existing !== label);
+
+				await channel.update({
+					labels,
+				});
+
+				return Chat.findByIdAndUpdate(
+					chat,
+					{
+						labels,
+					},
+					{
+						new: true,
+					}
+				);
+			}
+
+			return Chat.findById(chat);
+		} catch (error) {
+			throw new Error(error.message);
+		}
+	},
+};
