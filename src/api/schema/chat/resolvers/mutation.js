@@ -100,7 +100,7 @@ export const addToChat = {
 
 export const chatAddLabel = {
 	name: 'chatAddLabel',
-	description: 'Add labels to a chat channel.',
+	description: 'Add a label to a chat channel.',
 	type: ChatTC,
 	kind: 'mutation',
 	args: {
@@ -117,17 +117,15 @@ export const chatAddLabel = {
 			 * Ensure that labels are always unique, if the user calls chatAddLabel
 			 * again for the same toggle, it will result in no change.
 			 */
-			const currentLabels = channel?.data?.labels ?? [];
-			const labels = [...new Set([...currentLabels, label])];
 
 			await channel.update({
-				labels,
+				[label]: true,
 			});
 
 			return Chat.findByIdAndUpdate(
 				chat,
 				{
-					labels,
+					$addToSet: { labels: [label] },
 				},
 				{
 					new: true,
@@ -140,8 +138,8 @@ export const chatAddLabel = {
 };
 
 export const chatRemoveLabel = {
-	name: 'chatAddLabel',
-	description: 'Add labels to a chat channel.',
+	name: 'chatRemoveLabel',
+	description: 'Remove a label from a chat channel.',
 	type: ChatTC,
 	kind: 'mutation',
 	args: {
@@ -154,25 +152,19 @@ export const chatRemoveLabel = {
 
 			await channel.watch();
 
-			if (channel?.data?.labels?.length) {
-				const labels = channel?.data?.labels?.filter(existing => existing !== label);
+			await channel.update({
+				[label]: true,
+			});
 
-				await channel.update({
-					labels,
-				});
-
-				return Chat.findByIdAndUpdate(
-					chat,
-					{
-						labels,
-					},
-					{
-						new: true,
-					}
-				);
-			}
-
-			return Chat.findById(chat);
+			return Chat.findByIdAndUpdate(
+				chat,
+				{
+					$pull: { labels: { $in: [label] } },
+				},
+				{
+					new: true,
+				}
+			);
 		} catch (error) {
 			throw new Error(error.message);
 		}
