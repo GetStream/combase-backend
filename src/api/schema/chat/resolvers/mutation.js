@@ -117,9 +117,11 @@ export const chatAddLabel = {
 			 * Ensure that labels are always unique, if the user calls chatAddLabel
 			 * again for the same toggle, it will result in no change.
 			 */
+			const labels = [...new Set([...(channel.data?.labels || []), label])];
 
 			await channel.update({
-				[label]: true,
+				...channel.data,
+				labels,
 			});
 
 			return Chat.findByIdAndUpdate(
@@ -153,7 +155,8 @@ export const chatRemoveLabel = {
 			await channel.watch();
 
 			await channel.update({
-				[label]: true,
+				...channel.data,
+				labels: channel.data.labels.filter(l => l !== label),
 			});
 
 			return Chat.findByIdAndUpdate(
