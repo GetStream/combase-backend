@@ -1,3 +1,3 @@
 module.exports = {
-	webhookPlugins: ['./plugins/stream'],
+	webhookPlugins: ['./plugins/routing', './plugins/stream'],
 };
