@@ -2,10 +2,12 @@ import http from 'http';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
 
 import { mongodb } from 'utils/mongodb';
 import { logger } from 'utils/logger';
-import { webhook } from 'utils/webhook';
+
+import { captainHook, streamWebhookPlugin } from './plugins/captain-hook';
 
 import context from './context';
 import schema from './schema';
@@ -36,7 +38,12 @@ apollo.applyMiddleware({
 	path: '/graphql',
 });
 
-app.use(webhook);
+const webhookPlugins = [streamWebhookPlugin()];
+
+const hookHandler = captainHook(webhookPlugins);
+
+app.use('/webhook', bodyParser.json());
+app.use('/webhook', hookHandler.receive);
 
 const httpServer = http.createServer(app);
 
