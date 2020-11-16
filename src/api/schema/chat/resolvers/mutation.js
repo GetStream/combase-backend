@@ -127,7 +127,7 @@ export const chatAddLabel = {
 			return Chat.findByIdAndUpdate(
 				chat,
 				{
-					$addToSet: { labels: [label] },
+					labels,
 				},
 				{
 					new: true,
@@ -154,15 +154,60 @@ export const chatRemoveLabel = {
 
 			await channel.watch();
 
+			const labels = channel.data.labels.filter(l => l !== label);
+
 			await channel.update({
 				...channel.data,
-				labels: channel.data.labels.filter(l => l !== label),
+				labels,
 			});
 
 			return Chat.findByIdAndUpdate(
 				chat,
 				{
-					$pull: { labels: { $in: [label] } },
+					labels,
+				},
+				{
+					new: true,
+				}
+			);
+		} catch (error) {
+			throw new Error(error.message);
+		}
+	},
+};
+
+export const chatToggleLabel = {
+	name: 'chatToggleLabel',
+	description: 'Toggle a label on a chat channel.',
+	type: ChatTC,
+	kind: 'mutation',
+	args: {
+		chat: 'MongoID!',
+		label: 'EnumChatLabels!',
+	},
+	resolve: async (_, { chat, label }, { models: { Chat }, stream }) => {
+		try {
+			const channel = stream.chat.channel('messaging', chat);
+
+			await channel.watch();
+
+			let labels = channel.data?.labels || [];
+
+			if (labels.includes(label)) {
+				labels = channel.data.labels.filter(l => l !== label);
+			} else {
+				labels = [...new Set([...labels, label])];
+			}
+
+			await channel.update({
+				...channel.data,
+				labels,
+			});
+
+			return Chat.findByIdAndUpdate(
+				chat,
+				{
+					labels,
 				},
 				{
 					new: true,
