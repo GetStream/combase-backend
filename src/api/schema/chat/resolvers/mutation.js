@@ -31,6 +31,7 @@ export const createChat = {
 			const channel = stream.chat.channel('messaging', chat._id.toString(), {
 				created_by_id: user, // eslint-disable-line camelcase
 				members: [user],
+				organization,
 				status,
 				tags,
 			});
