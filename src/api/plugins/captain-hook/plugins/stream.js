@@ -1,4 +1,9 @@
-export class StreamWebhookPlugin {
+export default class StreamWebhookPlugin {
+	handleChannelCreated = event => {
+		// eslint-disable-next-line no-console
+		console.log('channel created', event);
+	};
+
 	handleChannelUpdated = event => {
 		// eslint-disable-next-line no-console
 		console.log('channel updated', event);

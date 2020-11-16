@@ -1,3 +1,3 @@
 module.exports = {
-	plugins: ['@combase-app/zendesk-plugin'],
+	webhookPlugins: ['./plugins/stream'],
 };

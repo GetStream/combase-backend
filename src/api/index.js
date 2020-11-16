@@ -7,7 +7,9 @@ import bodyParser from 'body-parser';
 import { mongodb } from 'utils/mongodb';
 import { logger } from 'utils/logger';
 
-import { captainHook, StreamWebhookPlugin } from './plugins/captain-hook';
+import { webhookPlugins } from '../../combase.config';
+
+import { captainHook } from './plugins/captain-hook';
 
 import context from './context';
 import schema from './schema';
@@ -37,8 +39,6 @@ apollo.applyMiddleware({
 		}),
 	path: '/graphql',
 });
-
-const webhookPlugins = [new StreamWebhookPlugin()];
 
 const hookHandler = captainHook(webhookPlugins);
 
