@@ -1,14 +1,29 @@
-export const streamWebhookPlugin = () => ({
-	receive: (req, res, next) => {
+export class StreamWebhookPlugin {
+	handleChannelUpdated = event => {
+		// eslint-disable-next-line no-console
+		console.log('channel updated', event);
+	};
+
+	receive = (req, res, next) => {
 		if (req.headers['target-agent'] === 'Stream Webhook Client') {
 			const { body: event } = req;
 
 			// eslint-disable-next-line no-console
 			console.log('received stream webhook', event.type, event);
 
-			res.send(200);
+			switch (event.type) {
+				case 'channel.updated': {
+					this.handleChannelUpdated(event);
+					res.sendStatus(200);
+
+					break;
+				}
+
+				default:
+					return next();
+			}
 		}
 
 		next();
-	},
-});
+	};
+}
