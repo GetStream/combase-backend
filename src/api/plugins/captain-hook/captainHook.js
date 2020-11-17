@@ -1,3 +1,5 @@
+const path = require('path');
+
 export const captainHook = pluginConfig => {
 	const plugins = pluginConfig.map(plugin => {
 		let options = {};
@@ -12,7 +14,13 @@ export const captainHook = pluginConfig => {
 			throw new Error(`Invalid Captain Hook Plugin: ${plugin}`);
 		}
 
-		const Plugin = require(resolve).default;
+		if (!resolve.startsWith('@captain-hook/')) {
+			throw new Error(`Invalid Captain Hook Plugin: ${plugin}`);
+		}
+
+		const pluginName = resolve.replace('@captain-hook/', '');
+
+		const Plugin = require(path.join(__dirname, `./plugins/${pluginName}`)).default;
 
 		return new Plugin(options);
 	});

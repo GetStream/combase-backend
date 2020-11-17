@@ -1,3 +1,3 @@
 module.exports = {
-	webhookPlugins: ['./plugins/routing', './plugins/stream'],
+	webhookPlugins: ['@captain-hook/routing', '@captain-hook/stream-chat'],
 };

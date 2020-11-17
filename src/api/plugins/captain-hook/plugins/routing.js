@@ -2,23 +2,27 @@ import { StreamChat } from 'stream-chat';
 import { Models } from 'api/schema';
 
 export default class CombaseRoutingPlugin {
-	findAgent = async event => {
-		const { id: channelId, organization, type: channelType } = event.channel;
-
-		const {
-			stream: { key, secret },
-		} = await Models.Organization.findOne({ _id: organization }, { stream: true });
-
-		// eslint-disable-next-line no-console
-		console.log(`new chat:`, event.channel);
-
+	getChannel = async (channelType, channelId, { key, secret }) => {
 		const streamChat = new StreamChat(key, secret);
 
 		const channel = streamChat.channel(channelType, channelId);
 
 		await channel.watch();
 
+		return channel;
+	};
+
+	findAgent = async event => {
+		const { id: channelId, organization, type: channelType } = event.channel;
+
+		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
+
+		// eslint-disable-next-line no-console
+		console.log(`new chat:`, event.channel);
+
 		const agent = await Models.Agent.findOne().lean();
+
+		const channel = await this.getChannel(channelType, channelId, streamCreds);
 
 		const addMember = channel.addModerators([agent._id.toString()]);
 
