@@ -58,7 +58,8 @@ export default class CombaseRoutingPlugin {
 
 			switch (event.type) {
 				case 'channel.created':
-					await this.findAgent(event);
+					// TODO We should add custom data to the channel from the createChat mutation such as keywords from the chat.
+					await this.findAvailableAgent(event);
 
 					return next();
 				default:
