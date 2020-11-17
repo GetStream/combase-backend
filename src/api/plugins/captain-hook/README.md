@@ -1,3 +1,9 @@
+# `captain-hook`
+
+`web(hook hand)lers`
+
+Ruthlessly simple webhook plugin system for Express.
+
 -   All Plugins to at least return an Object with a `receive` method that takes, `req`, `res` and `next`
     -   Returning with `next` from a plugin allows other plugins to consume the event if necessary
         -   A good example of this would be Stream & Combase, `CombaseRoutingPlugin` calls next so that `StreamWebhookPlugin` can still consume the `channel.created` event if necessary.
