@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { getTokenPayload } from 'utils/auth';
+import { StreamChat } from 'stream-chat';
 
 import { OrganizationTC } from '../../organization/model';
 import { AgentTC } from '../model';
@@ -60,6 +61,17 @@ export const createAgentAndOrganization = {
 		};
 
 		const agentDoc = await Agent.create(agent);
+
+		const chat = new StreamChat(args.organization.stream.key, args.organization.stream.secret);
+
+		await chat.setUser({
+			avatar: agentDoc._doc.avatar,
+			email: agentDoc._doc.email,
+			id: agentDoc._id.toString(),
+			name: agentDoc._doc.name.display,
+			organization: _id.toString(),
+			type: 'agent', // TODO maybe use a custom role 'agent' - depends on how we can make this reliable for open source seeing as updateUser would wipe the `type` field if used incorrectly.
+		});
 
 		const token = jwt.sign(getTokenPayload(agentDoc._doc), process.env.AUTH_SECRET);
 

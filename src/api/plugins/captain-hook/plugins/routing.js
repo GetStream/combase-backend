@@ -2,29 +2,23 @@ import { StreamChat } from 'stream-chat';
 import { Models } from 'api/schema';
 
 export default class CombaseRoutingPlugin {
-	getChannel = async (channelType, channelId, { key, secret }) => {
-		const streamChat = new StreamChat(key, secret);
+	addToChat = (agent, channel) => {
+		if (!agent) {
+			// eslint-disable-next-line no-console
+			console.log('No available agents.');
 
-		const channel = streamChat.channel(channelType, channelId);
+			return;
+		}
 
-		await channel.watch();
+		// This should never happen as it only fires on new chats
+		if (channel.state.members[agent]) {
+			// eslint-disable-next-line no-console
+			console.log('the agent already in this channel');
 
-		return channel;
-	};
+			return;
+		}
 
-	findAgent = async event => {
-		const { id: channelId, organization, type: channelType } = event.channel;
-
-		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
-
-		// eslint-disable-next-line no-console
-		console.log(`new chat:`, event.channel);
-
-		const agent = await Models.Agent.findOne().lean();
-
-		const channel = await this.getChannel(channelType, channelId, streamCreds);
-
-		const addMember = channel.addModerators([agent._id.toString()]);
+		const addMember = channel.addModerators([agent]);
 
 		const updateChannel = channel.update(
 			{
@@ -33,15 +27,15 @@ export default class CombaseRoutingPlugin {
 			},
 			{
 				subtype: 'agent_added',
-				text: `${agent?.name?.display || 'An agent'} joined the chat.`,
-				user_id: agent._id.toString(), // eslint-disable-line camelcase
+				text: `An agent joined the chat.`,
+				user_id: agent, // eslint-disable-line camelcase
 			}
 		);
 
 		const updateChat = Models.Chat.findByIdAndUpdate(
-			channelId,
+			channel.id,
 			{
-				$push: {
+				$addToSet: {
 					agents: [agent],
 				},
 				status: 'open',
@@ -50,6 +44,49 @@ export default class CombaseRoutingPlugin {
 		);
 
 		return Promise.all([addMember, updateChannel, updateChat]);
+	};
+
+	findAvailableAgent = async event => {
+		const { id: channelId, organization, type: channelType } = event.channel;
+
+		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
+
+		const [channel, client] = await this.getChannel(channelType, channelId, streamCreds);
+
+		const { users } = await client.queryUsers({
+			organization,
+			type: 'agent',
+		});
+
+		const agent = this.selectAgent(users);
+
+		if (!agent) return;
+
+		return this.addToChat(agent, channel);
+	};
+
+	getChannel = async (channelType, channelId, { key, secret }) => {
+		const streamChat = new StreamChat(key, secret);
+
+		const channel = streamChat.channel(channelType, channelId);
+
+		await channel.watch({ state: true });
+
+		return [channel, streamChat];
+	};
+
+	selectAgent = agents => {
+		// eslint-disable-next-line no-console
+		console.log('available agents:', agents);
+
+		/**
+		 * !	Decide on the most suitable agent
+		 * *	Keywords on channel object
+		 * *	Current open chat count.
+		 * *	Groups the Agent is in, in relation to the chat (maybe the URL the user is viewing too.)
+		 */
+
+		return agents[0]?.id;
 	};
 
 	receive = async (req, res, next) => {
