@@ -5,15 +5,15 @@ export default class CombaseRoutingPlugin {
 	addToChat = (agent, channel) => {
 		if (!agent) {
 			// eslint-disable-next-line no-console
-			console.log('No available agents.');
+			console.log('Something went wrong.');
 
 			return;
 		}
 
-		// This should never happen as it only fires on new chats
+		// This should never happen as routing only fires on new chats, but here as a failsafe.
 		if (channel.state.members[agent]) {
 			// eslint-disable-next-line no-console
-			console.log('the agent already in this channel');
+			console.log(`'agent:${agent} is already in this channel'`);
 
 			return;
 		}
@@ -85,6 +85,13 @@ export default class CombaseRoutingPlugin {
 		 * *	Current open chat count.
 		 * *	Groups the Agent is in, in relation to the chat (maybe the URL the user is viewing too.)
 		 */
+
+		if (!agents?.length) {
+			// eslint-disable-next-line no-console
+			console.log('No available agents.');
+
+			return;
+		}
 
 		return agents[0]?.id;
 	};
