@@ -129,7 +129,6 @@ const OrganizationSchema = new Schema(
 		timezone: {
 			type: String,
 			default: 'Europe/London',
-			required: true,
 			description: 'The UTC timezone name. [defaults to GMT (Europe/London)]',
 		},
 		stream: StreamCredentialsSchema,
