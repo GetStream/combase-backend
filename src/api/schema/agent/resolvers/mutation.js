@@ -39,6 +39,41 @@ export const loginAgent = {
 	},
 };
 
+export const createAgent = {
+	name: 'createAgent',
+	type: AgentTC,
+	kind: 'mutation',
+	args: {
+		agent: AgentTC.getInputTypeComposer().makeFieldNullable('organization'),
+	},
+	resolve: async (_, args, { agents, models: { Agent }, stream, organization }) => {
+		if (!organization && !agents) {
+			throw new Error('Unauthorized');
+		}
+
+		const agent = await Agent.create({
+			...args.agent,
+			organization,
+		});
+
+		await stream.chat.setUser({
+			avatar: agent._doc.avatar,
+			email: agent._doc.email,
+			id: agent._id.toString(),
+			name: agent._doc.name.display,
+			organization: organization.toString(),
+			type: 'agent', // TODO maybe use a custom role 'agent' - depends on how we can make this reliable for open source seeing as updateUser would wipe the `type` field if used incorrectly.
+		});
+
+		const token = jwt.sign(getTokenPayload(agent._doc), process.env.AUTH_SECRET);
+
+		return {
+			...agent._doc,
+			token,
+		};
+	},
+};
+
 /**
  * Below we modify the AgentInput type on the fly for this one resolver
  * to allow a null/undefined organization value, as this resolver will
