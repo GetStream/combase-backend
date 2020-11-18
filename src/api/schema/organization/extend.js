@@ -29,6 +29,11 @@ OrganizationTC.addFields({
 				return false;
 			}
 
+			/*
+			 * Take the generate start and end values and create a new Date object for each
+			 * This ensures the day/month/year matches the users comparison date regardless of locale
+			 * Then we can use utcToZonedTime and pass the organizations timezone so that it is returned as the correct time in the users timezone.
+			 */
 			const zonedStart = utcToZonedTime(new Date().setUTCHours(today.start.hour, today.start.minute, 0, 0), timezone);
 			const zonedEnd = utcToZonedTime(new Date().setUTCHours(today.end.hour, today.end.minute, 0, 0), timezone);
 
