@@ -53,16 +53,18 @@ export default class CombaseRoutingPlugin {
 
 		const [channel, client] = await this.getChannel(channelType, channelId, streamCreds);
 
-		const { users } = await client.queryUsers({
-			organization,
-			type: 'agent',
-		});
+		// const { users } = await client.queryUsers({
+		// 	organization,
+		// 	type: 'agent',
+		// });
 
-		const agent = this.selectAgent(users);
+		const agents = Models.Agent.find({ available: true, });
+
+		console.log(agents);
 
 		if (!agent) return;
 
-		return this.addToChat(agent, channel);
+		//return this.addToChat(agent, channel);
 	};
 
 	getChannel = async (channelType, channelId, { key, secret }) => {
@@ -104,6 +106,8 @@ export default class CombaseRoutingPlugin {
 				case 'channel.created':
 					// TODO We should add custom data to the channel from the createChat mutation such as keywords from the chat.
 					await this.findAvailableAgent(event);
+
+					console.log('got it', event);
 
 					return next();
 				default:

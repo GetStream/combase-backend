@@ -75,11 +75,6 @@ const OrganizationSchema = new Schema(
 				},
 			},
 		},
-		timezone: {
-			type: String,
-			default: 'Europe/London',
-			description: 'The UTC timezone name. [defaults to GMT (Europe/London)]',
-		},
 		stream: StreamCredentialsSchema,
 		theme: {
 			description: "The organization's custom theme values to be merged with the client-side theme.",
