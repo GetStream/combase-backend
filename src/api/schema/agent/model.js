@@ -57,6 +57,57 @@ const AgentSchema = new Schema(
 			required: true,
 			description: 'Password for the agent – bcrypted internally.',
 		},
+		hours: [
+			{
+				enabled: {
+					type: Boolean,
+					default: false,
+					description: 'Whether this day is enabled on the schedule.',
+				},
+				day: {
+					type: Number,
+					required: true,
+					enum: [1, 2, 3, 4, 5, 6, 7],
+					description: 'The date this availability schedule relates to [week day as a non-zero-based numeral representation].',
+				},
+				start: {
+					hour: {
+						type: Number,
+						min: 0,
+						max: 23,
+						default: 12,
+						required: true,
+						description: 'Start of availability for this day [hour as a numeral representation].',
+					},
+					minute: {
+						type: Number,
+						min: 0,
+						max: 59,
+						default: 0,
+						required: true,
+						description: 'Start of availability for this day [minute as a numeral representation].',
+					},
+				},
+				end: {
+					hour: {
+						type: Number,
+						min: 0,
+						max: 23,
+						default: 12,
+						required: true,
+						description: 'End of availability for this day [hour as a numeral representation].',
+					},
+					minute: {
+						type: Number,
+						min: 0,
+						max: 59,
+						default: 0,
+						required: true,
+						description: 'End of availability for this day [minute as a numeral representation].',
+					},
+				},
+			},
+		],
 		active: {
 			type: Boolean,
 			default: true,
