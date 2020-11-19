@@ -19,7 +19,7 @@ const Mutation = {
 	agentCreateMany: AgentTC.mongooseResolvers.createMany(),
 	agentUpdateById: AgentTC.mongooseResolvers.updateById(),
 	agentUpdateOne: AgentTC.mongooseResolvers.updateOne(),
-	agentUpdateMany: AgentTC.mongooseResolvers.updateMany(),
+	agentUpdateMany: AgentTC.mongooseResolvers.updateMany().wrapResolve(hasOrganization).wrapResolve(scopeOrganization),
 	agentRemoveById: AgentTC.mongooseResolvers.removeById(),
 	agentRemoveOne: AgentTC.mongooseResolvers.removeOne(),
 	agentRemoveMany: AgentTC.mongooseResolvers.removeMany(),
