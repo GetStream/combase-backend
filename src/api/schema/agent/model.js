@@ -106,13 +106,13 @@ const AgentSchema = new Schema(
 						description: 'End of availability for this day [minute as a numeral representation].',
 					},
 				},
-				timezone: {
-					type: String,
-					default: 'Europe/London',
-					description: 'The UTC timezone name. [defaults to GMT (Europe/London)]',
-				},
 			},
 		],
+		timezone: {
+			type: String,
+			default: 'Europe/London',
+			description: 'The UTC timezone name. [defaults to GMT (Europe/London)]',
+		},
 		active: {
 			type: Boolean,
 			default: true,

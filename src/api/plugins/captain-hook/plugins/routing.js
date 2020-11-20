@@ -2,13 +2,32 @@ import { StreamChat } from 'stream-chat';
 import { Models } from 'api/schema';
 
 export default class CombaseRoutingPlugin {
-	addToChat = (agent, channel) => {
-		if (!agent) {
-			// eslint-disable-next-line no-console
-			console.log('Something went wrong.');
+	setAgentUnavailable = channel => {
 
-			return;
-		}
+		// const updateChannel = channel.update(
+		// 	{
+		// 		...channel.data,
+		// 		status: 'unassigned',
+		// 	},
+		// 	{
+		// 		subtype: 'agent_unavailable',
+		// 		text: `All agents are currently unavailable. An agent will get back to you shortly via email.`,
+		// 	}
+		// );
+
+		const updateChat = Models.Chat.findByIdAndUpdate(
+			channel.id,
+			{
+				status: 'unassigned',
+			},
+			{ new: true }
+		);
+
+		return Promise.all([updateChat]);
+	};
+
+	addToChat = (agent, channel) => {
+		if (!agent) return this.setAgentUnavailable(channel);
 
 		// This should never happen as routing only fires on new chats, but here as a failsafe.
 		if (channel.state.members[agent]) {
@@ -51,18 +70,46 @@ export default class CombaseRoutingPlugin {
 
 		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
 
-		const [channel, client] = await this.getChannel(channelType, channelId, streamCreds);
+		const [channel] = await this.getChannel(channelType, channelId, streamCreds);
 
-		const { users } = await client.queryUsers({
-			organization,
-			type: 'agent',
-		});
+		const available = Models.Agent.find(
+			{
+				organization,
+				active: true,
+			},
+			{
+				_id: true,
+				name: true,
+				hours: true,
+			}
+		);
 
-		const agent = this.selectAgent(users);
+		const agg = Models.Agent.aggregate([
+			{
+				$project: {
+					name: true,
+					hours: true,
+					timezone: true,
+					active: true,
+				}
+			}
+		  ]);
+		  
 
-		if (!agent) return;
+		/**
+		 * !	Decide on the most suitable agent
+		 * *	Keywords on channel object
+		 * *	Current open chat count.
+		 * *	Groups the Agent is in, in relation to the chat (maybe the URL the user is viewing too.)
+		 */
 
-		return this.addToChat(agent, channel);
+		console.log('do routing', available);
+
+		//return agents[0]?.id;
+
+		//if (!agent) return this.setAgentUnavailable(channel);
+
+		return this.addToChat('5fb590546d195aeb4dd65113', channel);
 	};
 
 	getChannel = async (channelType, channelId, { key, secret }) => {
@@ -73,27 +120,6 @@ export default class CombaseRoutingPlugin {
 		await channel.watch({ state: true });
 
 		return [channel, streamChat];
-	};
-
-	selectAgent = agents => {
-		// eslint-disable-next-line no-console
-		console.log('available agents:', agents);
-
-		/**
-		 * !	Decide on the most suitable agent
-		 * *	Keywords on channel object
-		 * *	Current open chat count.
-		 * *	Groups the Agent is in, in relation to the chat (maybe the URL the user is viewing too.)
-		 */
-
-		if (!agents?.length) {
-			// eslint-disable-next-line no-console
-			console.log('No available agents.');
-
-			return;
-		}
-
-		return agents[0]?.id;
 	};
 
 	receive = async (req, res, next) => {
