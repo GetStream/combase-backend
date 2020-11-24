@@ -1,19 +1,26 @@
+import mongoose from 'mongoose';
 import { StreamChat } from 'stream-chat';
+import getDay from 'date-fns/getDay';
+import isAfter from 'date-fns/isAfter';
+import isBefore from 'date-fns/isBefore';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import { Models } from 'api/schema';
 
 export default class CombaseRoutingPlugin {
 	setAgentUnavailable = channel => {
-
-		// const updateChannel = channel.update(
-		// 	{
-		// 		...channel.data,
-		// 		status: 'unassigned',
-		// 	},
-		// 	{
-		// 		subtype: 'agent_unavailable',
-		// 		text: `All agents are currently unavailable. An agent will get back to you shortly via email.`,
-		// 	}
-		// );
+		/*
+		 * const updateChannel = channel.update(
+		 * 	{
+		 * 		...channel.data,
+		 * 		status: 'unassigned',
+		 * 	},
+		 * 	{
+		 * 		subtype: 'agent_unavailable',
+		 * 		text: `All agents are currently unavailable. An agent will get back to you shortly via email.`,
+		 * 	}
+		 * );
+		 */
 
 		const updateChat = Models.Chat.findByIdAndUpdate(
 			channel.id,
@@ -72,44 +79,115 @@ export default class CombaseRoutingPlugin {
 
 		const [channel] = await this.getChannel(channelType, channelId, streamCreds);
 
-		const available = Models.Agent.find(
+		const agents = await Models.Agent.aggregate([
 			{
-				organization,
-				active: true,
+				$match: {
+					active: true,
+					// eslint-disable-next-line new-cap
+					organization: mongoose.Types.ObjectId(organization),
+				},
 			},
 			{
-				_id: true,
-				name: true,
-				hours: true,
-			}
-		);
-
-		const agg = Models.Agent.aggregate([
-			{
 				$project: {
+					_id: true,
 					name: true,
+					title: true,
+					role: true,
+					avatar: true,
 					hours: true,
 					timezone: true,
-					active: true,
+					chats: true,
+				},
+			},
+			{
+				$lookup: {
+					from: 'chats',
+					localField: '_id',
+					foreignField: 'agents',
+					as: 'chats',
+				},
+			},
+			{
+				$project: {
+					_id: true,
+					name: true,
+					title: true,
+					role: true,
+					hours: true,
+					timezone: true,
+					tickets: {
+						open: {
+							$size: {
+								$filter: {
+									input: '$chats',
+									cond: {
+										$eq: ['$$this.status', 'open'],
+									},
+								},
+							},
+						},
+						closed: {
+							$size: {
+								$filter: {
+									input: '$chats',
+									cond: {
+										$eq: ['$$this.status', 'closed'],
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		]);
+
+		const now = new Date();
+		const todayNo = getDay(now);
+
+		const availableAgents = agents
+			.map(agent => {
+				const { hours, timezone } = agent;
+
+				// If the agent has set hours
+				if (hours.length) {
+					// If hours are set for the agent, but the current day is either disabled or non-existent, return as unavailable.
+					const today = hours.find(({ day }) => day === todayNo);
+
+					if (!today?.enabled) {
+						return;
+					}
+
+					/*
+					 * Take the generate start and end values and create a new Date object for each
+					 * This ensures the day/month/year matches the users comparison date regardless of locale
+					 * Then we can use utcToZonedTime and pass the organizations timezone so that it is returned as the correct time in the users timezone.
+					 */
+					const zonedStart = utcToZonedTime(new Date().setUTCHours(today.start.hour, today.start.minute, 0, 0), timezone);
+					const zonedEnd = utcToZonedTime(new Date().setUTCHours(today.end.hour, today.end.minute, 0, 0), timezone);
+
+					const available = isAfter(now, zonedStart) && isBefore(now, zonedEnd);
+
+					if (available) return agent;
 				}
-			}
-		  ]);
-		  
 
-		/**
-		 * !	Decide on the most suitable agent
-		 * *	Keywords on channel object
-		 * *	Current open chat count.
-		 * *	Groups the Agent is in, in relation to the chat (maybe the URL the user is viewing too.)
-		 */
+				return agent;
 
-		console.log('do routing', available);
+			})
+			.filter(a => {
+				if (typeof a !== 'undefined') return a;
+			});
+		
 
-		//return agents[0]?.id;
+		// arr of available agents
+		// need to balance by tickets open/completed
+		// then pick rand if array is > 1
+		console.log(availableAgents);
+
+		//const agent = availableAgents[0];
 
 		//if (!agent) return this.setAgentUnavailable(channel);
 
-		return this.addToChat('5fb590546d195aeb4dd65113', channel);
+		//return this.addToChat(agent[0].id, channel);
 	};
 
 	getChannel = async (channelType, channelId, { key, secret }) => {

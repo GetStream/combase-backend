@@ -4,7 +4,6 @@ import isBefore from 'date-fns/isBefore';
 import { utcToZonedTime } from 'date-fns-tz';
 
 import { AgentTC } from './model';
-import { logger } from 'utils/logger';
 
 AgentTC.addFields({
 	available: {
@@ -12,8 +11,6 @@ AgentTC.addFields({
 		args: {},
 		resolve: async ({ _id }, _, { models: { Agent } }) => {
 			const { hours, timezone } = await Agent.findById(_id, { hours: 1 });
-
-			logger.info(hours);
 
 			if (!hours?.length) {
 				// If no hours are set at all for this agent, then the agent is always available.

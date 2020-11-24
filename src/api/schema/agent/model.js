@@ -33,6 +33,11 @@ const AgentSchema = new Schema(
 				description: 'Publicly visible name of the agent.',
 			},
 		},
+		role: {
+			type: String,
+			required: true,
+			description: 'The defined role of the agent',
+		},
 		title: {
 			type: String,
 			trim: true,
