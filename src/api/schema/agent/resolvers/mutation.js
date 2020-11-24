@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { getTokenPayload } from 'utils/auth';
+import { StreamChat } from 'stream-chat';
 
 import { OrganizationTC } from '../../organization/model';
 import { AgentTC } from '../model';
@@ -38,6 +39,41 @@ export const loginAgent = {
 	},
 };
 
+export const createAgent = {
+	name: 'createAgent',
+	type: AgentTC,
+	kind: 'mutation',
+	args: {
+		agent: AgentTC.getInputTypeComposer().makeFieldNullable('organization'),
+	},
+	resolve: async (_, args, { agents, models: { Agent }, stream, organization }) => {
+		if (!organization && !agents) {
+			throw new Error('Unauthorized');
+		}
+
+		const agent = await Agent.create({
+			...args.agent,
+			organization,
+		});
+
+		await stream.chat.setUser({
+			avatar: agent._doc.avatar,
+			email: agent._doc.email,
+			id: agent._id.toString(),
+			name: agent._doc.name.display,
+			organization: organization.toString(),
+			type: 'agent', // TODO maybe use a custom role 'agent' - depends on how we can make this reliable for open source seeing as updateUser would wipe the `type` field if used incorrectly.
+		});
+
+		const token = jwt.sign(getTokenPayload(agent._doc), process.env.AUTH_SECRET);
+
+		return {
+			...agent._doc,
+			token,
+		};
+	},
+};
+
 /**
  * Below we modify the AgentInput type on the fly for this one resolver
  * to allow a null/undefined organization value, as this resolver will
@@ -61,11 +97,36 @@ export const createAgentAndOrganization = {
 
 		const agentDoc = await Agent.create(agent);
 
+		const chat = new StreamChat(args.organization.stream.key, args.organization.stream.secret);
+
+		await chat.setUser({
+			avatar: agentDoc._doc.avatar,
+			email: agentDoc._doc.email,
+			id: agentDoc._id.toString(),
+			name: agentDoc._doc.name.display,
+			organization: _id.toString(),
+			type: 'agent', // TODO maybe use a custom role 'agent' - depends on how we can make this reliable for open source seeing as updateUser would wipe the `type` field if used incorrectly.
+		});
+
 		const token = jwt.sign(getTokenPayload(agentDoc._doc), process.env.AUTH_SECRET);
 
 		return {
 			...agentDoc._doc,
 			token,
 		};
+	},
+};
+
+export const agentUpdateAvailability = {
+	name: 'agentnUpdateAvailability',
+	type: AgentTC,
+	kind: 'mutation',
+	args: { hours: '[AgentHoursInput!]' },
+	resolve: (_, args, { agent, models: { Agent } }) => {
+		if (!agent) {
+			throw new Error('Unauthorized.');
+		}
+
+		return Agent.findByIdAndUpdate(agent, { hours: args.hours }, { new: true });
 	},
 };

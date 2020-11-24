@@ -22,7 +22,7 @@ const ChatSchema = new Schema(
 			{
 				type: Schema.Types.ObjectId,
 				ref: 'Agent',
-				required: true,
+				required: false,
 				description: 'A reference to the agent assigned to a chat.',
 			},
 		],
@@ -72,6 +72,7 @@ const ChatSchema = new Schema(
 			enum: ['open', 'closed', 'archived', 'unassigned'],
 			default: 'open',
 			description: 'The status of the chat.',
+			index: true,
 		},
 	},
 	{ collection: 'chats' }

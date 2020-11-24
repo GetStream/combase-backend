@@ -66,6 +66,12 @@ export const addToChat = {
 		try {
 			const channel = stream.chat.channel('messaging', chat.toString());
 
+			await channel.watch({ state: true });
+
+			if (channel.state.members[agent.toString()]) {
+				throw new Error('That agent is already a member of this channel.');
+			}
+
 			const updates = {};
 
 			if (status) updates.status = status;
@@ -74,7 +80,7 @@ export const addToChat = {
 
 			const addMember = channel.addModerators([agent.toString()]);
 
-			// TODO: We should creete 'sub-types' of system messages with a custom field so we can render them differently, would be cool to show the agent avatar when they get added etc.
+			// TODO: We should create more 'sub-types' of system messages with a custom field so we can render them differently, would be cool to show the agent avatar when they get added etc.
 			const updateChannel = channel.update(updates, {
 				subtype: 'agent_added',
 				text: `${agentName?.display || 'An agent'} joined the chat.`,
@@ -86,7 +92,7 @@ export const addToChat = {
 			return Chat.findByIdAndUpdate(
 				chat,
 				{
-					$push: {
+					$addToSet: {
 						agents: [agent],
 					},
 					...updates,

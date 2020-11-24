@@ -33,6 +33,10 @@ const AgentSchema = new Schema(
 				description: 'Publicly visible name of the agent.',
 			},
 		},
+		role: {
+			type: String,
+			description: 'The defined role of the agent',
+		},
 		title: {
 			type: String,
 			trim: true,
@@ -56,6 +60,57 @@ const AgentSchema = new Schema(
 			bcrypt: true,
 			required: true,
 			description: 'Password for the agent – bcrypted internally.',
+		},
+		hours: [
+			{
+				enabled: {
+					type: Boolean,
+					default: false,
+					description: 'Whether this day is enabled on the schedule.',
+				},
+				day: {
+					type: Number,
+					enum: [1, 2, 3, 4, 5, 6, 7],
+					description: 'The date this availability schedule relates to [week day as a non-zero-based numeral representation].',
+				},
+				start: {
+					hour: {
+						type: Number,
+						min: 0,
+						max: 23,
+						default: 9,
+						description: 'Start of availability for this day [hour as a numeral representation].',
+					},
+					minute: {
+						type: Number,
+						min: 0,
+						max: 59,
+						default: 0,
+						description: 'Start of availability for this day [minute as a numeral representation].',
+					},
+				},
+				end: {
+					hour: {
+						type: Number,
+						min: 0,
+						max: 23,
+						default: 17,
+						description: 'End of availability for this day [hour as a numeral representation].',
+					},
+					minute: {
+						type: Number,
+						min: 0,
+						max: 59,
+						default: 0,
+						description: 'End of availability for this day [minute as a numeral representation].',
+					},
+				},
+			},
+		],
+		timezone: {
+			type: String,
+			default: 'Europe/London',
+			description: 'The UTC timezone name. [defaults to GMT (Europe/London)]',
 		},
 		active: {
 			type: Boolean,
