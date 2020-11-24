@@ -146,17 +146,25 @@ export default class CombaseRoutingPlugin {
 			return null;
 		});
 
-		/*
-		 * arr of available agents
-		 * need to balance by tickets open/completed
-		 * then pick rand if array is > 1
-		 */
 		// eslint-disable-next-line no-console
 		console.log(availableAgents);
 
-		const agent = availableAgents?.[0];
+		let agent;
 
-		if (!agent) return this.setAgentUnavailable(channel);
+		if (!availableAgents?.length) return this.setAgentUnavailable(channel);
+
+		if (availableAgents.length === 1) agent = availableAgents?.[0];
+
+		if (availableAgents.length > 1) {
+			/*
+			 * should handle an array available agents (more than 1)
+			 * need to balance by tickets open/completed
+			 * then pick rand
+			 */
+
+			// TEMP: Replace with the above sorting/find mechanism.
+			agent = availableAgents[0];
+		}
 
 		return this.addToChat(agent._id, channel);
 	};
