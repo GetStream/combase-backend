@@ -151,10 +151,13 @@ export default class CombaseRoutingPlugin {
 
 		let agent;
 
+		/** No Agents - Set Unavailable */
 		if (!availableAgents?.length) return this.setAgentUnavailable(channel);
 
+		/** Only 1 agent - Assign to this agent */
 		if (availableAgents.length === 1) agent = availableAgents?.[0];
 
+		/** Multiple Available Agents - Decide on the most suitable agent */
 		if (availableAgents.length > 1) {
 			/*
 			 * should handle an array available agents (more than 1)
