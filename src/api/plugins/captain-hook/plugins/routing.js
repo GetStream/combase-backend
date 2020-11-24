@@ -33,18 +33,18 @@ export default class CombaseRoutingPlugin {
 		return Promise.all([updateChat]);
 	};
 
-	addToChat = (agent, channel) => {
-		if (!agent) return this.setAgentUnavailable(channel);
+	addToChat = (agentId, channel) => {
+		if (!agentId) return this.setAgentUnavailable(channel);
 
 		// This should never happen as routing only fires on new chats, but here as a failsafe.
-		if (channel.state.members[agent]) {
+		if (channel.state.members[agentId]) {
 			// eslint-disable-next-line no-console
-			console.log(`'agent:${agent} is already in this channel'`);
+			console.log(`'agent:${agentId} is already in this channel'`);
 
 			return;
 		}
 
-		const addMember = channel.addModerators([agent]);
+		const addMember = channel.addModerators([agentId]);
 
 		const updateChannel = channel.update(
 			{
@@ -54,7 +54,7 @@ export default class CombaseRoutingPlugin {
 			{
 				subtype: 'agent_added',
 				text: `An agent joined the chat.`,
-				user_id: agent, // eslint-disable-line camelcase
+				user_id: agentId, // eslint-disable-line camelcase
 			}
 		);
 
@@ -62,7 +62,7 @@ export default class CombaseRoutingPlugin {
 			channel.id,
 			{
 				$addToSet: {
-					agents: [agent],
+					agents: [agentId],
 				},
 				status: 'open',
 			},
@@ -147,7 +147,7 @@ export default class CombaseRoutingPlugin {
 		const availableAgents = agents
 			.map(agent => {
 				const { hours, timezone } = agent;
-
+				console.log(agent.timezone)
 				// If the agent has set hours
 				if (hours.length) {
 					// If hours are set for the agent, but the current day is either disabled or non-existent, return as unavailable.
@@ -184,11 +184,11 @@ export default class CombaseRoutingPlugin {
 		// eslint-disable-next-line no-console
 		console.log(availableAgents);
 
-		//const agent = availableAgents[0];
+		const agent = availableAgents[0];
 
-		//if (!agent) return this.setAgentUnavailable(channel);
+		if (!agent) return this.setAgentUnavailable(channel);
 
-		//return this.addToChat(agent[0].id, channel);
+		return this.addToChat(agent.id, channel);
 	};
 
 	getChannel = async (channelType, channelId, { key, secret }) => {
