@@ -1,11 +1,9 @@
 import mongoose from 'mongoose';
 import { StreamChat } from 'stream-chat';
 import getDay from 'date-fns/getDay';
-import isAfter from 'date-fns/isAfter';
-import isBefore from 'date-fns/isBefore';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import { Models } from 'api/schema';
+import { getIsAvailableIntl } from 'utils/getIsAvailableIntl';
 
 export default class CombaseRoutingPlugin {
 	setAgentUnavailable = channel => {
@@ -144,37 +142,25 @@ export default class CombaseRoutingPlugin {
 		const now = new Date();
 		const todayNo = getDay(now);
 
-		const availableAgents = agents
-			.map(agent => {
-				const { hours, timezone } = agent;
-				console.log(agent.timezone)
-				// If the agent has set hours
-				if (hours.length) {
-					// If hours are set for the agent, but the current day is either disabled or non-existent, return as unavailable.
-					const today = hours.find(({ day }) => day === todayNo);
+		const availableAgents = agents.filter(agent => {
+			const { hours, timezone } = agent;
 
-					if (!today?.enabled) {
-						return;
-					}
+			// If the agent has set hours
+			if (hours.length) {
+				// If hours are set for the agent, but the current day is either disabled or non-existent, return as unavailable.
+				const today = hours.find(({ day }) => day === todayNo);
 
-					/*
-					 * Take the generate start and end values and create a new Date object for each
-					 * This ensures the day/month/year matches the users comparison date regardless of locale
-					 * Then we can use utcToZonedTime and pass the organizations timezone so that it is returned as the correct time in the users timezone.
-					 */
-					const zonedStart = utcToZonedTime(new Date().setUTCHours(today.start.hour, today.start.minute, 0, 0), timezone);
-					const zonedEnd = utcToZonedTime(new Date().setUTCHours(today.end.hour, today.end.minute, 0, 0), timezone);
-
-					const available = isAfter(now, zonedStart) && isBefore(now, zonedEnd);
-
-					if (available) return agent;
+				if (!today?.enabled) {
+					return;
 				}
 
-				return agent;
-			})
-			.filter(a => {
-				if (typeof a !== 'undefined') return a;
-			});
+				const available = getIsAvailableIntl(today, timezone);
+
+				if (available) return agent;
+			}
+
+			return null;
+		});
 
 		/*
 		 * arr of available agents
@@ -184,11 +170,11 @@ export default class CombaseRoutingPlugin {
 		// eslint-disable-next-line no-console
 		console.log(availableAgents);
 
-		const agent = availableAgents[0];
+		const agent = availableAgents?.[0];
 
 		if (!agent) return this.setAgentUnavailable(channel);
 
-		return this.addToChat(agent.id, channel);
+		return this.addToChat(agent._id, channel);
 	};
 
 	getChannel = async (channelType, channelId, { key, secret }) => {
