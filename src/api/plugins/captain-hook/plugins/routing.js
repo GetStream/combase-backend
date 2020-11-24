@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
 import { StreamChat } from 'stream-chat';
-import getDay from 'date-fns/getDay';
 
 import { Models } from 'api/schema';
-import { getIsAvailableIntl } from 'utils/getIsAvailableIntl';
+import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
 export default class CombaseRoutingPlugin {
 	setAgentUnavailable = channel => {
@@ -139,25 +138,10 @@ export default class CombaseRoutingPlugin {
 			},
 		]);
 
-		const now = new Date();
-		const todayNo = getDay(now);
-
 		const availableAgents = agents.filter(agent => {
-			const { hours, timezone } = agent;
+			const available = isAgentAvailableIntl(agent);
 
-			// If the agent has set hours
-			if (hours.length) {
-				// If hours are set for the agent, but the current day is either disabled or non-existent, return as unavailable.
-				const today = hours.find(({ day }) => day === todayNo);
-
-				if (!today?.enabled) {
-					return;
-				}
-
-				const available = getIsAvailableIntl(today, timezone);
-
-				if (available) return agent;
-			}
+			if (available) return agent;
 
 			return null;
 		});

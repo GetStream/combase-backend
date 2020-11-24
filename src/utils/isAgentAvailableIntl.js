@@ -3,10 +3,18 @@ import { DateTime } from 'luxon';
 /**
  * Creates localized versions of the given start & end time, then compares with a Date object 'now' to determine
  * if the agent is available or not.
- * @param {Object} schedule - The agents schedule for today { start: Number, end: Number }
- * @param {String} timezone - The timezone of the agent from which to convert the time from.
  */
-export const getIsAvailableIntl = (schedule, timezone) => {
+export const isAgentAvailableIntl = ({ hours, timezone }) => {
+	let todayNo = new Date().getDay();
+
+	if (todayNo === 0) todayNo = 7;
+
+	const today = hours?.find?.(({ day }) => day === todayNo);
+
+	if (!today?.enabled) {
+		return false;
+	}
+
 	/**
 	 * Create start and end values with the correct timezone
 	 * Then call toJSDate to return a JS Date Object
@@ -15,15 +23,15 @@ export const getIsAvailableIntl = (schedule, timezone) => {
 	 * ! This allows us to compare the dates with simple JS Operators "<" ">" etc.
 	 */
 	const start = DateTime.fromObject({
-		hour: schedule.start.hour,
-		minute: schedule.start.minute,
+		hour: today.start.hour,
+		minute: today.start.minute,
 		second: 0,
 		zone: timezone,
 	}).toJSDate();
 
 	const end = DateTime.fromObject({
-		hour: schedule.end.hour,
-		minute: schedule.end.minute,
+		hour: today.end.hour,
+		minute: today.end.minute,
 		second: 0,
 		zone: timezone,
 	}).toJSDate();
