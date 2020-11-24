@@ -35,7 +35,6 @@ const AgentSchema = new Schema(
 		},
 		role: {
 			type: String,
-			required: true,
 			description: 'The defined role of the agent',
 		},
 		title: {
@@ -71,7 +70,6 @@ const AgentSchema = new Schema(
 				},
 				day: {
 					type: Number,
-					required: true,
 					enum: [1, 2, 3, 4, 5, 6, 7],
 					description: 'The date this availability schedule relates to [week day as a non-zero-based numeral representation].',
 				},
@@ -81,7 +79,6 @@ const AgentSchema = new Schema(
 						min: 0,
 						max: 23,
 						default: 9,
-						required: true,
 						description: 'Start of availability for this day [hour as a numeral representation].',
 					},
 					minute: {
@@ -89,7 +86,6 @@ const AgentSchema = new Schema(
 						min: 0,
 						max: 59,
 						default: 0,
-						required: true,
 						description: 'Start of availability for this day [minute as a numeral representation].',
 					},
 				},
@@ -99,7 +95,6 @@ const AgentSchema = new Schema(
 						min: 0,
 						max: 23,
 						default: 17,
-						required: true,
 						description: 'End of availability for this day [hour as a numeral representation].',
 					},
 					minute: {
@@ -107,7 +102,6 @@ const AgentSchema = new Schema(
 						min: 0,
 						max: 59,
 						default: 0,
-						required: true,
 						description: 'End of availability for this day [minute as a numeral representation].',
 					},
 				},

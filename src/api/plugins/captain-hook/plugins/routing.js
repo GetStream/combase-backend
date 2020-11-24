@@ -171,16 +171,17 @@ export default class CombaseRoutingPlugin {
 				}
 
 				return agent;
-
 			})
 			.filter(a => {
 				if (typeof a !== 'undefined') return a;
 			});
-		
 
-		// arr of available agents
-		// need to balance by tickets open/completed
-		// then pick rand if array is > 1
+		/*
+		 * arr of available agents
+		 * need to balance by tickets open/completed
+		 * then pick rand if array is > 1
+		 */
+		// eslint-disable-next-line no-console
 		console.log(availableAgents);
 
 		//const agent = availableAgents[0];
