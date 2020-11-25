@@ -6,11 +6,11 @@ import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const NoteSchema = new Schema(
 	{
-		chat: {
+		ticket: {
 			type: Schema.Types.ObjectId,
-			ref: 'Chat',
+			ref: 'Ticket',
 			required: true,
-			description: 'A reference to the chat that the note is associated with.',
+			description: 'A reference to the ticket that the note is associated with.',
 		},
 		agent: {
 			type: Schema.Types.ObjectId,
@@ -22,7 +22,7 @@ const NoteSchema = new Schema(
 			type: String,
 			trim: true,
 			required: true,
-			description: 'A string representation of the note associated with a chat – this is serialized and displayed by the frontend.',
+			description: 'A string representation of the note associated with a ticket – this is serialized and displayed by the frontend.',
 		},
 	},
 	{ collection: 'notes' }

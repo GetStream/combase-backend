@@ -1,25 +1,25 @@
-import { ChatTC } from '../model';
+import { TicketTC } from '../model';
 
 /**
  * Takes the User _id (the customer using the widget) and the organization ID as
  * arguments. Then creates a channel with just the user (ready to be routed to an agent)
- * and returns the Chat object so we can connect to the channel on the client-side.
+ * and returns the ticket object so we can connect to the channel on the client-side.
  */
 
-export const createChat = {
-	name: 'createChat',
-	type: ChatTC,
+export const createTicket = {
+	name: 'createTicket',
+	type: TicketTC,
 	kind: 'mutation',
 	args: {
 		message: 'String',
 		user: 'MongoID!',
 	},
-	resolve: async (_, { message, user }, { models: { Chat }, organization, stream }) => {
+	resolve: async (_, { message, user }, { models: { Ticket }, organization, stream }) => {
 		try {
 			const status = 'unassigned';
 			const tags = [];
 
-			const { _doc: chat } = await Chat.create({
+			const { _doc: ticket } = await Ticket.create({
 				organization,
 				user,
 				status,
@@ -28,7 +28,7 @@ export const createChat = {
 
 			await stream.chat.setUser({ id: user });
 
-			const channel = stream.chat.channel('messaging', chat._id.toString(), {
+			const channel = stream.chat.channel('messaging', ticket._id.toString(), {
 				created_by_id: user, // eslint-disable-line camelcase
 				members: [user],
 				organization,
@@ -45,26 +45,26 @@ export const createChat = {
 				});
 			}
 
-			return chat;
+			return ticket;
 		} catch (error) {
-			throw new Error(`Chat creation failed: ${error.message}`);
+			throw new Error(`Ticket creation failed: ${error.message}`);
 		}
 	},
 };
 
 export const addToChat = {
-	name: 'addToChat',
-	type: ChatTC,
+	name: 'addToTicket',
+	type: TicketTC,
 	kind: 'Mutation',
 	args: {
 		agent: 'MongoID!',
-		chat: 'MongoID!',
-		status: 'EnumChatStatus',
+		ticket: 'MongoID!',
+		status: 'EnumTicketStatus',
 	},
 	// TODO Show status has a default of open
-	resolve: async (_, { chat, agent, status = 'open' }, { models: { Agent, Chat }, stream }) => {
+	resolve: async (_, { ticket, agent, status = 'open' }, { models: { Agent, Ticket }, stream }) => {
 		try {
-			const channel = stream.chat.channel('messaging', chat.toString());
+			const channel = stream.chat.channel('messaging', ticket.toString());
 
 			await channel.watch({ state: true });
 
@@ -89,8 +89,8 @@ export const addToChat = {
 
 			await Promise.all([addMember, updateChannel]);
 
-			return Chat.findByIdAndUpdate(
-				chat,
+			return await Ticket.findByIdAndUpdate(
+				ticket,
 				{
 					$addToSet: {
 						agents: [agent],
@@ -105,23 +105,23 @@ export const addToChat = {
 	},
 };
 
-export const chatAddLabel = {
-	name: 'chatAddLabel',
+export const ticketAddLabel = {
+	name: 'ticketAddLabel',
 	description: 'Add a label to a chat channel.',
-	type: ChatTC,
+	type: TicketTC,
 	kind: 'mutation',
 	args: {
-		chat: 'MongoID!',
-		label: 'EnumChatLabels!',
+		ticket: 'MongoID!',
+		label: 'EnumTicketLabels!',
 	},
-	resolve: async (_, { chat, label }, { models: { Chat }, stream }) => {
+	resolve: async (_, { ticket, label }, { models: { Ticket }, stream }) => {
 		try {
-			const channel = stream.chat.channel('messaging', chat);
+			const channel = stream.chat.channel('messaging', ticket);
 
 			await channel.watch();
 
 			/*
-			 * Ensure that labels are always unique, if the user calls chatAddLabel
+			 * Ensure that labels are always unique, if the user calls ticketAddLabel
 			 * again for the same toggle, it will result in no change.
 			 */
 			const labels = [...new Set([...(channel.data?.labels || []), label])];
@@ -131,8 +131,8 @@ export const chatAddLabel = {
 				labels,
 			});
 
-			return Chat.findByIdAndUpdate(
-				chat,
+			return await Ticket.findByIdAndUpdate(
+				ticket,
 				{
 					labels,
 				},
@@ -146,18 +146,18 @@ export const chatAddLabel = {
 	},
 };
 
-export const chatRemoveLabel = {
-	name: 'chatRemoveLabel',
+export const ticketRemoveLabel = {
+	name: 'ticketRemoveLabel',
 	description: 'Remove a label from a chat channel.',
-	type: ChatTC,
+	type: TicketTC,
 	kind: 'mutation',
 	args: {
-		chat: 'MongoID!',
-		label: 'EnumChatLabels!',
+		ticket: 'MongoID!',
+		label: 'EnumTicketLabels!',
 	},
-	resolve: async (_, { chat, label }, { models: { Chat }, stream }) => {
+	resolve: async (_, { ticket, label }, { models: { Ticket }, stream }) => {
 		try {
-			const channel = stream.chat.channel('messaging', chat);
+			const channel = stream.chat.channel('messaging', ticket.toString());
 
 			await channel.watch();
 
@@ -168,8 +168,8 @@ export const chatRemoveLabel = {
 				labels,
 			});
 
-			return Chat.findByIdAndUpdate(
-				chat,
+			return await Ticket.findByIdAndUpdate(
+				ticket,
 				{
 					labels,
 				},
@@ -183,18 +183,18 @@ export const chatRemoveLabel = {
 	},
 };
 
-export const chatToggleLabel = {
-	name: 'chatToggleLabel',
+export const ticketToggleLabel = {
+	name: 'ticketToggleLabel',
 	description: 'Toggle a label on a chat channel.',
-	type: ChatTC,
+	type: TicketTC,
 	kind: 'mutation',
 	args: {
-		chat: 'MongoID!',
-		label: 'EnumChatLabels!',
+		ticket: 'MongoID!',
+		label: 'EnumTicketLabels!',
 	},
-	resolve: async (_, { chat, label }, { models: { Chat }, stream }) => {
+	resolve: async (_, { ticket, label }, { models: { Ticket }, stream }) => {
 		try {
-			const channel = stream.chat.channel('messaging', chat);
+			const channel = stream.chat.channel('messaging', ticket.toString());
 
 			await channel.watch();
 
@@ -211,8 +211,8 @@ export const chatToggleLabel = {
 				labels,
 			});
 
-			return Chat.findByIdAndUpdate(
-				chat,
+			return await Ticket.findByIdAndUpdate(
+				ticket,
 				{
 					labels,
 				},

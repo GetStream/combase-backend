@@ -41,7 +41,7 @@ const AgentSchema = new Schema(
 			type: String,
 			trim: true,
 			default: 'Support Agent',
-			description: 'Title of the agent responding to a chat.',
+			description: 'Title of the agent responding to a ticket.',
 		},
 		avatar: {
 			type: String,

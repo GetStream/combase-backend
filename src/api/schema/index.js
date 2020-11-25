@@ -4,7 +4,7 @@ import { schema as streamSchema } from 'api/plugins/graphql-stream';
 
 import Agent from './agent';
 import Asset from './asset';
-import Chat from './chat';
+import Ticket from './ticket';
 import Faq from './faq';
 import Group from './group';
 import Note from './note';
@@ -14,7 +14,7 @@ import User from './user';
 import Webhook from './webhook';
 import { AgentModel } from './agent/model';
 import { AssetModel } from './asset/model';
-import { ChatModel } from './chat/model';
+import { TicketModel } from './ticket/model';
 import { FaqModel } from './faq/model';
 import { GroupModel } from './group/model';
 import { NoteModel } from './note/model';
@@ -29,7 +29,7 @@ schemaComposer.merge(transformSchema(streamSchema, [new RenameTypes(name => `Str
 schemaComposer.Query.addFields({
 	...Agent.Query,
 	...Asset.Query,
-	...Chat.Query,
+	...Ticket.Query,
 	...Faq.Query,
 	...Group.Query,
 	...Note.Query,
@@ -42,7 +42,7 @@ schemaComposer.Query.addFields({
 schemaComposer.Mutation.addFields({
 	...Agent.Mutation,
 	...Asset.Mutation,
-	...Chat.Mutation,
+	...Ticket.Mutation,
 	...Faq.Mutation,
 	...Group.Mutation,
 	...Note.Mutation,
@@ -54,7 +54,7 @@ schemaComposer.Mutation.addFields({
 
 schemaComposer.Subscription.addFields({
 	...Agent.Subscription,
-	...Chat.Subscription,
+	...Ticket.Subscription,
 	...Organization.Subscription,
 	...User.Subscription,
 });
@@ -66,7 +66,7 @@ export default schema;
 export const Models = {
 	Agent: AgentModel,
 	Asset: AssetModel,
-	Chat: ChatModel,
+	Ticket: TicketModel,
 	Faq: FaqModel,
 	Group: GroupModel,
 	Note: NoteModel,

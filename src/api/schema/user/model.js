@@ -16,14 +16,14 @@ const UserSchema = new Schema(
 			required: true,
 			trim: true,
 			type: String,
-			description: 'The provided name of the user initiating a chat.',
+			description: 'The provided name of the user on a ticket.',
 		},
 		email: {
 			type: String,
 			lowercase: true,
 			trim: true,
 			required: true,
-			description: 'The provided email of the user initiating a chat.',
+			description: 'The provided email of the user on a ticket.',
 		},
 	},
 	{ collection: 'users' }

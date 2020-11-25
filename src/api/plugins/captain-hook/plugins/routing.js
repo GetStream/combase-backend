@@ -5,7 +5,7 @@ import { Models } from 'api/schema';
 import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
 export default class CombaseRoutingPlugin {
-	setAgentUnavailable = channel => {
+	setAgentUnavailable = async channel => {
 		/*
 		 * const updateChannel = channel.update(
 		 * 	{
@@ -19,18 +19,19 @@ export default class CombaseRoutingPlugin {
 		 * );
 		 */
 
-		const updateChat = Models.Chat.findByIdAndUpdate(
+		const updateTicket = await Models.Ticket.findByIdAndUpdate(
 			channel.id,
 			{
+				type: 'ticket',
 				status: 'unassigned',
 			},
 			{ new: true }
 		);
 
-		return Promise.all([updateChat]);
+		return Promise.all([updateTicket]);
 	};
 
-	addToChat = (agentId, channel) => {
+	addToChat = async (agentId, channel) => {
 		if (!agentId) return this.setAgentUnavailable(channel);
 
 		// This should never happen as routing only fires on new chats, but here as a failsafe.
@@ -55,12 +56,13 @@ export default class CombaseRoutingPlugin {
 			}
 		);
 
-		const updateChat = Models.Chat.findByIdAndUpdate(
+		const updateChat = await Models.Ticket.findByIdAndUpdate(
 			channel.id,
 			{
 				$addToSet: {
 					agents: [agentId],
 				},
+				type: 'chat',
 				status: 'open',
 			},
 			{ new: true }
@@ -93,15 +95,15 @@ export default class CombaseRoutingPlugin {
 					avatar: true,
 					hours: true,
 					timezone: true,
-					chats: true,
+					tickets: true,
 				},
 			},
 			{
 				$lookup: {
-					from: 'chats',
+					from: 'tickets',
 					localField: '_id',
 					foreignField: 'agents',
-					as: 'chats',
+					as: 'tickets',
 				},
 			},
 			{
@@ -116,7 +118,7 @@ export default class CombaseRoutingPlugin {
 						open: {
 							$size: {
 								$filter: {
-									input: '$chats',
+									input: '$tickets',
 									cond: {
 										$eq: ['$$this.status', 'open'],
 									},
@@ -126,7 +128,7 @@ export default class CombaseRoutingPlugin {
 						closed: {
 							$size: {
 								$filter: {
-									input: '$chats',
+									input: '$tickets',
 									cond: {
 										$eq: ['$$this.status', 'closed'],
 									},
