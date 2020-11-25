@@ -5,13 +5,22 @@ export const createMockAgentData = {
 	kind: 'mutation',
 	type: 'Organization',
 	args: { organization: 'MongoID!' },
-	resolve: async (_, args, { models: { Agent, Group, Organization }, organization }) => {
+	resolve: async (_, { organization }, { models: { Agent, Group, Organization } }) => {
 		try {
-			if (organization && !args.organization) return null;
+			if (!organization) return null;
 
-			await generateMockAgentsAndGroups(args?.organization || organization, Group, Agent);
+			const groupCount = await Group.countDocuments({ organization });
+			const agentCount = await Agent.countDocuments({ organization });
 
-			return Organization.findById(args?.organization || organization);
-		} catch (error) {}
+			if (groupCount || agentCount) {
+				throw new Error('This organization already has data, so adding mock data would likely get weird 😬');
+			}
+
+			await generateMockAgentsAndGroups(organization, Group, Agent);
+
+			return Organization.findById(organization);
+		} catch (error) {
+			throw new Error(error.message);
+		}
 	},
 };
