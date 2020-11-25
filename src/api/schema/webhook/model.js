@@ -35,14 +35,14 @@ const WebhookSchema = new Schema(
 				required: true,
 				trim: true,
 				type: String,
-				description: 'The action triggered by this webhook event (function to call).',
+				description: 'The plugin triggered by this webhook event (plugin function to call).',
 			},
 		],
 		auth: {
 			type: {
 				type: String,
-				enum: ['query', 'header'],
-				default: 'query',
+				enum: ['querystring', 'header'],
+				default: 'querystring',
 			},
 		},
 		active: {

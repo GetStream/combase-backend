@@ -51,12 +51,12 @@
 		"if-env": "^1.0.4",
 		"jsonwebtoken": "^8.5.1",
 		"luxon": "^1.25.0",
-		"mongoose": "^5.10.15",
+		"mongoose": "^5.10.16",
 		"mongoose-bcrypt": "^1.9.0",
 		"mongoose-field-encryption": "^4.0.0",
 		"mongoose-timestamp": "^0.6.0",
 		"rascal": "^10.2.6",
-		"stream-chat": "^2.8.1",
+		"stream-chat": "^2.8.3",
 		"winston": "^3.3.3"
 	},
 	"devDependencies": {
