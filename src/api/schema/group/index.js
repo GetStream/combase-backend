@@ -1,3 +1,4 @@
+import './extend';
 import resolvers from './resolvers';
 import { GroupTC } from './model';
 
