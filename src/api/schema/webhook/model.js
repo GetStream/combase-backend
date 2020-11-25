@@ -10,12 +10,8 @@ const WebhookSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'Organization',
 			required: true,
+			index: true,
 			description: 'A reference to the organization that the webhook is associated with.',
-		},
-		url: {
-			type: String,
-			trim: true,
-			description: 'Absolute URL to send a payload to via an HTTP POST.',
 		},
 		name: {
 			type: String,
