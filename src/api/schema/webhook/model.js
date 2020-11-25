@@ -28,9 +28,9 @@ const WebhookSchema = new Schema(
 		},
 		triggers: [
 			{
+				type: String,
 				required: true,
 				trim: true,
-				type: String,
 				description: 'The plugin triggered by this webhook event (plugin function to call).',
 			},
 		],
