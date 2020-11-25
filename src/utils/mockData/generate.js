@@ -1,6 +1,6 @@
 import { GROUPS, AGENTS, SCHEDULE } from './constants';
 
-export const generateMockAgentsAndGroups = async (organization, Group, Agent) => {
+export const generateMockAgentsAndGroups = async ({ organization, domain }, Group, Agent, streamChat) => {
 	const groupIdMap = {};
 
 	for (const key in GROUPS) {
@@ -21,17 +21,30 @@ export const generateMockAgentsAndGroups = async (organization, Group, Agent) =>
 		const [firstName] = agent.name.split(' ');
 
 		// eslint-disable-next-line no-await-in-loop
-		await Agent.create({
+		const { _doc: data } = await Agent.create({
 			...agent,
 			name: {
 				full: agent.name,
 				display: firstName,
 			},
 			organization,
-			email: `${firstName.toLowerCase()}@getstream.io`,
+			email: `${firstName.toLowerCase()}@${domain || 'getstream.io'}`,
 			password: 'password1',
 			hours: SCHEDULE,
 			groups: agent.groups?.map(name => groupIdMap[name]) || groupIdMap['General'],
 		});
+
+		// eslint-disable-next-line no-await-in-loop
+		await streamChat.setUser({
+			avatar: data.avatar,
+			email: data.email,
+			id: data._id.toString(),
+			name: data.name.display,
+			organization: organization.toString(),
+			type: 'agent',
+		});
+
+		// eslint-disable-next-line no-await-in-loop
+		await streamChat.disconnect();
 	}
 };

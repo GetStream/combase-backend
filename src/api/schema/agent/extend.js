@@ -15,6 +15,32 @@ AgentTC.addFields({
 			return isAgentAvailableIntl(agent);
 		},
 	},
+	openTicketCount: {
+		type: 'Int!',
+		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
+			Ticket.countDocuments({
+				agent: { $in: [_id] },
+				organization,
+				status: 'open',
+			}),
+	},
+	closedTicketCount: {
+		type: 'Int!',
+		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
+			Ticket.countDocuments({
+				agent: { $in: [_id] },
+				organization,
+				status: 'closed',
+			}),
+	},
+	totalTicketCount: {
+		type: 'Int!',
+		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
+			Ticket.countDocuments({
+				agent: { $in: [_id] },
+				organization,
+			}),
+	},
 	timeline: {
 		type: 'StreamFeed',
 		args: {},

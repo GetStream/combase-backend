@@ -4,8 +4,10 @@ export const createMockAgentData = {
 	name: 'createMockAgentData',
 	kind: 'mutation',
 	type: 'Organization',
-	args: { organization: 'MongoID!' },
-	resolve: async (_, { organization }, { models: { Agent, Group, Organization } }) => {
+	args: {
+		domain: 'String',
+	},
+	resolve: async (_, { domain }, { models: { Agent, Group, Organization }, organization, stream }) => {
 		try {
 			if (!organization) return null;
 
@@ -13,10 +15,18 @@ export const createMockAgentData = {
 			const agentCount = await Agent.countDocuments({ organization });
 
 			if (groupCount || agentCount) {
-				throw new Error('This organization already has data, so adding mock data would likely get weird 😬');
+				throw new Error('Please use a fresh Organization, with no existing groups or agents.');
 			}
 
-			await generateMockAgentsAndGroups(organization, Group, Agent);
+			await generateMockAgentsAndGroups(
+				{
+					domain,
+					organization,
+				},
+				Group,
+				Agent,
+				stream.chat
+			);
 
 			return Organization.findById(organization);
 		} catch (error) {
