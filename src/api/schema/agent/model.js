@@ -13,12 +13,14 @@ const AgentSchema = new Schema(
 			required: true,
 			description: 'A reference to the organization the agent associated with.',
 		},
-		team: {
-			type: Schema.Types.ObjectId,
-			ref: 'Team',
-			required: false,
-			description: 'A reference to the team the agent is assigned to.',
-		},
+		groups: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Group',
+				required: false,
+				description: 'A reference to the group the agent is assigned to.',
+			},
+		],
 		name: {
 			full: {
 				trim: true,
