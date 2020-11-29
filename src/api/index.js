@@ -3,13 +3,12 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import { CaptainHook } from '@captain-hook/core';
 
-import { mongodb } from 'utils/mongodb';
-import { logger } from 'utils/logger';
+import { mongodb } from '../utils/mongodb';
+import { logger } from '../utils/logger';
 
-import { webhookPlugins } from '../../combase.config';
-
-import { captainHook } from './plugins/captain-hook';
+import { combaseWebhookParser, CombaseRoutingPlugin } from './plugins/captain-hook';
 
 import context from './context';
 import schema from './schema';
@@ -40,10 +39,12 @@ apollo.applyMiddleware({
 	path: '/graphql',
 });
 
-const hookHandler = captainHook(webhookPlugins);
+const webhookPlugins = [combaseWebhookParser(), new CombaseRoutingPlugin()];
+
+const hookHandler = new CaptainHook(process.env.AUTH_SECRET, webhookPlugins);
 
 app.use('/webhook', bodyParser.json());
-app.use('/webhook', hookHandler.receive);
+app.use('/webhook', hookHandler.start);
 
 const httpServer = http.createServer(app);
 

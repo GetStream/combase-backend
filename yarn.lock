@@ -977,6 +977,13 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@captain-hook/core@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@captain-hook/core/-/core-0.1.0.tgz#73d6e173fa3efd531243d884b76d4e6ac0a86b96"
+  integrity sha512-RCazWdkxHo3pJQnyCDeuSMdfJaOdf4Wcv7z2SgSLqvvK9Y/houh5aFXHDup0lYuIb9/0We98O7FLaoHKjUGfzg==
+  dependencies:
+    jsonwebtoken "^8.5.1"
+
 "@dabh/diagnostics@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@dabh/diagnostics/-/diagnostics-2.0.2.tgz#290d08f7b381b8f94607dc8f471a12c675f9db31"

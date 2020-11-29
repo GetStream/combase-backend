@@ -4,7 +4,7 @@ import { StreamChat } from 'stream-chat';
 import { Models } from 'api/schema';
 import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
-export default class CombaseRoutingPlugin {
+export class CombaseRoutingPlugin {
 	setAgentUnavailable = async channel => {
 		/*
 		 * const updateChannel = channel.update(
@@ -71,7 +71,19 @@ export default class CombaseRoutingPlugin {
 		return Promise.all([addMember, updateChannel, updateChat]);
 	};
 
-	findAvailableAgent = async event => {
+	getChannel = async (channelType, channelId, { key, secret }) => {
+		const streamChat = new StreamChat(key, secret);
+
+		const channel = streamChat.channel(channelType, channelId);
+
+		await channel.watch({ state: true });
+
+		return [channel, streamChat];
+	};
+
+	receive = async payload => {
+		const { data: event } = payload;
+
 		const { id: channelId, organization, type: channelType } = event.channel;
 
 		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
@@ -174,29 +186,7 @@ export default class CombaseRoutingPlugin {
 		return this.addToChat(agent._id, channel);
 	};
 
-	getChannel = async (channelType, channelId, { key, secret }) => {
-		const streamChat = new StreamChat(key, secret);
-
-		const channel = streamChat.channel(channelType, channelId);
-
-		await channel.watch({ state: true });
-
-		return [channel, streamChat];
-	};
-
-	receive = async (req, res, next) => {
-		if (req.headers['target-agent'] === 'Stream Webhook Client') {
-			const { body: event } = req;
-
-			switch (event.type) {
-				case 'channel.created':
-					// TODO We should add custom data to the channel from the createChat mutation such as keywords from the chat.
-					await this.findAvailableAgent(event);
-
-					return next();
-				default:
-					return next();
-			}
-		}
-	};
+	test({ data }) {
+		return data?.type && data?.type === 'channel.created';
+	}
 }
