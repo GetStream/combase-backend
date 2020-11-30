@@ -1,10 +1,21 @@
 import mongoose from 'mongoose';
 import { StreamChat } from 'stream-chat';
+import defaultsDeep from 'lodash.defaultsdeep';
 
 import { Models } from 'api/schema';
 import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
+const defaultRoutingOptions = {
+	maxOpenChats: 5,
+};
+
 export class CombaseRoutingPlugin {
+	options;
+
+	constructor(options = {}) {
+		this.options = defaultsDeep(options, defaultRoutingOptions);
+	}
+
 	setAgentUnavailable = async channel => {
 		/*
 		 * const updateChannel = channel.update(
@@ -107,7 +118,6 @@ export class CombaseRoutingPlugin {
 					avatar: true,
 					hours: true,
 					timezone: true,
-					tickets: true,
 				},
 			},
 			{
@@ -115,7 +125,7 @@ export class CombaseRoutingPlugin {
 					from: 'tickets',
 					localField: '_id',
 					foreignField: 'agents',
-					as: 'tickets',
+					as: 'allTickets',
 				},
 			},
 			{
@@ -130,7 +140,7 @@ export class CombaseRoutingPlugin {
 						open: {
 							$size: {
 								$filter: {
-									input: '$tickets',
+									input: '$allTickets',
 									cond: {
 										$eq: ['$$this.status', 'open'],
 									},
@@ -140,7 +150,7 @@ export class CombaseRoutingPlugin {
 						closed: {
 							$size: {
 								$filter: {
-									input: '$tickets',
+									input: '$allTickets',
 									cond: {
 										$eq: ['$$this.status', 'closed'],
 									},
@@ -148,6 +158,18 @@ export class CombaseRoutingPlugin {
 							},
 						},
 					},
+				},
+			},
+			{
+				$match: {
+					'tickets.open': {
+						$lt: this.options.maxOpenChats, // Filter out all agents with more open conversations than the allowed maxOpenChats value.
+					},
+				},
+			},
+			{
+				$sort: {
+					'tickets.open': 1, // Least tickets is first in the array.
 				},
 			},
 		]);
