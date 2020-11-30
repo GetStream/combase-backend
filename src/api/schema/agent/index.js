@@ -2,13 +2,14 @@ import './relations';
 import './extend';
 import resolvers from './resolvers';
 import { AgentTC } from './model';
+import { isAuthedAgent } from 'utils/resolverMiddlewares/auth';
+import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
 
 const Query = {
-	agentById: AgentTC.mongooseResolvers.findById(),
-	agentByIds: AgentTC.mongooseResolvers.findByIds(),
-	agentOne: AgentTC.mongooseResolvers.findOne(),
-	agentMany: AgentTC.mongooseResolvers.findMany(),
-	agentCount: AgentTC.mongooseResolvers.count(),
+	agentById: AgentTC.mongooseResolvers.findById().withMiddlewares([organizationFilter]),
+	agentByIds: AgentTC.mongooseResolvers.findByIds().withMiddlewares([isAuthedAgent, organizationFilter]),
+	agentMany: AgentTC.mongooseResolvers.findMany().withMiddlewares([isAuthedAgent, organizationFilter]),
+	agentCount: AgentTC.mongooseResolvers.count().withMiddlewares([isAuthedAgent, organizationFilter]),
 	...resolvers.Query,
 };
 
