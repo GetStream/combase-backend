@@ -179,8 +179,10 @@ export class CombaseRoutingPlugin {
 			 * then pick rand
 			 */
 
+			const randIdx = Math.floor(Math.random() * availableAgents.length);
+
 			// TEMP: Replace with the above sorting/find mechanism.
-			agent = availableAgents[0];
+			agent = availableAgents[randIdx];
 		}
 
 		return this.addToChat(agent._id, channel);

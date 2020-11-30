@@ -8,7 +8,7 @@ import { CaptainHook } from '@captain-hook/core';
 import { mongodb } from '../utils/mongodb';
 import { logger } from '../utils/logger';
 
-import { combaseWebhookParser, CombaseRoutingPlugin } from './plugins/captain-hook';
+import { CombaseWebhookParser, CombaseRoutingPlugin } from './plugins/captain-hook';
 
 import context from './context';
 import schema from './schema';
@@ -39,7 +39,7 @@ apollo.applyMiddleware({
 	path: '/graphql',
 });
 
-const webhookPlugins = [combaseWebhookParser(), new CombaseRoutingPlugin()];
+const webhookPlugins = [new CombaseWebhookParser(), new CombaseRoutingPlugin()];
 
 const hookHandler = new CaptainHook(process.env.AUTH_SECRET, webhookPlugins);
 
