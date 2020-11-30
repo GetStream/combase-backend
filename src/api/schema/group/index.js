@@ -1,13 +1,12 @@
 import './extend';
 import resolvers from './resolvers';
 import { GroupTC } from './model';
-import { hasOrganization, scopeOrganization } from 'utils/wrapResolve';
 
 const Query = {
 	groupById: GroupTC.mongooseResolvers.findById(),
 	groupByIds: GroupTC.mongooseResolvers.findByIds(),
 	groupOne: GroupTC.mongooseResolvers.findOne(),
-	groupMany: GroupTC.mongooseResolvers.findMany().wrapResolve(hasOrganization).wrapResolve(scopeOrganization),
+	groupMany: GroupTC.mongooseResolvers.findMany(),
 	groupCount: GroupTC.mongooseResolvers.count(),
 	...resolvers.Query,
 };

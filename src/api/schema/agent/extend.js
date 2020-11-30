@@ -27,6 +27,7 @@ AgentTC.addFields({
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
 });
 
+// TODO: Here we can probably use relations to call the Ticket.mongooseResolvers.count() resolver.
 AgentTC.addNestedFields({
 	'tickets.closed': {
 		type: 'Int!',

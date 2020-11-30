@@ -1,5 +1,3 @@
-import { hasOrganization, scopeOrganization } from 'utils/wrapResolve';
-
 import './relations';
 import './extend';
 import resolvers from './resolvers';
@@ -9,7 +7,7 @@ const Query = {
 	agentById: AgentTC.mongooseResolvers.findById(),
 	agentByIds: AgentTC.mongooseResolvers.findByIds(),
 	agentOne: AgentTC.mongooseResolvers.findOne(),
-	agentMany: AgentTC.mongooseResolvers.findMany().wrapResolve(hasOrganization).wrapResolve(scopeOrganization),
+	agentMany: AgentTC.mongooseResolvers.findMany(),
 	agentCount: AgentTC.mongooseResolvers.count(),
 	...resolvers.Query,
 };
@@ -19,7 +17,7 @@ const Mutation = {
 	agentCreateMany: AgentTC.mongooseResolvers.createMany(),
 	agentUpdateById: AgentTC.mongooseResolvers.updateById(),
 	agentUpdateOne: AgentTC.mongooseResolvers.updateOne(),
-	agentUpdateMany: AgentTC.mongooseResolvers.updateMany().wrapResolve(hasOrganization).wrapResolve(scopeOrganization),
+	agentUpdateMany: AgentTC.mongooseResolvers.updateMany(),
 	agentRemoveById: AgentTC.mongooseResolvers.removeById(),
 	agentRemoveOne: AgentTC.mongooseResolvers.removeOne(),
 	agentRemoveMany: AgentTC.mongooseResolvers.removeMany(),
