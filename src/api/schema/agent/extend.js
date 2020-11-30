@@ -15,32 +15,6 @@ AgentTC.addFields({
 			return isAgentAvailableIntl(agent);
 		},
 	},
-	openTicketCount: {
-		type: 'Int!',
-		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
-			Ticket.countDocuments({
-				agent: { $in: [_id] },
-				organization,
-				status: 'open',
-			}),
-	},
-	closedTicketCount: {
-		type: 'Int!',
-		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
-			Ticket.countDocuments({
-				agent: { $in: [_id] },
-				organization,
-				status: 'closed',
-			}),
-	},
-	totalTicketCount: {
-		type: 'Int!',
-		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
-			Ticket.countDocuments({
-				agent: { $in: [_id] },
-				organization,
-			}),
-	},
 	timeline: {
 		type: 'StreamFeed',
 		args: {},
@@ -51,6 +25,35 @@ AgentTC.addFields({
 		resolve: ({ _id }, _, { agent, stream: { chat } }) => (agent.toString() === _id.toString() ? chat?.createToken(_id.toString()) : null),
 	},
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
+});
+
+AgentTC.addNestedFields({
+	'tickets.closed': {
+		type: 'Int!',
+		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
+			Ticket.countDocuments({
+				agent: { $in: [_id] },
+				organization,
+				status: 'closed',
+			}),
+	},
+	'tickets.open': {
+		type: 'Int!',
+		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
+			Ticket.countDocuments({
+				agent: { $in: [_id] },
+				organization,
+				status: 'open',
+			}),
+	},
+	'tickets.total': {
+		type: 'Int!',
+		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
+			Ticket.countDocuments({
+				agent: { $in: [_id] },
+				organization,
+			}),
+	},
 });
 
 AgentTC.removeField('password');
