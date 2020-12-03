@@ -1,20 +1,12 @@
 import mongoose from 'mongoose';
+import { WebhookPlugin } from '@captain-hook/core';
 import { StreamChat } from 'stream-chat';
-import defaultsDeep from 'lodash.defaultsdeep';
 
 import { Models } from 'api/schema';
 import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
-const defaultRoutingOptions = {
-	maxOpenChats: 5,
-};
-
-export class CombaseRoutingPlugin {
-	options;
-
-	constructor(options = {}) {
-		this.options = defaultsDeep(options, defaultRoutingOptions);
-	}
+export class CombaseRoutingPlugin extends WebhookPlugin {
+	maxOpenChats = 5;
 
 	setAgentUnavailable = async channel => {
 		/*
@@ -92,10 +84,11 @@ export class CombaseRoutingPlugin {
 		return [channel, streamChat];
 	};
 
-	receive = async payload => {
-		const { data: event } = payload;
+	handle = async payload => {
+		const { data: event, webhook } = payload;
+		const { organization } = webhook;
 
-		const { id: channelId, organization, type: channelType } = event.channel;
+		const { id: channelId, type: channelType } = event.channel;
 
 		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
 
@@ -163,7 +156,7 @@ export class CombaseRoutingPlugin {
 			{
 				$match: {
 					'tickets.open': {
-						$lt: this.options.maxOpenChats, // Filter out all agents with more open conversations than the allowed maxOpenChats value.
+						$lt: this.maxOpenChats, // Filter out all agents with more open conversations than the allowed maxOpenChats value.
 					},
 				},
 			},
@@ -183,7 +176,7 @@ export class CombaseRoutingPlugin {
 		});
 
 		// eslint-disable-next-line no-console
-		console.log(availableAgents);
+		// console.log(availableAgents);
 
 		let agent;
 
@@ -210,7 +203,9 @@ export class CombaseRoutingPlugin {
 		return this.addToChat(agent._id, channel);
 	};
 
-	test({ data }) {
+	test = payload => {
+		const { data } = payload;
+
 		return data?.type && data?.type === 'channel.created';
-	}
+	};
 }

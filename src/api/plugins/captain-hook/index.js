@@ -1,2 +1,2 @@
-export * from './parser';
+export * from './combaseWebhookParser';
 export * from './routing';
