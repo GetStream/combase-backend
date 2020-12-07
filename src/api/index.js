@@ -18,7 +18,7 @@ const apollo = new ApolloServer({
 	context,
 	introspection: process.env.NODE_ENV !== 'production',
 	path: '/',
-	playground: true,
+	playground: process.env.NODE_ENV !== 'production',
 	tracing: process.env.NODE_ENV !== 'production',
 	schema,
 });
