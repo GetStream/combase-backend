@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
 import http from 'http';
+import cors from 'cors';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
@@ -39,6 +40,7 @@ apollo.applyMiddleware({
 	path: '/graphql',
 });
 
+app.use(cors());
 app.use('/webhook', bodyParser.json());
 app.use('/webhook', captainHook.onWebhook);
 
