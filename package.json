@@ -13,7 +13,6 @@
 		"build": "babel src --out-dir dist",
 		"start:prod": "pm2-runtime start ecosystem.prod.config.js",
 		"start:dev": "pm2-runtime start ecosystem.dev.config.js",
-		"make:plugin": "plop [plugin]",
 		"dev": "nodemon --exec npx babel-node ./src/api/index.js --inspect",
 		"lint": "eslint . --ext .js"
 	},
