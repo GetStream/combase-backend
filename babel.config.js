@@ -9,5 +9,11 @@ module.exports = {
 			},
 		],
 	],
-	plugins: [['module-resolver', { root: ['./src'] }], 'transform-optional-chaining', '@babel/proposal-class-properties', ['inline-dotenv']],
+	plugins: [
+		['module-resolver', { root: ['./src'] }],
+		'transform-optional-chaining',
+		'@babel/proposal-async-generator-functions',
+		'@babel/proposal-class-properties',
+		['inline-dotenv'],
+	],
 };

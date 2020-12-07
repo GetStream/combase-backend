@@ -52,7 +52,7 @@ export const createTicket = {
 	},
 };
 
-export const addToChat = {
+export const addToTicket = {
 	name: 'addToTicket',
 	type: TicketTC,
 	kind: 'Mutation',
@@ -62,7 +62,7 @@ export const addToChat = {
 		status: 'EnumTicketStatus',
 	},
 	// TODO Show status has a default of open
-	resolve: async (_, { ticket, agent, status = 'open' }, { models: { Agent, Ticket }, stream }) => {
+	resolve: async (_, { ticket, agent, status = 'open' }, { models: { Ticket }, stream }) => {
 		try {
 			const channel = stream.chat.channel('messaging', ticket.toString());
 
@@ -72,22 +72,24 @@ export const addToChat = {
 				throw new Error('That agent is already a member of this channel.');
 			}
 
-			const updates = {};
-
-			if (status) updates.status = status;
-
-			const { name: agentName } = await Agent.findById(agent, { 'name.display': true });
-
 			const addMember = channel.addModerators([agent.toString()]);
 
-			// TODO: We should create more 'sub-types' of system messages with a custom field so we can render them differently, would be cool to show the agent avatar when they get added etc.
-			const updateChannel = channel.update(updates, {
-				subtype: 'agent_added',
-				text: `${agentName?.display || 'An agent'} joined the chat.`,
-				user_id: agent, // eslint-disable-line camelcase
-			});
+			/*
+			 * TODO: We should create more 'sub-types' of system messages with a custom field so we can render them differently, would be cool to show the agent avatar when they get added etc.
+			 * const updateChannel = channel.update(
+			 * 	{
+			 * 		...channel.data,
+			 * 		status,
+			 * 	},
+			 * 	{
+			 * 		subtype: 'agent_added',
+			 * 		text: `An agent joined the chat.`,
+			 * 		user_id: agent.toString(), // eslint-disable-line camelcase
+			 * 	}
+			 * );
+			 */
 
-			await Promise.all([addMember, updateChannel]);
+			await Promise.all([addMember]);
 
 			return await Ticket.findByIdAndUpdate(
 				ticket,
@@ -95,7 +97,7 @@ export const addToChat = {
 					$addToSet: {
 						agents: [agent],
 					},
-					...updates,
+					status,
 				},
 				{ new: true }
 			).lean();

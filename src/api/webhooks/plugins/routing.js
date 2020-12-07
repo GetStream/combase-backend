@@ -1,11 +1,9 @@
-import mongoose from 'mongoose';
-import { WebhookPlugin } from '@captain-hook/core';
 import { StreamChat } from 'stream-chat';
 
 import { Models } from 'api/schema';
 import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
-export class CombaseRoutingPlugin extends WebhookPlugin {
+export class CombaseRoutingPlugin {
 	maxOpenChats = 5;
 
 	setAgentUnavailable = async channel => {
@@ -17,7 +15,7 @@ export class CombaseRoutingPlugin extends WebhookPlugin {
 		 * 	},
 		 * 	{
 		 * 		subtype: 'agent_unavailable',
-		 * 		text: `All agents are currently unavailable. An agent will get back to you shortly via email.`,
+		 * 		text: `All agents are currently unavailable. You will be notified by email when you get a response.`,
 		 * 	}
 		 * );
 		 */
@@ -84,13 +82,12 @@ export class CombaseRoutingPlugin extends WebhookPlugin {
 		return [channel, streamChat];
 	};
 
-	handle = async payload => {
-		const { data: event, webhook } = payload;
-		const { organization } = webhook;
+	onChannelCreated = async payload => {
+		const { data: event, organization } = payload;
 
 		const { id: channelId, type: channelType } = event.channel;
 
-		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
+		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization._id }, { stream: true });
 
 		const [channel] = await this.getChannel(channelType, channelId, streamCreds);
 
@@ -99,7 +96,7 @@ export class CombaseRoutingPlugin extends WebhookPlugin {
 				$match: {
 					active: true,
 					// eslint-disable-next-line new-cap
-					organization: mongoose.Types.ObjectId(organization),
+					organization: organization._id,
 				},
 			},
 			{
@@ -175,9 +172,6 @@ export class CombaseRoutingPlugin extends WebhookPlugin {
 			return null;
 		});
 
-		// eslint-disable-next-line no-console
-		// console.log(availableAgents);
-
 		let agent;
 
 		/** No Agents - Set Unavailable */
@@ -207,5 +201,13 @@ export class CombaseRoutingPlugin extends WebhookPlugin {
 		const { data } = payload;
 
 		return data?.type && data?.type === 'channel.created';
+	};
+
+	listen = async capn => {
+		const events = capn.listen(this.test);
+
+		for await (const event of events) {
+			await this.onChannelCreated(event);
+		}
 	};
 }

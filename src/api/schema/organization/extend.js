@@ -1,10 +1,21 @@
+import { delegateToSchema } from 'apollo-server-express';
+import { schema as streamFeeds } from '@stream-io/graphql-feeds';
+
 import { OrganizationTC } from './model';
 
 OrganizationTC.addFields({
-	timeline: {
+	activity: {
 		type: 'StreamFeed',
 		args: {},
-		resolve: ({ _id }, _, { stream }) => stream.feeds.feed('organization', _id).get(),
+		resolve: (source, args, context, info) =>
+			delegateToSchema({
+				args: { id: `organization:${source._id}` },
+				context,
+				fieldName: 'feed',
+				info,
+				operation: 'query',
+				schema: streamFeeds,
+			}),
 	},
 });
 

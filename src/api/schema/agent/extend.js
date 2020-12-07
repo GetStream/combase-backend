@@ -1,8 +1,23 @@
+import { delegateToSchema } from 'apollo-server-express';
+import { schema as streamFeeds } from '@stream-io/graphql-feeds';
 import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
 import { AgentTC } from './model';
 
 AgentTC.addFields({
+	activity: {
+		type: 'StreamFeed',
+		args: {},
+		resolve: (source, args, context, info) =>
+			delegateToSchema({
+				args: { id: `agent:${source._id}` },
+				context,
+				fieldName: 'feed',
+				info,
+				operation: 'query',
+				schema: streamFeeds,
+			}),
+	},
 	available: {
 		type: 'Boolean',
 		args: {},
@@ -14,11 +29,6 @@ AgentTC.addFields({
 
 			return isAgentAvailableIntl(agent);
 		},
-	},
-	timeline: {
-		type: 'StreamFeed',
-		args: {},
-		resolve: ({ _id }, _, { stream }) => stream.feeds.feed('agent', _id).get(),
 	},
 	streamToken: {
 		type: 'String',

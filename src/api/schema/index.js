@@ -1,6 +1,6 @@
 import { schemaComposer } from 'graphql-compose';
-
-import { schema as streamSchema } from 'api/plugins/graphql-stream';
+import { schema as streamFeeds } from '@stream-io/graphql-feeds';
+import { FilterTypes, RenameTypes, transformSchema } from 'apollo-server-express';
 
 import Agent from './agent';
 import Asset from './asset';
@@ -22,9 +22,16 @@ import { OrganizationModel } from './organization/model';
 import { TagModel } from './tag/model';
 import { UserModel } from './user/model';
 import { WebhookModel } from './webhook/model';
-import { RenameTypes, transformSchema } from 'apollo-server-express';
 
-schemaComposer.merge(transformSchema(streamSchema, [new RenameTypes(name => `Stream${name}`)]));
+const dontRenameTypes = ['JSON', 'JSONObject', 'UUID', 'Date', 'URL'];
+const filterTypes = ['JSON', 'Date'];
+
+schemaComposer.merge(
+	transformSchema(streamFeeds, [
+		new FilterTypes(name => !filterTypes.includes(`${name}`)),
+		new RenameTypes(name => (!dontRenameTypes.includes(name) ? `Stream${name}` : name)),
+	])
+);
 
 schemaComposer.Query.addFields({
 	...Agent.Query,
