@@ -1,20 +1,23 @@
+import { connect as streamFeedsClient } from 'getstream';
+
 export class CombaseActivityPlugin {
 	streamChatEvents = ['channel.created', 'member.added'];
 
 	createActivityFromEvent = event => {
-		const { data } = event;
+		const { data, organization } = event;
+		const feeds = streamFeedsClient(organization.stream.key, organization.stream.secret);
 
 		switch (data?.type) {
 			case 'channel.created': {
 				const { channel, type } = data;
 
 				return [
-					`${channel.created_by.type}:${channel.created_by.id}`,
+					feeds.feed(channel.created_by.entity, channel.created_by.id),
 					{
 						actor: channel.created_by.id,
 						object: channel.id,
 						text: 'New Ticket',
-						to: [`organization:${channel.created_by.organization}`],
+						to: [`organization:${organization._id.toString()}`],
 						verb: type,
 					},
 				];
@@ -41,7 +44,7 @@ export class CombaseActivityPlugin {
 			const [feed, activity] = await this.createActivityFromEvent(event);
 
 			if (feed && activity) {
-				await this.addToFeed(feed, activity);
+				await feed.addActivity(activity);
 			}
 		}
 	};

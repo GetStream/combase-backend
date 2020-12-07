@@ -26,7 +26,7 @@ export const getOrCreateUser = {
 				name: user._doc.name,
 				email: user._doc.email,
 				organization: organization.toString(),
-				type: 'user',
+				entity: 'user',
 			});
 		}
 
