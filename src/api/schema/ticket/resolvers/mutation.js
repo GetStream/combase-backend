@@ -26,10 +26,10 @@ export const createTicket = {
 				tags,
 			});
 
-			await stream.chat.setUser({ id: user });
+			await stream.chat.setUser({ id: organization });
 
 			const channel = stream.chat.channel('messaging', ticket._id.toString(), {
-				created_by_id: user, // eslint-disable-line camelcase
+				created_by_id: organization, // eslint-disable-line camelcase
 				members: [user],
 				organization,
 				status,

@@ -1,26 +1,18 @@
+import mongoose from 'mongoose';
 import { StreamChat } from 'stream-chat';
 
 import { Models } from 'api/schema';
 import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
+const delay = (wait = 500) => new Promise(res => setTimeout(res, wait));
+
 export class CombaseRoutingPlugin {
 	maxOpenChats = 5;
 
 	setAgentUnavailable = async channel => {
-		/*
-		 * const updateChannel = channel.update(
-		 * 	{
-		 * 		...channel.data,
-		 * 		status: 'unassigned',
-		 * 	},
-		 * 	{
-		 * 		subtype: 'agent_unavailable',
-		 * 		text: `All agents are currently unavailable. You will be notified by email when you get a response.`,
-		 * 	}
-		 * );
-		 */
+		channel.addModerators([channel.data.organization]);
 
-		const updateTicket = await Models.Ticket.findByIdAndUpdate(
+		await Models.Ticket.findByIdAndUpdate(
 			channel.id,
 			{
 				type: 'ticket',
@@ -29,7 +21,21 @@ export class CombaseRoutingPlugin {
 			{ new: true }
 		);
 
-		return Promise.all([updateTicket]);
+		await this.streamChat.setUser({ id: channel.data.organization });
+
+		await channel.sendMessage({
+			text: `Hey! Sorry, all of our agents are unavailable right now.`,
+		});
+
+		await channel.keystroke();
+
+		await delay(2000);
+
+		await channel.sendMessage({
+			text: `You'll get a notification as soon as the ticket is assigned, feel free to add some more information in the meantime!`,
+		});
+
+		await channel.stopTyping();
 	};
 
 	addToChat = async (agentId, channel) => {
@@ -73,13 +79,13 @@ export class CombaseRoutingPlugin {
 	};
 
 	getChannel = async (channelType, channelId, { key, secret }) => {
-		const streamChat = new StreamChat(key, secret);
+		this.streamChat = new StreamChat(key, secret);
 
-		const channel = streamChat.channel(channelType, channelId);
+		const channel = this.streamChat.channel(channelType, channelId);
 
 		await channel.watch({ state: true });
 
-		return [channel, streamChat];
+		return [channel, this.streamChat];
 	};
 
 	onChannelCreated = async payload => {
@@ -96,7 +102,7 @@ export class CombaseRoutingPlugin {
 				$match: {
 					active: true,
 					// eslint-disable-next-line new-cap
-					organization: organization._id,
+					organization: mongoose.Types.ObjectId(organization._id),
 				},
 			},
 			{
@@ -175,7 +181,7 @@ export class CombaseRoutingPlugin {
 		let agent;
 
 		/** No Agents - Set Unavailable */
-		if (!availableAgents?.length) return this.setAgentUnavailable(channel);
+		if (!availableAgents?.length) return this.setAgentUnavailable(channel, organization._id.toString());
 
 		/** Only 1 agent - Assign to this agent */
 		if (availableAgents.length === 1) agent = availableAgents?.[0];
