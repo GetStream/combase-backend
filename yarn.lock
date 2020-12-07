@@ -1230,10 +1230,10 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
-"@stream-io/graphql-feeds@^0.1.0-alpha.1":
-  version "0.1.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@stream-io/graphql-feeds/-/graphql-feeds-0.1.0-alpha.1.tgz#c418f87dcda9087e2f12ad40558fc59a40d5d011"
-  integrity sha512-Jd0MqbGmEuYrFXU9DGWCzB2hiK5pwhtuduS4tYO9uyOZqHKxPn48XHlMMCrc4qOYGGlJuroBzNkVufpSfHcTPQ==
+"@stream-io/graphql-feeds@^0.1.0-alpha.2":
+  version "0.1.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/@stream-io/graphql-feeds/-/graphql-feeds-0.1.0-alpha.2.tgz#fdc7925d8ea03fc0eabb5d0fdc17bfa86bbabf5d"
+  integrity sha512-podGR9YrSVuZ8OkIxtYcSQiJivXgPyPGSG+AXOo/ZlAvs5qiMEgJd6ze+8AoDWbHdSX79/7cEb5fzu8J1swqrw==
   dependencies:
     phin "^3.5.1"
 
