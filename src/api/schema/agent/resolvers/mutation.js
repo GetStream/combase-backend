@@ -116,17 +116,3 @@ export const createAgentAndOrganization = {
 		};
 	},
 };
-
-export const agentUpdateAvailability = {
-	name: 'agentnUpdateAvailability',
-	type: AgentTC,
-	kind: 'mutation',
-	args: { hours: '[AgentHoursInput!]' },
-	resolve: (_, args, { agent, models: { Agent } }) => {
-		if (!agent) {
-			throw new Error('Unauthorized.');
-		}
-
-		return Agent.findByIdAndUpdate(agent, { hours: args.hours }, { new: true });
-	},
-};

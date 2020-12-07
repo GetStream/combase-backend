@@ -16,22 +16,3 @@ export const me = {
 		return Agent.findById(agent, { password: false }).lean();
 	},
 };
-
-export const agents = {
-	name: 'agents',
-	description: 'Get all agents for the authenticated organization',
-	type: '[Agent!]',
-	kind: 'query',
-	args: {},
-	resolve: (_, __, { models: { Agent }, organization }) => {
-		try {
-			if (!organization) {
-				throw new Error('Unauthorized');
-			}
-
-			return Agent.find({ organization });
-		} catch (error) {
-			throw new Error(error.message);
-		}
-	},
-};

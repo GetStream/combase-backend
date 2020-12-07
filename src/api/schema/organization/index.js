@@ -3,24 +3,18 @@ import './extend';
 import resolvers from './resolvers';
 import { OrganizationTC } from './model';
 
+import { syncOrganizationProfile } from 'utils/resolverMiddlewares/streamChat';
+
 const Query = {
 	organizationById: OrganizationTC.mongooseResolvers.findById(),
-	organizationByIds: OrganizationTC.mongooseResolvers.findByIds(),
-	organizationOne: OrganizationTC.mongooseResolvers.findOne(),
-	organizationMany: OrganizationTC.mongooseResolvers.findMany(),
 	organizationCount: OrganizationTC.mongooseResolvers.count(),
 	...resolvers.Query,
 };
 
 const Mutation = {
-	organizationCreateOne: OrganizationTC.mongooseResolvers.createOne(),
-	organizationCreateMany: OrganizationTC.mongooseResolvers.createMany(),
-	organizationUpdateById: OrganizationTC.mongooseResolvers.updateById(),
-	organizationUpdateOne: OrganizationTC.mongooseResolvers.updateOne(),
-	organizationUpdateMany: OrganizationTC.mongooseResolvers.updateMany(),
-	organizationRemoveById: OrganizationTC.mongooseResolvers.removeById(),
-	organizationRemoveOne: OrganizationTC.mongooseResolvers.removeOne(),
-	organizationRemoveMany: OrganizationTC.mongooseResolvers.removeMany(),
+	organizationCreate: OrganizationTC.mongooseResolvers.createOne().withMiddlewares([syncOrganizationProfile]),
+	organizationUpdate: OrganizationTC.mongooseResolvers.updateById().withMiddlewares([syncOrganizationProfile]),
+	organizationRemove: OrganizationTC.mongooseResolvers.removeById(),
 	...resolvers.Mutation,
 };
 
