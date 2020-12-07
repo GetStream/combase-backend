@@ -14,6 +14,5 @@ module.exports = {
 		'transform-optional-chaining',
 		'@babel/proposal-async-generator-functions',
 		'@babel/proposal-class-properties',
-		['inline-dotenv'],
 	],
 };

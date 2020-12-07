@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import path from 'path';
 
 import S3 from 'aws-sdk/clients/s3';

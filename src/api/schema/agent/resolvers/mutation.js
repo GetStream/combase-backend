@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import { getTokenPayload } from 'utils/auth';
 import { StreamChat } from 'stream-chat';

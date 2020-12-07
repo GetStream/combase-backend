@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { CaptainHook } from '@captain-hook/core';
 
 import { CombaseRoutingPlugin } from './plugins';
