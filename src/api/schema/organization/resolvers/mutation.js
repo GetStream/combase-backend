@@ -25,7 +25,7 @@ export const createMockAgentData = {
 				},
 				Group,
 				Agent,
-				stream.chat
+				stream
 			);
 
 			return Organization.findById(organization);

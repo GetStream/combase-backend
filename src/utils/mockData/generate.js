@@ -1,6 +1,6 @@
 import { GROUPS, AGENTS, SCHEDULE } from './constants';
 
-export const generateMockAgentsAndGroups = async ({ organization, domain }, Group, Agent, streamChat) => {
+export const generateMockAgentsAndGroups = async ({ organization, domain = 'getstream.io' }, Group, Agent, stream) => {
 	const groupIdMap = {};
 
 	for (const key in GROUPS) {
@@ -17,7 +17,7 @@ export const generateMockAgentsAndGroups = async ({ organization, domain }, Grou
 		}
 	}
 
-	for (const agent of AGENTS) {
+	for await (const agent of AGENTS) {
 		const [firstName] = agent.name.split(' ');
 
 		// eslint-disable-next-line no-await-in-loop
@@ -28,14 +28,16 @@ export const generateMockAgentsAndGroups = async ({ organization, domain }, Grou
 				display: firstName,
 			},
 			organization,
-			email: `${firstName.toLowerCase()}@${domain || 'getstream.io'}`,
+			email: `${firstName.toLowerCase()}@${domain}`,
 			password: 'password1',
 			hours: SCHEDULE,
 			groups: agent.groups?.map(name => groupIdMap[name]) || groupIdMap['General'],
 		});
 
+		await stream.feeds.feed('organization', organization).follow('agent', data._id.toString());
+
 		// eslint-disable-next-line no-await-in-loop
-		await streamChat.setUser({
+		await stream.chat.setUser({
 			avatar: data.avatar,
 			email: data.email,
 			id: data._id.toString(),
@@ -45,6 +47,6 @@ export const generateMockAgentsAndGroups = async ({ organization, domain }, Grou
 		});
 
 		// eslint-disable-next-line no-await-in-loop
-		await streamChat.disconnect();
+		await stream.chat.disconnect();
 	}
 };

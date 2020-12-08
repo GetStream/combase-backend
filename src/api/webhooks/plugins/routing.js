@@ -35,7 +35,7 @@ export class CombaseRoutingPlugin {
 			text: `You'll get a notification as soon as the ticket is assigned, feel free to add some more information in the meantime!`,
 		});
 
-		await channel.stopTyping();
+		await Promise.all([channel.stopTyping, channel.stopWatching, this.streamChat.disconnect]);
 	};
 
 	addToChat = async (agentId, channel) => {

@@ -28,6 +28,8 @@ export const getOrCreateUser = {
 				organization: organization.toString(),
 				entity: 'user',
 			});
+
+			await stream.feeds.feed('organization', organization.toString()).follow('user', user._id.toString());
 		}
 
 		return user._doc;
