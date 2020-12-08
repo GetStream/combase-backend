@@ -1230,12 +1230,14 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
-"@stream-io/graphql-feeds@^0.1.0-alpha.2":
-  version "0.1.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@stream-io/graphql-feeds/-/graphql-feeds-0.1.0-alpha.2.tgz#fdc7925d8ea03fc0eabb5d0fdc17bfa86bbabf5d"
-  integrity sha512-podGR9YrSVuZ8OkIxtYcSQiJivXgPyPGSG+AXOo/ZlAvs5qiMEgJd6ze+8AoDWbHdSX79/7cEb5fzu8J1swqrw==
+"@stream-io/graphql-feeds@^0.1.0-alpha.3":
+  version "0.1.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/@stream-io/graphql-feeds/-/graphql-feeds-0.1.0-alpha.3.tgz#918db730caef4e4d1216605f04157ed6498fb286"
+  integrity sha512-43ZQLzB401COnb6ktsWqGl1GkCyzZkdG2Lrk7wccz3Fwa8QlacB/LExSxL08vSCR2xHAmT4alTkRREK/5lJnYw==
   dependencies:
-    phin "^3.5.1"
+    "@graphql-tools/load-files" "^6.2.5"
+    getstream "^7.0.1"
+    graphql-scalars "^1.6.1"
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -1970,10 +1972,10 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-aws-sdk@^2.804.0:
-  version "2.804.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.804.0.tgz#ff7e6f91b86b4878ec69e3de895c10eb8203fc4b"
-  integrity sha512-a02pZdjL06MunElAZPPEjpghOp/ZA+16f+t4imh1k9FCDpsNVQrT23HRq/PMvRADA5uZZRkYwX8r9o6oH/1RlA==
+aws-sdk@^2.805.0:
+  version "2.805.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.805.0.tgz#23d2389f78e1ac2fc4c72212148f5c5e469c6626"
+  integrity sha512-mnIiHWp541pappZPJs+P6bx18yIcJTTr4eu2n0aF9+MY4UteuFWRu0fGLssYnDwCHvtzN7/j776Pd/1QXy9hqg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -2785,11 +2787,6 @@ caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001164:
   version "1.0.30001165"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001165.tgz#32955490d2f60290bb186bb754f2981917fa744f"
   integrity sha512-8cEsSMwXfx7lWSUMA2s08z9dIgsnR5NAqjXP23stdsU3AUWkCr/rr4s4OFtHXn5XXr6+7kam3QFVoYyXNPdJPA==
-
-centra@^2.4.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/centra/-/centra-2.4.2.tgz#3bad51dbca2250dbecad84598dc7184973f4c4a9"
-  integrity sha512-f1RaP0V1HqVNEXfLfjNBthB2yy3KnSGnPCnOPCFLUk9e/Z4rNJ8nBaJNnghflnp88mi1IT8mfmW+HlMS1/H+bg==
 
 chalk@3.0.0, chalk@^3.0.0, chalk@~3.0.0:
   version "3.0.0"
@@ -5819,10 +5816,10 @@ mongoose-bcrypt@^1.9.0:
     mongoose "3.8.* || >=4"
     semver "^7.3.2"
 
-mongoose-field-encryption@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/mongoose-field-encryption/-/mongoose-field-encryption-4.0.0.tgz#3f8c9e968dd055bcadb2233343f3afb561927e60"
-  integrity sha512-yj2mGmh3hvU+gxgk3mTHiqiW5Q2a4ljF3mAOfxs7mupi5sOhIk3WwHy7NP/csuZeMVNzanHAL+VdNZtfQOnjWA==
+mongoose-field-encryption@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/mongoose-field-encryption/-/mongoose-field-encryption-4.0.1.tgz#23b1869b1798ce103004a9bb1109ea6ab0b1f169"
+  integrity sha512-WfCDJ5CON3IeUbYJqVeS47BbCVqAHhWNVl30RDTgt+PcrhJ+9bgVAnLD/rXlUcif96haoSXsbZVhG8vhzOl7iw==
 
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
@@ -5836,10 +5833,28 @@ mongoose-timestamp@^0.6.0:
   dependencies:
     defaults "^1.0.3"
 
-"mongoose@3.8.* || >=4", mongoose@^5.11.4:
+"mongoose@3.8.* || >=4":
   version "5.11.4"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.11.4.tgz#26c6be85bee47446570281f90331762751d8b995"
   integrity sha512-80IyHZ1ID4dtmQAaAr1B1FO2hWxmKMqaGP4WBkZ7xDKY1WKiBxVr1j5fk+bedO/IqJWoVG4vdxQDYp7glqaKaA==
+  dependencies:
+    "@types/mongodb" "^3.5.27"
+    bson "^1.1.4"
+    kareem "2.3.1"
+    mongodb "3.6.3"
+    mongoose-legacy-pluralize "1.0.2"
+    mpath "0.8.0"
+    mquery "3.2.2"
+    ms "2.1.2"
+    regexp-clone "1.0.0"
+    safe-buffer "5.2.1"
+    sift "7.0.1"
+    sliced "1.0.1"
+
+mongoose@^5.11.5:
+  version "5.11.5"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.11.5.tgz#4f0505f717d20ed01424e5938947e17dcc6dec4f"
+  integrity sha512-uwSeALQ1+qamUZBrIe1D6/uCzlHvcSbNQPG9w02DJqF3VHJSFOX1RdoxJE/wTN6WW7tTV8NMdLDSdxKqfo8J1A==
   dependencies:
     "@types/mongodb" "^3.5.27"
     bson "^1.1.4"
@@ -6361,13 +6376,6 @@ path-type@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-4.0.0.tgz#84ed01c0a7ba380afe09d90a8c180dcd9d03043b"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
-
-phin@^3.5.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/phin/-/phin-3.5.1.tgz#41ce07aa7eb23b1f7ded89fc00a464addddac972"
-  integrity sha512-jgFO28IaiWAl0xk+zmqVx7neKVokWKU8YTQC5QlB45SZnEE53LH2saqJIcyIV557VX3Gk+TdR4rwWTc3P83DSA==
-  dependencies:
-    centra "^2.4.2"
 
 picomatch@^2.0.4, picomatch@^2.0.5, picomatch@^2.2.1:
   version "2.2.2"
