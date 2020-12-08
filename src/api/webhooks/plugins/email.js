@@ -9,10 +9,15 @@ export class CombaseEmailPlugin {
 	listen = async capn => {
 		const events = capn.listen(this.test);
 
-		for await (const event of events) {
+		try {
+			for await (const event of events) {
+				// eslint-disable-next-line no-console
+				console.log('CombaseEmailPlugin:', event);
+				await this.handleWebhook(event);
+			}
+		} catch (error) {
 			// eslint-disable-next-line no-console
-			console.log('CombaseEmailPlugin:', event);
-			await this.handleWebhook(event);
+			console.log(error);
 		}
 	};
 }
