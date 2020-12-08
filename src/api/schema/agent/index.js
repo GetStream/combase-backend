@@ -4,6 +4,7 @@ import resolvers from './resolvers';
 import { AgentTC } from './model';
 import { enrichWithAuthToken, isAuthedAgent } from 'utils/resolverMiddlewares/auth';
 import { syncAgentProfile } from 'utils/resolverMiddlewares/streamChat';
+import { createAgentFeedRelationships } from 'utils/resolverMiddlewares/streamFeeds';
 import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
 
 const Query = {
