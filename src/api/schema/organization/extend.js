@@ -5,13 +5,13 @@ import { OrganizationTC } from './model';
 
 OrganizationTC.addFields({
 	activity: {
-		type: 'StreamFeed',
+		type: 'StreamFlatFeed',
 		args: {},
 		resolve: (source, args, context, info) =>
 			delegateToSchema({
 				args: { id: `organization:${source._id}` },
 				context,
-				fieldName: 'feed',
+				fieldName: 'flatFeed',
 				info,
 				operation: 'query',
 				schema: streamFeeds,

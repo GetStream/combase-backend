@@ -5,13 +5,13 @@ import { UserTC } from './model';
 
 UserTC.addFields({
 	activity: {
-		type: 'StreamFeed',
+		type: 'StreamFlatFeed',
 		args: {},
 		resolve: (source, args, context, info) =>
 			delegateToSchema({
 				args: { id: `user:${source._id}` },
 				context,
-				fieldName: 'feed',
+				fieldName: 'flatFeed',
 				info,
 				operation: 'query',
 				schema: streamFeeds,
