@@ -2,6 +2,7 @@ import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import { getTokenPayload } from 'utils/auth';
 import { StreamChat } from 'stream-chat';
+import { connect as streamFeedsClient } from 'getstream';
 
 import { OrganizationTC } from '../../organization/model';
 import { AgentTC } from '../model';
@@ -63,7 +64,7 @@ export const createAgent = {
 			id: agent._id.toString(),
 			name: agent._doc.name.display,
 			organization: organization.toString(),
-			type: 'agent', // TODO maybe use a custom role 'agent' - depends on how we can make this reliable for open source seeing as updateUser would wipe the `type` field if used incorrectly.
+			entity: 'Agent',
 		});
 
 		const token = jwt.sign(getTokenPayload(agent._doc), process.env.AUTH_SECRET);
@@ -99,6 +100,7 @@ export const createAgentAndOrganization = {
 		const agentDoc = await Agent.create(agent);
 
 		const chat = new StreamChat(args.organization.stream.key, args.organization.stream.secret);
+		const feeds = streamFeedsClient(args.organization.stream.key, args.organization.stream.secret);
 
 		await chat.setUser({
 			avatar: agentDoc._doc.avatar,
@@ -106,8 +108,10 @@ export const createAgentAndOrganization = {
 			id: agentDoc._id.toString(),
 			name: agentDoc._doc.name.display,
 			organization: _id.toString(),
-			type: 'agent', // TODO maybe use a custom role 'agent' - depends on how we can make this reliable for open source seeing as updateUser would wipe the `type` field if used incorrectly.
+			entity: 'Agent',
 		});
+
+		await feeds.feed('organization', _id.toString()).follow('agent', agentDoc._id.toString());
 
 		const token = jwt.sign(getTokenPayload(agentDoc._doc), process.env.AUTH_SECRET);
 

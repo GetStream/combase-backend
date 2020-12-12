@@ -18,7 +18,7 @@ export const syncAgentProfile = async (resolve, source, args, context, info) => 
 			name: _doc.name.display,
 			organization: _doc.organization.toString(),
 			timezone: _doc.timezone,
-			entity: 'agent',
+			entity: 'Agent',
 		});
 	} catch (error) {
 		// eslint-disable-next-line no-console

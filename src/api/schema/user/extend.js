@@ -1,5 +1,4 @@
-import { delegateToSchema } from 'apollo-server-express';
-import { schema as streamFeeds } from '@stream-io/graphql-feeds';
+import schemaComposer from 'api/schema/composer';
 
 import { UserTC } from './model';
 
@@ -7,15 +6,7 @@ UserTC.addFields({
 	activity: {
 		type: 'StreamFlatFeed',
 		args: {},
-		resolve: (source, args, context, info) =>
-			delegateToSchema({
-				args: { id: `user:${source._id}` },
-				context,
-				fieldName: 'flatFeed',
-				info,
-				operation: 'query',
-				schema: streamFeeds,
-			}),
+		resolve: (source, args, context, info) => schemaComposer.Query.getResolver('flatFeed').resolve(source, args, context, info),
 	},
 	streamToken: {
 		type: 'String',

@@ -21,15 +21,27 @@ export const getOrCreateUser = {
 				organization,
 			});
 
+			const userId = user._id.toString();
+
 			await stream.chat.setUser({
-				id: user._id.toString(),
+				id: userId,
 				name: user._doc.name,
 				email: user._doc.email,
 				organization: organization.toString(),
-				entity: 'user',
+				entity: 'User',
 			});
 
-			await stream.feeds.feed('organization', organization.toString()).follow('user', user._id.toString());
+			// Organization feed follows the user.
+			await stream.feeds.feed('organization', organization.toString()).follow('user', userId);
+
+			// TODO: This should be handled by the mongo change stream events plugin for captain-hook instead.
+			await stream.feeds.feed('user', userId).addActivity({
+				actor: userId,
+				object: userId,
+				entity: 'User',
+				text: 'User Created',
+				verb: 'combase:user.created',
+			});
 		}
 
 		return user._doc;

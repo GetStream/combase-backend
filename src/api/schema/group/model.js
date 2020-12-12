@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const GroupSchema = new Schema(
@@ -41,4 +42,4 @@ GroupSchema.index({
 });
 
 export const GroupModel = mongoose.model('Group', GroupSchema);
-export const GroupTC = composeMongoose(GroupModel);
+export const GroupTC = composeMongoose(GroupModel, { schemaComposer });

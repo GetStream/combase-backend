@@ -7,6 +7,7 @@ module.exports = {
   parser: "babel-eslint",
   plugins: ["prettier"],
   rules: {
+    camelcase: 0,
     'consistent-return': 0,
     "sort-keys": 0,
     "spaced-comment": 0,

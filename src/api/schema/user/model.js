@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const UserSchema = new Schema(
@@ -38,4 +39,4 @@ UserSchema.index({
 });
 
 export const UserModel = mongoose.model('User', UserSchema);
-export const UserTC = composeMongoose(UserModel);
+export const UserTC = composeMongoose(UserModel, { schemaComposer });

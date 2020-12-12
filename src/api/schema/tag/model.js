@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const TagSchema = new Schema(
@@ -37,4 +38,4 @@ TagSchema.index({
 });
 
 export const TagModel = mongoose.model('Tag', TagSchema);
-export const TagTC = composeMongoose(TagModel);
+export const TagTC = composeMongoose(TagModel, { schemaComposer });

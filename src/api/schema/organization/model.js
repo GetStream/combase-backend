@@ -4,6 +4,7 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { fieldEncryption } from 'mongoose-field-encryption';
 
+import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const StreamCredentialsSchema = new Schema({
@@ -94,4 +95,4 @@ OrganizationSchema.index({
 });
 
 export const OrganizationModel = mongoose.model('Organization', OrganizationSchema);
-export const OrganizationTC = composeMongoose(OrganizationModel);
+export const OrganizationTC = composeMongoose(OrganizationModel, { schemaComposer });

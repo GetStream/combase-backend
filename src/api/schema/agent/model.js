@@ -3,6 +3,7 @@ import bcrypt from 'mongoose-bcrypt';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const AgentSchema = new Schema(
@@ -133,4 +134,4 @@ AgentSchema.index({
 });
 
 export const AgentModel = mongoose.model('Agent', AgentSchema);
-export const AgentTC = composeMongoose(AgentModel);
+export const AgentTC = composeMongoose(AgentModel, { schemaComposer });

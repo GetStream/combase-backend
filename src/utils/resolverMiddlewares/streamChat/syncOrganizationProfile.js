@@ -25,7 +25,7 @@ export const syncOrganizationProfile = async (resolve, source, args, context, in
 			email: _doc.contact.email,
 			id: _doc._id.toString(),
 			name: _doc.name,
-			entity: 'organization',
+			entity: 'Organization',
 		});
 
 		return data;

@@ -11,8 +11,8 @@ export class CombaseActivityPlugin {
 			case 'channel.created': {
 				const { channel, type } = data;
 
-				const userFeed = feeds.feed(channel.created_by.entity, channel.created_by.id);
-				const organizationFeed = feeds.feed('organization', organization._id.toString());
+				const userFeed = feeds.feed(channel.created_by.entity.toLowerCase(), channel.created_by.id);
+				const organizationFeed = feeds.feed('organization', channel.organization);
 
 				await userFeed.follow('ticket', channel.id);
 				await organizationFeed.follow('ticket', channel.id);
@@ -20,6 +20,7 @@ export class CombaseActivityPlugin {
 				return userFeed.addActivity({
 					actor: channel.created_by.id,
 					object: channel.id,
+					entity: 'Ticket',
 					text: 'New Ticket',
 					to: [`ticket:${channel.id}`],
 					verb: type,
@@ -29,16 +30,27 @@ export class CombaseActivityPlugin {
 			case 'member.added': {
 				const { channel_id, member, type } = data;
 
-				const agentFeed = feeds.feed(member.user.entity, member.user.id);
+				/*
+				 * If no agents are available, the chat is assigned to the organization until then
+				 * but the `status` field remains `unassigned`
+				 */
+				const isAgent = member.user.entity === 'Agent';
 
-				await agentFeed.follow('ticket', channel_id);
+				const asigneeFeed = feeds.feed(member.user.entity.toLowerCase(), member.user_id);
 
-				return agentFeed.addActivity({
-					actor: member.user.id,
-					// eslint-disable-next-line camelcase
+				if (isAgent) {
+					/*
+					 * The organization already follows the feed
+					 * so we only call this if an agent was actually assigned
+					 */
+					await asigneeFeed.follow('ticket', channel_id);
+				}
+
+				return asigneeFeed.addActivity({
+					actor: member.user_id,
 					object: channel_id,
-					text: 'Ticket Assigned',
-					// eslint-disable-next-line camelcase
+					entity: 'Ticket',
+					text: !isAgent ? 'Missed Ticket' : 'Ticket Assigned',
 					to: [`ticket:${channel_id}`],
 					verb: type,
 				});

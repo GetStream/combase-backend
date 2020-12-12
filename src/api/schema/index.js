@@ -1,7 +1,6 @@
-import { schemaComposer } from 'graphql-compose';
-import { schema as streamFeeds } from '@stream-io/graphql-feeds';
-import { RenameTypes, transformSchema } from 'apollo-server-express';
+import schemaComposer from 'api/schema/composer';
 
+import Activity from './activity';
 import Agent from './agent';
 import Asset from './asset';
 import Ticket from './ticket';
@@ -23,9 +22,8 @@ import { TagModel } from './tag/model';
 import { UserModel } from './user/model';
 import { WebhookModel } from './webhook/model';
 
-schemaComposer.merge(transformSchema(streamFeeds, [new RenameTypes(name => (name.startsWith('Stream') ? undefined : `Stream${name}`))]));
-
 schemaComposer.Query.addFields({
+	...Activity.Query,
 	...Agent.Query,
 	...Asset.Query,
 	...Ticket.Query,
@@ -39,6 +37,7 @@ schemaComposer.Query.addFields({
 });
 
 schemaComposer.Mutation.addFields({
+	...Activity.Mutation,
 	...Agent.Mutation,
 	...Asset.Mutation,
 	...Ticket.Mutation,
@@ -52,6 +51,7 @@ schemaComposer.Mutation.addFields({
 });
 
 schemaComposer.Subscription.addFields({
+	...Activity.Subscription,
 	...Agent.Subscription,
 	...Ticket.Subscription,
 	...Organization.Subscription,

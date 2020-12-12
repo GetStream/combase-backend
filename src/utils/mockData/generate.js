@@ -43,7 +43,7 @@ export const generateMockAgentsAndGroups = async ({ organization, domain = 'gets
 			id: data._id.toString(),
 			name: data.name.display,
 			organization: organization.toString(),
-			type: 'agent',
+			entity: 'Agent',
 		});
 
 		// eslint-disable-next-line no-await-in-loop

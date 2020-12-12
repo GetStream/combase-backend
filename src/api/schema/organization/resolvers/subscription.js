@@ -1,7 +1,7 @@
 export const organizationActivity = {
-	type: 'JSON',
+	type: 'StreamRealtimeFeed',
 	args: { _id: 'String' },
 	resolve: payload => payload,
-	subscribe: (_, { _id }, { organization, stream: { feeds, FeedsSubscription } }) =>
-		new FeedsSubscription(feeds).asyncIterator(`organization:${_id || organization}`),
+	subscribe: (source, { _id }, { stream }) =>
+		new stream.FeedSubscription(stream.feeds).asyncIterator(`organization:${_id || source?._id?.toString()}`),
 };

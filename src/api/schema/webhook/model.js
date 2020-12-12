@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const WebhookSchema = new Schema(
@@ -59,4 +60,4 @@ WebhookSchema.index({
 });
 
 export const WebhookModel = mongoose.model('Webhook', WebhookSchema);
-export const WebhookTC = composeMongoose(WebhookModel);
+export const WebhookTC = composeMongoose(WebhookModel, { schemaComposer });

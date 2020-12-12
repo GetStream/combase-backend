@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
+import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const AssetSchema = new Schema(
@@ -32,4 +33,4 @@ AssetSchema.index({
 });
 
 export const AssetModel = mongoose.model('Asset', AssetSchema);
-export const AssetTC = composeMongoose(AssetModel);
+export const AssetTC = composeMongoose(AssetModel, { schemaComposer });

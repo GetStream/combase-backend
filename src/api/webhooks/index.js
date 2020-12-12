@@ -5,10 +5,6 @@ import { CombaseRoutingPlugin } from './plugins';
 import { CombaseActivityPlugin } from './plugins/events';
 import { combaseWebhookParser } from './transformers';
 
-const capn = new CaptainHook(
-	process.env.AUTH_SECRET,
-	[new CombaseRoutingPlugin(), new CombaseActivityPlugin(['member.added', 'channel.created'])],
-	[combaseWebhookParser]
-);
+const capn = new CaptainHook(process.env.AUTH_SECRET, [new CombaseRoutingPlugin(), new CombaseActivityPlugin()], [combaseWebhookParser]);
 
 export default capn;

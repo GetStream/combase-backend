@@ -1,23 +1,4 @@
-import { delegateToSchema } from 'apollo-server-express';
-import { schema as streamFeeds } from '@stream-io/graphql-feeds';
-
 import { OrganizationTC } from './model';
-
-OrganizationTC.addFields({
-	activity: {
-		type: 'StreamFlatFeed',
-		args: {},
-		resolve: (source, args, context, info) =>
-			delegateToSchema({
-				args: { id: `organization:${source._id}` },
-				context,
-				fieldName: 'flatFeed',
-				info,
-				operation: 'query',
-				schema: streamFeeds,
-			}),
-	},
-});
 
 OrganizationTC.addNestedFields({
 	'stream.key': {
