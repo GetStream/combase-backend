@@ -1,3 +1,5 @@
+import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
+
 import './extend';
 import resolvers from './resolvers';
 import { GroupTC } from './model';
@@ -19,7 +21,7 @@ const Mutation = {
 	groupUpdateMany: GroupTC.mongooseResolvers.updateMany(),
 	groupRemoveById: GroupTC.mongooseResolvers.removeById(),
 	groupRemoveOne: GroupTC.mongooseResolvers.removeOne(),
-	groupRemoveMany: GroupTC.mongooseResolvers.removeMany(),
+	groupRemoveMany: GroupTC.mongooseResolvers.removeMany().withMiddlewares([organizationFilter]),
 	...resolvers.Mutation,
 };
 

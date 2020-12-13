@@ -39,7 +39,7 @@
 		"@captain-hook/core": "^0.2.1",
 		"@graphql-tools/load-files": "^6.2.5",
 		"@graphql-tools/stitch": "^7.1.4",
-		"@stream-io/graphql-feeds": "^0.1.0-alpha.8",
+		"@stream-io/graphql-feeds": "^0.1.0-alpha.9",
 		"amqplib": "^0.6.0",
 		"apollo-server-express": "^2.19.0",
 		"aws-sdk": "^2.805.0",

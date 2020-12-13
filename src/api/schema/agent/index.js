@@ -18,7 +18,7 @@ const Mutation = {
 	agentCreate: AgentTC.mongooseResolvers.createOne().withMiddlewares([createAgentFeedRelationships, syncAgentProfile, enrichWithAuthToken]),
 	agentUpdate: AgentTC.mongooseResolvers.updateById().withMiddlewares([syncAgentProfile]),
 	agentRemove: AgentTC.mongooseResolvers.removeById(),
-	agentRemoveMany: AgentTC.mongooseResolvers.removeMany(),
+	agentRemoveMany: AgentTC.mongooseResolvers.removeMany().withMiddlewares([organizationFilter]),
 	...resolvers.Mutation,
 };
 

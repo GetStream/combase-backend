@@ -34,7 +34,17 @@ export const generateMockAgentsAndGroups = async ({ organization, domain = 'gets
 			groups: agent.groups?.map(name => groupIdMap[name]) || groupIdMap['General'],
 		});
 
-		await stream.feeds.feed('organization', organization).follow('agent', data._id.toString());
+		const agentId = data._id.toString();
+
+		await stream.feeds.feed('organization', organization).follow('agent', agentId);
+
+		await stream.feeds.feed('agent', agentId).addActivity({
+			actor: agentId,
+			object: agentId,
+			entity: 'Agent',
+			text: 'Agent Created',
+			verb: 'combase:agent.created',
+		});
 
 		// eslint-disable-next-line no-await-in-loop
 		await stream.chat.setUser({

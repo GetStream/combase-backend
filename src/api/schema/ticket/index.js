@@ -1,3 +1,5 @@
+import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
+
 import resolvers from './resolvers';
 import { TicketTC } from './model';
 
@@ -18,7 +20,7 @@ const Mutation = {
 	ticketUpdateMany: TicketTC.mongooseResolvers.updateMany(),
 	ticketRemoveById: TicketTC.mongooseResolvers.removeById(),
 	ticketRemoveOne: TicketTC.mongooseResolvers.removeOne(),
-	ticketRemoveMany: TicketTC.mongooseResolvers.removeMany(),
+	ticketRemoveMany: TicketTC.mongooseResolvers.removeMany().withMiddlewares([organizationFilter]),
 	...resolvers.Mutation,
 };
 

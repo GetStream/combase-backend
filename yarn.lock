@@ -1230,10 +1230,10 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
-"@stream-io/graphql-feeds@^0.1.0-alpha.8":
-  version "0.1.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@stream-io/graphql-feeds/-/graphql-feeds-0.1.0-alpha.8.tgz#8427788146c0b1616821ffc0a5f65e7a9cea096b"
-  integrity sha512-aN0vNLZnTMxLisd4w9IdoCamDPD5MsEa+VV3bqvZohGPQjOvlVkRdpRAWH1Puq1PNMJ7q7xHq89w5ImOIfzgww==
+"@stream-io/graphql-feeds@^0.1.0-alpha.9":
+  version "0.1.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@stream-io/graphql-feeds/-/graphql-feeds-0.1.0-alpha.9.tgz#6ebf2e5fee8ce3e8cd2e8f4a640f513f4d5f5caf"
+  integrity sha512-gR9w3rb9OfNbVXgcFugxowGbfwzr/wNJGrWaY4KsnT+6Gr+jeJneRyOP59r1kMYwU4AHRl3THPUucLASQPxN1w==
   dependencies:
     "@graphql-tools/load-files" "^6.2.5"
     getstream "^7.0.1"
