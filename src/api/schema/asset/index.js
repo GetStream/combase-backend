@@ -9,6 +9,10 @@ schemaComposer.addTypeDefs(`
 		"""
 		url: String!
 		"""
+		The absolute URL path of the file.
+		"""
+		path: String!
+		"""
 		The mime type of the file.
 		"""
 		mime: String!

@@ -1,8 +1,11 @@
+import path from 'path';
 import AWS from 'aws-sdk';
-import { v4 as uuid } from 'uuid';
 import mime from 'mime-types';
+import { v4 as uuid } from 'uuid';
 
-const s3 = new AWS.S3();
+const s3 = new AWS.S3({
+	apiVersion: '2006-03-01',
+});
 
 AWS.config.update({
 	accessKeyId: process.env.AWS_ACCESS_KEY,
@@ -16,18 +19,20 @@ export const getSignedUrl = {
 	type: 'AssetSignedURLPayload!',
 	args: { filename: 'String!' },
 	resolve: (_, args) => {
-		const parts = args.filename.split('.');
-
-		const extension = args.filename.split('.')[parts.length - 1];
+		const ext = path.extname(args.filename);
+		const type = mime.lookup(ext);
+		const name = `${uuid()}${ext}`;
 
 		return {
 			url: s3.getSignedUrl('putObject', {
 				Bucket: process.env.AWS_S3_BUCKET,
-				Key: args.filename,
-				Expires: 5 * 60,
+				Key: name,
+				Expires: 60 * 5,
+				ContentType: type,
 			}),
-			mime: mime.lookup(extension),
-			name: args.filename,
+			path: `${process.env.CDN_URL}/${name}`,
+			mime: type,
+			name,
 		};
 	},
 };
