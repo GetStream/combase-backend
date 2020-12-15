@@ -1,4 +1,6 @@
 import { SchemaComposer } from 'graphql-compose';
 import { schema as feedsSchema } from '@stream-io/graphql-feeds';
 
-export default new SchemaComposer(feedsSchema);
+const schemaComposer = new SchemaComposer(feedsSchema);
+
+export default schemaComposer;

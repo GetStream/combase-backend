@@ -1,4 +1,5 @@
 import schemaComposer from 'api/schema/composer';
+import awsSchema from './awsSchema';
 
 import Activity from './activity';
 import Agent from './agent';
@@ -21,6 +22,8 @@ import { OrganizationModel } from './organization/model';
 import { TagModel } from './tag/model';
 import { UserModel } from './user/model';
 import { WebhookModel } from './webhook/model';
+
+schemaComposer.merge(awsSchema);
 
 schemaComposer.Query.addFields({
 	...Activity.Query,

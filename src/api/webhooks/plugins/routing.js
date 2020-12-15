@@ -1,7 +1,7 @@
+import mongoose from 'mongoose';
 import { StreamChat } from 'stream-chat';
 
 import { Models } from 'api/schema';
-import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
 const delay = (wait = 500) => new Promise(res => setTimeout(res, wait));
 
@@ -104,7 +104,8 @@ export class CombaseRoutingPlugin {
 			{
 				$match: {
 					active: true,
-					organization: organization._id,
+					// eslint-disable-next-line new-cap
+					organization: mongoose.Types.ObjectId(organization._id),
 					'schedule.tuesday': {
 						$elemMatch: {
 							enabled: true,
@@ -132,27 +133,26 @@ export class CombaseRoutingPlugin {
 												vars: {
 													startTime: {
 														$dateFromParts: {
-															year: 2020,
 															hour: '$$today.start.hour',
 															minute: '$$today.start.minute',
 															timezone: '$timezone',
+															year: 2020,
 														},
 													},
 													endTime: {
 														$dateFromParts: {
-															year: 2020,
 															hour: '$$today.end.hour',
 															minute: '$$today.end.minute',
 															timezone: '$timezone',
+															year: 2020,
 														},
 													},
 													userTime: {
 														$dateFromParts: {
-															year: 2020,
-															// isoDayOfWeek: now.getDay() === 0 ? 7 : now.getDay(),
 															hour: now.getHours(),
 															minute: now.getMinutes() + 1,
 															timezone: userTimezone,
+															year: 2020,
 														},
 													},
 												},
@@ -177,36 +177,33 @@ export class CombaseRoutingPlugin {
 					},
 				},
 			},
+			{
+				$match: {
+					available: true,
+				},
+			},
 		]);
-
-		const availableAgents = agents.filter(agent => {
-			const available = isAgentAvailableIntl(agent);
-
-			if (available) return agent;
-
-			return null;
-		});
 
 		let agent;
 
 		/** No Agents - Set Unavailable */
-		if (!availableAgents?.length) return this.setAgentUnavailable(channel, organization._id.toString());
+		if (!agents?.length) return this.setAgentUnavailable(channel, organization._id.toString());
 
 		/** Only 1 agent - Assign to this agent */
-		if (availableAgents.length === 1) agent = availableAgents?.[0];
+		if (agents.length === 1) agent = agents[0];
 
 		/** Multiple Available Agents - Decide on the most suitable agent */
-		if (availableAgents.length > 1) {
+		if (agents.length > 1) {
 			/*
 			 * should handle an array available agents (more than 1)
 			 * need to balance by tickets open/completed
 			 * then pick rand
 			 */
 
-			const randIdx = Math.floor(Math.random() * availableAgents.length);
+			const randIdx = Math.floor(Math.random() * agents.length);
 
 			// TEMP: Replace with the above sorting/find mechanism.
-			agent = availableAgents[randIdx];
+			agent = agents[randIdx];
 		}
 
 		return this.addToChat(agent._id, channel);
