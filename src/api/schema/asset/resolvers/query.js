@@ -30,7 +30,7 @@ export const getSignedUrl = {
 				Expires: 60 * 5,
 				ContentType: type,
 			}),
-			path: `${process.env.CDN_URL}/${name}`,
+			path: type.includes('image') ? `${process.env.IMG_URL}/${name}` : `${process.env.CDN_URL}/${name}`,
 			mime: type,
 			name,
 		};
