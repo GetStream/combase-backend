@@ -1,5 +1,27 @@
+import schemaComposer from 'api/schema/composer';
 import resolvers from './resolvers';
 import { AssetTC } from './model';
+
+schemaComposer.addTypeDefs(`
+	type AssetSignedURLPayload {
+		"""
+		The signed URL to upload to. 
+		"""
+		url: String!
+		"""
+		The absolute URL path of the file.
+		"""
+		path: String!
+		"""
+		The mime type of the file.
+		"""
+		mime: String!
+		"""
+		The generated filename.
+		"""
+		name: String!
+	}
+`);
 
 const Query = {
 	assetById: AssetTC.mongooseResolvers.findById(),
