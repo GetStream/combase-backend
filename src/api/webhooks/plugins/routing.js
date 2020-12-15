@@ -106,7 +106,7 @@ export class CombaseRoutingPlugin {
 					active: true,
 					// eslint-disable-next-line new-cap
 					organization: mongoose.Types.ObjectId(organization._id),
-					'schedule.tuesday': {
+					[`schedule.${dayName}`]: {
 						$elemMatch: {
 							enabled: true,
 						},
