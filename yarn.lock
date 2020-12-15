@@ -1972,6 +1972,13 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
+aws-cloudfront-sign@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/aws-cloudfront-sign/-/aws-cloudfront-sign-2.2.0.tgz#3910f5a6d0d90fec07f2b4ef8ab07f3eefb5625d"
+  integrity sha1-ORD1ptDZD+wH8rTvirB/Pu+1Yl0=
+  dependencies:
+    lodash "^3.6.0"
+
 aws-sdk@^2.810.0:
   version "2.810.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.810.0.tgz#67b11eb7ac6bb967c5fbbdba523872d45cfa52db"
@@ -5549,6 +5556,11 @@ lodash.zip@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.zip/-/lodash.zip-4.2.0.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
   integrity sha1-7GZi5IlkCO1KtsVCo5kLcswIACA=
+
+lodash@^3.6.0:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+  integrity sha1-W/Rejkm6QYnhfUgnid/RW9FAt7Y=
 
 lodash@^4.17.14, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.4:
   version "4.17.20"

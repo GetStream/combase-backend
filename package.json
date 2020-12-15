@@ -42,6 +42,7 @@
 		"@stream-io/graphql-feeds": "^0.1.0-alpha.9",
 		"amqplib": "^0.6.0",
 		"apollo-server-express": "^2.19.0",
+		"aws-cloudfront-sign": "^2.2.0",
 		"aws-sdk": "^2.810.0",
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
