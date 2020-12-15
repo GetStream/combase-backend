@@ -1,3 +1,15 @@
+const dummyDay = {
+	enabled: true,
+	end: {
+		hour: 17,
+		minute: 0,
+	},
+	start: {
+		hour: 9,
+		minute: 0,
+	},
+};
+
 export const GROUPS = {
 	GENERAL: 'General',
 	DESIGN: 'Design',
@@ -323,92 +335,15 @@ export const AGENTS = [
 	},
 ];
 
-export const SCHEDULE = [
-	{
-		day: 1,
-		enabled: true,
-		end: {
-			hour: 17,
-			minute: 0,
-		},
-		start: {
-			hour: 9,
-			minute: 0,
-		},
-	},
-	{
-		day: 2,
-		enabled: true,
-		end: {
-			hour: 17,
-			minute: 0,
-		},
-		start: {
-			hour: 9,
-			minute: 0,
-		},
-	},
-	{
-		day: 3,
-		enabled: true,
-		end: {
-			hour: 17,
-			minute: 0,
-		},
-		start: {
-			hour: 9,
-			minute: 0,
-		},
-	},
-	{
-		day: 4,
-		enabled: true,
-		end: {
-			hour: 17,
-			minute: 0,
-		},
-		start: {
-			hour: 9,
-			minute: 0,
-		},
-	},
-	{
-		day: 5,
-		enabled: true,
-		end: {
-			hour: 17,
-			minute: 0,
-		},
-		start: {
-			hour: 9,
-			minute: 0,
-		},
-	},
-	{
-		day: 6,
-		enabled: false,
-		end: {
-			hour: 17,
-			minute: 0,
-		},
-		start: {
-			hour: 9,
-			minute: 0,
-		},
-	},
-	{
-		day: 7,
-		enabled: false,
-		end: {
-			hour: 17,
-			minute: 0,
-		},
-		start: {
-			hour: 9,
-			minute: 0,
-		},
-	},
-];
+export const SCHEDULE = {
+	monday: [dummyDay],
+	tuesday: [dummyDay],
+	wednesday: [dummyDay],
+	thursday: [dummyDay],
+	friday: [dummyDay],
+	saturday: [dummyDay],
+	sunday: [dummyDay],
+};
 
 export const ORGANIZATION = {
 	name: 'Stream',

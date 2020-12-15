@@ -1,9 +1,11 @@
 export class CombaseEmailPlugin {
+	// eslint-disable-next-line no-unused-vars
 	handleWebhook = ({ data }) => {
 		// DO IT HERE
 	};
 
 	// data === req.body
+	// eslint-disable-next-line no-unused-vars
 	test = ({ data }) => true;
 
 	listen = async capn => {

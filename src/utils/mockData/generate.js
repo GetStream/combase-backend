@@ -30,7 +30,7 @@ export const generateMockAgentsAndGroups = async ({ organization, domain = 'gets
 			organization,
 			email: `${firstName.toLowerCase()}@${domain}`,
 			password: 'password1',
-			hours: SCHEDULE,
+			schedule: SCHEDULE,
 			groups: agent.groups?.map(name => groupIdMap[name]) || groupIdMap['General'],
 		});
 

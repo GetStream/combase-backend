@@ -1,3 +1,4 @@
+import './extend';
 import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
 
 import resolvers from './resolvers';

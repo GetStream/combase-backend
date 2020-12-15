@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import { StreamChat } from 'stream-chat';
 
 import { Models } from 'api/schema';
@@ -97,75 +96,85 @@ export class CombaseRoutingPlugin {
 
 		const [channel] = await this.getChannel(channelType, channelId, streamCreds);
 
+		const now = new Date();
+		const userTimezone = 'Europe/Amsterdam';
+		const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+
 		const agents = await Models.Agent.aggregate([
 			{
 				$match: {
 					active: true,
-					// eslint-disable-next-line new-cap
-					organization: mongoose.Types.ObjectId(organization._id),
+					organization: organization._id,
+					'schedule.tuesday': {
+						$elemMatch: {
+							enabled: true,
+						},
+					},
 				},
 			},
 			{
 				$project: {
-					_id: true,
-					name: true,
-					title: true,
+					'name.display': true,
+					email: true,
 					role: true,
 					avatar: true,
-					hours: true,
-					timezone: true,
-				},
-			},
-			{
-				$lookup: {
-					from: 'tickets',
-					localField: '_id',
-					foreignField: 'agents',
-					as: 'allTickets',
-				},
-			},
-			{
-				$project: {
-					_id: true,
-					name: true,
-					title: true,
-					role: true,
-					hours: true,
-					timezone: true,
-					tickets: {
-						open: {
-							$size: {
-								$filter: {
-									input: '$allTickets',
-									cond: {
-										$eq: ['$$this.status', 'open'],
-									},
-								},
-							},
-						},
-						closed: {
-							$size: {
-								$filter: {
-									input: '$allTickets',
-									cond: {
-										$eq: ['$$this.status', 'closed'],
-									},
+					timezone: '$$REMOVE',
+					schedule: '$$REMOVE',
+					available: {
+						$anyElementTrue: {
+							$map: {
+								input: `$schedule.${dayName}`,
+								as: 'today',
+								in: {
+									$cond: [
+										{
+											$let: {
+												vars: {
+													startTime: {
+														$dateFromParts: {
+															year: 2020,
+															hour: '$$today.start.hour',
+															minute: '$$today.start.minute',
+															timezone: '$timezone',
+														},
+													},
+													endTime: {
+														$dateFromParts: {
+															year: 2020,
+															hour: '$$today.end.hour',
+															minute: '$$today.end.minute',
+															timezone: '$timezone',
+														},
+													},
+													userTime: {
+														$dateFromParts: {
+															year: 2020,
+															// isoDayOfWeek: now.getDay() === 0 ? 7 : now.getDay(),
+															hour: now.getHours(),
+															minute: now.getMinutes() + 1,
+															timezone: userTimezone,
+														},
+													},
+												},
+												in: {
+													$and: [
+														{
+															$gt: ['$$userTime', '$$startTime'],
+														},
+														{
+															$lt: ['$$userTime', '$$endTime'],
+														},
+													],
+												},
+											},
+										},
+										true,
+										false,
+									],
 								},
 							},
 						},
 					},
-				},
-			},
-			{
-				$match: {
-					'tickets.open': {
-						$lt: this.maxOpenChats, // Filter out all agents with more open conversations than the allowed maxOpenChats value.
-					},
-				},
-			},
-			{
-				$sort: {
-					'tickets.open': 1, // Least tickets is first in the array.
 				},
 			},
 		]);

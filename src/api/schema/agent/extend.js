@@ -37,34 +37,4 @@ AgentTC.addFields({
 	token: 'String' /** Never stored in mongo & is nullable, only ever returned by the loginAgent resolver. */,
 });
 
-// TODO: Here we can probably use relations to call the Ticket.mongooseResolvers.count() resolver.
-AgentTC.addNestedFields({
-	'tickets.closed': {
-		type: 'Int!',
-		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
-			Ticket.countDocuments({
-				agent: { $in: [_id] },
-				organization,
-				status: 'closed',
-			}),
-	},
-	'tickets.open': {
-		type: 'Int!',
-		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
-			Ticket.countDocuments({
-				agent: { $in: [_id] },
-				organization,
-				status: 'open',
-			}),
-	},
-	'tickets.total': {
-		type: 'Int!',
-		resolve: ({ _id, organization }, _, { models: { Ticket } }) =>
-			Ticket.countDocuments({
-				agent: { $in: [_id] },
-				organization,
-			}),
-	},
-});
-
 AgentTC.removeField('password');
