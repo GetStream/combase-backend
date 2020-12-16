@@ -13,10 +13,10 @@ AgentTC.getITC('FilterFindManyAgentInput').addFields({
 	available: 'Boolean',
 });
 
-AgentTC.mongooseResolvers.findManyAgg = () => ({
-	name: 'findManyAgg',
+AgentTC.mongooseResolvers.findManyAvailable = () => ({
+	name: 'findManyAvailable',
 	description:
-		'Same as agentMany but uses an aggregated query to include a timezone-aware availability status for each agent. You can also filter by availability.',
+		'Same as agentMany but uses an aggregated query to return only agents that are avulable today, and includes a timezone-aware availability status for each agent.',
 	type: '[Agent!]',
 	args: { filter: 'FilterFindManyAgentInput' },
 	resolve: (source, args, context) => {
@@ -28,22 +28,16 @@ AgentTC.mongooseResolvers.findManyAgg = () => ({
 		const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
 		const userTimezone = 'Europe/Amsterdam';
 
-		const additionalMatchArgs = {};
-
-		if (typeof args?.filter?.available !== 'undefined') {
-			additionalMatchArgs[`schedule.${dayName}`] = {
-				$elemMatch: {
-					enabled: true,
-				},
-			};
-		}
-
 		return context.models.Agent.aggregate()
 			.match({
 				active: true,
 				// eslint-disable-next-line new-cap
 				organization: mongoose.Types.ObjectId(context.organization),
-				...additionalMatchArgs,
+				[`schedule.${dayName}`]: {
+					$elemMatch: {
+						enabled: true,
+					},
+				},
 			})
 			.addFields({
 				available: {
@@ -100,6 +94,9 @@ AgentTC.mongooseResolvers.findManyAgg = () => ({
 						},
 					},
 				},
+			})
+			.match({
+				available: true,
 			});
 	},
 });
@@ -108,7 +105,7 @@ const Query = {
 	agentById: AgentTC.mongooseResolvers.findById().withMiddlewares([organizationFilter]),
 	agentMany: AgentTC.mongooseResolvers.findMany().withMiddlewares([organizationFilter]),
 	agentCount: AgentTC.mongooseResolvers.count().withMiddlewares([organizationFilter]),
-	agents: AgentTC.mongooseResolvers.findManyAgg(),
+	agentsAvailable: AgentTC.mongooseResolvers.findManyAvailable(),
 	...resolvers.Query,
 };
 
