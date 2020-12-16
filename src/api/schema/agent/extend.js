@@ -1,6 +1,5 @@
 import { delegateToSchema } from 'apollo-server-express';
 import { schema as streamFeeds } from '@stream-io/graphql-feeds';
-import { isAgentAvailableIntl } from 'utils/isAgentAvailableIntl';
 
 import { AgentTC } from './model';
 
@@ -20,15 +19,6 @@ AgentTC.addFields({
 	},
 	available: {
 		type: 'Boolean',
-		args: {},
-		resolve: async ({ _id }, _, { models: { Agent } }) => {
-			const agent = await Agent.findById(_id, {
-				hours: 1,
-				timezone: 1,
-			});
-
-			return isAgentAvailableIntl(agent);
-		},
 	},
 	streamToken: {
 		type: 'String',
