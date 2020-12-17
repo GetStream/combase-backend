@@ -43,6 +43,7 @@ const authorizeRequest = async ({ req, connection }) => {
 		}
 
 		let orgData;
+		const timezone = 'Europe/Amsterdam'; // TODO: For agent, get timezone / For user, send timezone from the widget
 
 		if (scopes?.organization) {
 			orgData = await Models.Organization.findOne({ _id: scopes.organization }, { stream: true });
@@ -50,6 +51,7 @@ const authorizeRequest = async ({ req, connection }) => {
 
 		return {
 			...scopes,
+			timezone,
 			stream: orgData?.stream,
 		};
 	} catch (error) {
