@@ -915,10 +915,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@captain-hook/core@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@captain-hook/core/-/core-0.2.1.tgz#9022e289becd79e30546ba28a46f64467376357b"
-  integrity sha512-jQzzpJNDEtplA6khnl0IzS3R099r3nDWDcOBy9oOkw17jbx8oL7ynuCmkh/IdycbdxnT1tm7FKIXc66eQo+sMg==
+"@captain-hook/core@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@captain-hook/core/-/core-0.2.4.tgz#1c5d48aeefcc9375ab347ee73f478c7cc0983771"
+  integrity sha512-DGxNLbnepVlIQsbNFUJW8R1SzXi8xERW9q04GuLmcf18R0eY3rttb1tFJ6NrwKksOdlefK268QbF55mbigKIxg==
   dependencies:
     express "^4.17.1"
     iterall "^1.3.0"
