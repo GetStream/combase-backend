@@ -1,10 +1,6 @@
 import nodemailer from 'nodemailer';
 import sgTransport from 'nodemailer-sendgrid-transport';
-import parser from '@sendgrid/inbound-mail-parser';
-import mongoose from 'mongoose';
-import { StreamChat } from 'stream-chat';
 
-import { Models } from 'api/schema';
 import { logger } from 'utils/logger';
 
 export class CombaseEmailPlugin {
