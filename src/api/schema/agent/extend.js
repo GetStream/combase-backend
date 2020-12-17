@@ -17,9 +17,7 @@ AgentTC.addFields({
 				schema: streamFeeds,
 			}),
 	},
-	available: {
-		type: 'Boolean',
-	},
+	available: 'Boolean',
 	streamToken: {
 		type: 'String',
 		resolve: ({ _id }, _, { agent, stream: { chat } }) => (agent.toString() === _id.toString() ? chat?.createToken(_id.toString()) : null),
