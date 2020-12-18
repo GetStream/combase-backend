@@ -14,7 +14,7 @@ WebhookTC.addFields({
 					iat: Date.now(), // issued at time [now]
 					org: organization.toString(), // organization id
 				},
-				process.env.AUTH_SECRET // signing key
+				`${organization.toString()}:${process.env.AUTH_SECRET}` // signing key
 			),
 	},
 });
