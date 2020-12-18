@@ -39,6 +39,7 @@
 		"@captain-hook/core": "0.2.4",
 		"@graphql-tools/load-files": "^6.2.5",
 		"@graphql-tools/stitch": "^7.1.4",
+		"@sendgrid/eventwebhook": "^7.2.6",
 		"@sendgrid/inbound-mail-parser": "^7.4.0",
 		"@stream-io/graphql-feeds": "^0.1.0-alpha.9",
 		"amqplib": "^0.6.0",

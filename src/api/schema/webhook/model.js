@@ -27,17 +27,24 @@ const WebhookSchema = new Schema(
 			required: false,
 			description: 'Description of what this webhook receiver will handle.',
 		},
+		provider: {
+			type: String,
+			trim: true,
+			required: true,
+			description: 'URL of the provider for which the webhook is intended.',
+		},
 		triggers: [
 			{
 				type: String,
 				required: true,
 				trim: true,
-				description: 'The plugin triggered by this webhook event (plugin function to call).',
+				description: 'The plugin triggered by this webhook event (plugin and event to call - provider:plugin/event).',
 			},
 		],
 		active: {
 			type: Boolean,
 			default: false,
+			index: true,
 			description: 'Status of the webhook.',
 		},
 	},

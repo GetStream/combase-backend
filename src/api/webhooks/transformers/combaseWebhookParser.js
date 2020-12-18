@@ -1,11 +1,13 @@
 import { Models } from 'api/schema';
 
+import { logger } from 'utils/logger';
+
 export const combaseWebhookParser = async payload => {
 	try {
-		const webhook = await Models.Webhook.findById(payload.webhook);
+		const webhook = await Models.Webhook.findById(payload.sub);
 
 		const organization = await Models.Organization.findOne(
-			{ _id: payload.organization },
+			{ _id: payload.org },
 			{
 				name: true,
 				stream: true,
@@ -22,6 +24,8 @@ export const combaseWebhookParser = async payload => {
 			webhook,
 		};
 	} catch (error) {
+		logger.error(error);
+
 		return payload;
 	}
 };

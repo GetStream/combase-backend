@@ -3,7 +3,6 @@
  * here we process the users JWT, add their userID to the context
  * object available in each resolver.
  */
-import 'dotenv/config';
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import { logger } from 'utils/logger';
