@@ -13,7 +13,7 @@
 		"build": "babel src --out-dir dist",
 		"start": "pm2-runtime start ecosystem.prod.config.js",
 		"start:dev": "pm2-runtime start ecosystem.dev.config.js",
-		"dev": "nodemon --exec npx babel-node ./src/api/index.js --inspect",
+		"dev": "concurrently \"nodemon --exec npx babel-node ./src/api/index.js --inspect\" \"node ngrok.js\"",
 		"lint": "eslint . --ext .js"
 	},
 	"author": "GetStream <support@getstream.io>",
@@ -86,16 +86,20 @@
 		"babel-plugin-module-resolver": "^4.0.0",
 		"babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
 		"babel-preset-env": "^1.7.0",
+		"concurrently": "^5.3.0",
 		"eslint": "^7.15.0",
 		"eslint-config-get-off-my-lawn": "^5.0.1",
 		"eslint-plugin-babel": "^5.3.1",
+		"eslint-plugin-eslint-comments": "^3.2.0",
 		"eslint-plugin-import": "^2.22.1",
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-prettier": "^3.2.0",
 		"eslint-plugin-promise": "^4.2.1",
 		"husky": "^4.3.5",
 		"lint-staged": "^10.5.3",
+		"ngrok": "^3.4.0",
 		"nodemon": "^2.0.6",
+		"open": "^7.3.0",
 		"prettier": "^2.2.1"
 	}
 }
