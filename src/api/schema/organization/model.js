@@ -82,6 +82,11 @@ const OrganizationSchema = new Schema(
 			description: "The organization's custom theme values to be merged with the client-side theme.",
 			type: JSON,
 		},
+		active: {
+			type: Boolean,
+			default: true,
+			description: 'Status of the organization – an organization is never removed from history in order to preserve the timeline.',
+		},
 	},
 	{ collection: 'organizations' }
 );
