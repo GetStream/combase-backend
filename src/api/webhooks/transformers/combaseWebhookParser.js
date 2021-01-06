@@ -1,13 +1,26 @@
 import { Models } from 'api/schema';
+import jwt from 'jsonwebtoken';
 
 import { logger } from 'utils/logger';
 
 export const combaseWebhookParser = async payload => {
+	const { query } = payload;
+
 	try {
-		const webhook = await Models.Webhook.findById(payload.sub);
+		if (!query?.token) {
+			throw new Error('Combase Webhook Parser: No Token in req.query');
+		}
+
+		const tokenPayload = jwt.verify(query?.token, process.env.AUTH_SECRET);
+
+		if (!tokenPayload?.webhook || !tokenPayload?.organization) {
+			throw new Error(`Combase Webhook Parser: Malformed Token Payload \n ${JSON.stringify(tokenPayload)}`);
+		}
+
+		const webhook = await Models.Webhook.findById(tokenPayload.webhook);
 
 		const organization = await Models.Organization.findOne(
-			{ _id: payload.org },
+			{ _id: tokenPayload.organization },
 			{
 				name: true,
 				stream: true,

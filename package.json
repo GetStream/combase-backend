@@ -36,7 +36,9 @@
 		"graphql": "15.4.0"
 	},
 	"dependencies": {
-		"@captain-hook/core": "0.2.4",
+		"@captain-hook/core": "^0.2.12",
+		"@captain-hook/events-engine": "^0.1.8",
+		"@captain-hook/interchange": "^0.1.8",
 		"@graphql-tools/load-files": "^6.2.5",
 		"@graphql-tools/stitch": "^7.1.4",
 		"@sendgrid/eventwebhook": "^7.2.6",

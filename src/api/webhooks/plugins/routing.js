@@ -8,6 +8,11 @@ const delay = (wait = 500) => new Promise(res => setTimeout(res, wait));
 export class CombaseRoutingPlugin {
 	maxOpenChats = 5;
 
+	constructor(capn) {
+		this.capn = capn;
+		this.listen();
+	}
+
 	setAgentUnavailable = async channel => {
 		channel.addModerators([channel.data.organization]);
 
@@ -88,11 +93,11 @@ export class CombaseRoutingPlugin {
 	};
 
 	onChannelCreated = async payload => {
-		const { data: event, organization } = payload;
+		const { data: event } = payload;
 
-		const { id: channelId, type: channelType } = event.channel;
+		const { id: channelId, type: channelType, organization } = event.channel;
 
-		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization._id }, { stream: true });
+		const { stream: streamCreds } = await Models.Organization.findOne({ _id: organization }, { stream: true });
 
 		const [channel] = await this.getChannel(channelType, channelId, streamCreds);
 
@@ -105,7 +110,7 @@ export class CombaseRoutingPlugin {
 				$match: {
 					active: true,
 					// eslint-disable-next-line new-cap
-					organization: mongoose.Types.ObjectId(organization._id),
+					organization: mongoose.Types.ObjectId(organization),
 					[`schedule.${dayName}`]: {
 						$elemMatch: {
 							enabled: true,
@@ -187,7 +192,7 @@ export class CombaseRoutingPlugin {
 		let agent;
 
 		/** No Agents - Set Unavailable */
-		if (!agents?.length) return this.setAgentUnavailable(channel, organization._id.toString());
+		if (!agents?.length) return this.setAgentUnavailable(channel, organization);
 
 		/** Only 1 agent - Assign to this agent */
 		if (agents.length === 1) agent = agents[0];
@@ -215,11 +220,16 @@ export class CombaseRoutingPlugin {
 		return data?.type && data?.type === 'channel.created';
 	};
 
-	listen = async capn => {
-		const events = capn.listen(this.test);
+	listen = async () => {
+		const events = this.capn.listen();
 
 		for await (const event of events) {
-			await this.onChannelCreated(event);
+			// eslint-disable-next-line no-console
+			console.log('Received:', event.data.type, event);
+
+			if (this.test(event)) {
+				await this.onChannelCreated(event);
+			}
 		}
 	};
 }

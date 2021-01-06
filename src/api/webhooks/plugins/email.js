@@ -20,6 +20,8 @@ export class CombaseEmailPlugin {
 			switch (data?.type) {
 				case 'receive': {
 					logger.info('email receive event', data);
+
+					break;
 				}
 
 				case 'send': {

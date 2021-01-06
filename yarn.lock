@@ -915,14 +915,22 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@captain-hook/core@0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@captain-hook/core/-/core-0.2.4.tgz#1c5d48aeefcc9375ab347ee73f478c7cc0983771"
-  integrity sha512-DGxNLbnepVlIQsbNFUJW8R1SzXi8xERW9q04GuLmcf18R0eY3rttb1tFJ6NrwKksOdlefK268QbF55mbigKIxg==
+"@captain-hook/core@^0.2.12":
+  version "0.2.12"
+  resolved "https://registry.yarnpkg.com/@captain-hook/core/-/core-0.2.12.tgz#1cd3d0ecf17a040f4cf898e6f74f0bc76ee165c5"
+  integrity sha512-D5JR2JBxYyHO5kacZ2+1DetxsKG1bcn1WNM3BnjPfQJNKGe9Vm3adYfqcUYL3IhlhbTz6chctPyXwWVsANHj1Q==
   dependencies:
-    express "^4.17.1"
-    iterall "^1.3.0"
-    jsonwebtoken "^8.5.1"
+    "@captain-hook/events-engine" "^0.1.8"
+
+"@captain-hook/events-engine@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@captain-hook/events-engine/-/events-engine-0.1.8.tgz#106a0497452a7425227ccd391d9e206563276a34"
+  integrity sha512-w4AEEodYSUSpUtN8tM+xUsSPCJ4YapYByq0jz4RiY0JcGb4MpAl29JaIyNwXx4zJLiqytyzhSesvBTu9CIhbtQ==
+
+"@captain-hook/interchange@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@captain-hook/interchange/-/interchange-0.1.8.tgz#de92081d7896650798e3999a46a80b46f3698b25"
+  integrity sha512-LmWxv2QN5Kr05MRK3+0AmzpR/Ly5o7FRI9wM8l4md8emNCLf6/9LFiQnvBhQ+0UKOIEjlTbPKFahs1EPea/WQw==
 
 "@dabh/diagnostics@^2.0.2":
   version "2.0.2"
@@ -5743,7 +5751,7 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-iterall@^1.1.3, iterall@^1.2.1, iterall@^1.3.0:
+iterall@^1.1.3, iterall@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.3.0.tgz#afcb08492e2915cbd8a0884eb93a8c94d0d72fea"
   integrity sha512-QZ9qOMdF+QLHxy1QIpUHUU1D5pS2CG2P69LF6L6CPjPYA/XMOmKV3PZpawHoAjHNyB0swdVTRxdYT4tbBbxqwg==
