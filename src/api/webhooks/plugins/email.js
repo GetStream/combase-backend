@@ -1,17 +1,18 @@
 import nodemailer from 'nodemailer';
 import sgTransport from 'nodemailer-sendgrid-transport';
+import sgParse from '@sendgrid/inbound-mail-parser';
 
 import { logger } from 'utils/logger';
 
 export class CombaseEmailPlugin {
-	sendgridEmailEvents = ['receive', 'send'];
+	emailEvents = ['receive', 'send'];
 
-	// eslint-disable-next-line no-unused-vars
-	handleWebhook = async data => {
+	handleWebhookFromEvent = async data => {
 		try {
 			const transporter = nodemailer.createTransport(
 				sgTransport({
 					auth: {
+						// TODO: get value from plugins model
 						api_key: process.env.SENDGRID_API_KEY,
 					},
 				})
@@ -43,18 +44,16 @@ export class CombaseEmailPlugin {
 		}
 	};
 
-	// data === req.body
-	// eslint-disable-next-line no-unused-vars
-	test = ({ data }) => data?.type && this.sendgridEmailEvents.includes(data?.type);
+	test = ({ data }) => data?.type && this.emailEvents.includes(data?.type);
 
 	listen = async capn => {
-		const events = capn.listen(this.test);
+		const events = capn.listen();
+
+		console.log(events);
 
 		try {
 			for await (const event of events) {
-				// eslint-disable-next-line no-console
-				logger.info('CombaseEmailPlugin:', event);
-				await this.handleWebhook(event);
+				await this.handleWebhookFromEvent(event);
 			}
 		} catch (error) {
 			logger.error(error);

@@ -28,7 +28,7 @@ export class CombaseRoutingPlugin {
 		await this.streamChat.setUser({ id: channel.data.organization });
 
 		await channel.sendMessage({
-			text: `Hey! Sorry, all of our agents are unavailable right now.`,
+			text: `Sorry, all agents are currently unavailable.`,
 		});
 
 		await channel.keystroke();
@@ -36,7 +36,7 @@ export class CombaseRoutingPlugin {
 		await delay(2000);
 
 		await channel.sendMessage({
-			text: `You'll get a notification as soon as the ticket is assigned, feel free to add some more information in the meantime!`,
+			text: `Feel free to add additional information and we'll follow up via email as soon as an agent is available.`,
 		});
 
 		await Promise.all([channel.stopTyping, channel.stopWatching, this.streamChat.disconnect]);
@@ -46,12 +46,7 @@ export class CombaseRoutingPlugin {
 		if (!agentId) return this.setAgentUnavailable(channel);
 
 		// This should never happen as routing only fires on new chats, but here as a failsafe.
-		if (channel.state.members[agentId]) {
-			// eslint-disable-next-line no-console
-			console.log(`'agent:${agentId} is already in this channel'`);
-
-			return;
-		}
+		if (channel.state.members[agentId]) return;
 
 		const addMember = channel.addModerators([agentId]);
 

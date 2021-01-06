@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 
 import { WebhookTC } from './model';
@@ -14,7 +15,7 @@ WebhookTC.addFields({
 					iat: Date.now(), // issued at time [now]
 					org: organization.toString(), // organization id
 				},
-				`${organization.toString()}:${process.env.AUTH_SECRET}` // signing key
+				process.env.AUTH_SECRET // signing key
 			),
 	},
 });
