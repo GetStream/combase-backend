@@ -4,23 +4,15 @@ import resolvers from './resolvers';
 import { IntegrationTC } from './model';
 
 const Query = {
-	ticketById: IntegrationTC.mongooseResolvers.findById(),
-	ticketByIds: IntegrationTC.mongooseResolvers.findByIds(),
-	ticketOne: IntegrationTC.mongooseResolvers.findOne(),
-	ticketMany: IntegrationTC.mongooseResolvers.findMany(),
-	ticketCount: IntegrationTC.mongooseResolvers.count(),
+	integrationById: IntegrationTC.mongooseResolvers.findById(),
+	integrationMany: IntegrationTC.mongooseResolvers.findMany(),
 	...resolvers.Query,
 };
 
 const Mutation = {
-	ticketCreateOne: IntegrationTC.mongooseResolvers.createOne(),
-	ticketCreateMany: IntegrationTC.mongooseResolvers.createMany(),
-	ticketUpdateById: IntegrationTC.mongooseResolvers.updateById(),
-	ticketUpdateOne: IntegrationTC.mongooseResolvers.updateOne(),
-	ticketUpdateMany: IntegrationTC.mongooseResolvers.updateMany(),
-	ticketRemoveById: IntegrationTC.mongooseResolvers.removeById(),
-	ticketRemoveOne: IntegrationTC.mongooseResolvers.removeOne(),
-	ticketRemoveMany: IntegrationTC.mongooseResolvers.removeMany(),
+	integrationCreate: IntegrationTC.mongooseResolvers.createOne(),
+	integrationUpdateById: IntegrationTC.mongooseResolvers.updateById(),
+	integrationRemoveById: IntegrationTC.mongooseResolvers.removeById(),
 	...resolvers.Mutation,
 };
 
