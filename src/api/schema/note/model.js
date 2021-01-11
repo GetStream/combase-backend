@@ -3,7 +3,6 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
-import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const NoteSchema = new Schema(
 	{
@@ -30,7 +29,6 @@ const NoteSchema = new Schema(
 );
 
 NoteSchema.plugin(timestamps);
-NoteSchema.plugin(events);
 
 NoteSchema.index({
 	createdAt: 1,

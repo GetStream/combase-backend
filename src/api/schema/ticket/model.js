@@ -3,7 +3,6 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
-import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const TicketSchema = new Schema(
 	{
@@ -87,7 +86,6 @@ const TicketSchema = new Schema(
 );
 
 TicketSchema.plugin(timestamps);
-TicketSchema.plugin(events);
 
 TicketSchema.index({
 	createdAt: 1,

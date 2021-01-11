@@ -3,7 +3,6 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
-import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const GroupSchema = new Schema(
 	{
@@ -34,7 +33,6 @@ const GroupSchema = new Schema(
 );
 
 GroupSchema.plugin(timestamps);
-GroupSchema.plugin(events);
 
 GroupSchema.index({
 	createdAt: 1,
