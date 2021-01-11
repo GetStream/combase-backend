@@ -1,9 +1,30 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
+import { fieldEncryption } from 'mongoose-field-encryption';
 
 import schemaComposer from 'api/schema/composer';
 import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
+
+const IntegationCredentialsSchema = new Schema({
+	name: {
+		type: String,
+		trim: true,
+		required: true,
+		description: 'Name of the stored credential.',
+	},
+	value: {
+		type: String,
+		trim: true,
+		required: true,
+		description: 'Value of the stored credential.',
+	},
+});
+
+IntegationCredentialsSchema.plugin(fieldEncryption, {
+	fields: ['value'],
+	secret: process.env.AUTH_SECRET,
+});
 
 const IntegrationSchema = new Schema(
 	{
@@ -12,6 +33,12 @@ const IntegrationSchema = new Schema(
 			ref: 'Organization',
 			required: true,
 			description: 'A reference to the organization the Integration is associated with.',
+		},
+		credentials: IntegationCredentialsSchema,
+		enabled: {
+			type: Boolean,
+			default: false,
+			description: 'Boolean representation of the integration status.',
 		},
 	},
 	{ collection: 'integrations' }
