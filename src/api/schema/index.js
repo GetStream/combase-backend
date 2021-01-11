@@ -7,6 +7,7 @@ import Asset from './asset';
 import Ticket from './ticket';
 import Faq from './faq';
 import Group from './group';
+import Integration from './integration';
 import Note from './note';
 import Organization from './organization';
 import Tag from './tag';
@@ -29,12 +30,13 @@ schemaComposer.Query.addFields({
 	...Activity.Query,
 	...Agent.Query,
 	...Asset.Query,
-	...Ticket.Query,
 	...Faq.Query,
 	...Group.Query,
+	...Integration.Query,
 	...Note.Query,
 	...Organization.Query,
 	...Tag.Query,
+	...Ticket.Query,
 	...User.Query,
 	...Webhook.Query,
 });
@@ -43,12 +45,13 @@ schemaComposer.Mutation.addFields({
 	...Activity.Mutation,
 	...Agent.Mutation,
 	...Asset.Mutation,
-	...Ticket.Mutation,
 	...Faq.Mutation,
 	...Group.Mutation,
+	...Integration.Mutation,
 	...Note.Mutation,
 	...Organization.Mutation,
 	...Tag.Mutation,
+	...Ticket.Mutation,
 	...User.Mutation,
 	...Webhook.Mutation,
 });
@@ -56,6 +59,7 @@ schemaComposer.Mutation.addFields({
 schemaComposer.Subscription.addFields({
 	...Activity.Subscription,
 	...Agent.Subscription,
+	...Integration.Subscription,
 	...Ticket.Subscription,
 	...Organization.Subscription,
 	...User.Subscription,

@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import sgTransport from 'nodemailer-sendgrid-transport';
-import sgParse from '@sendgrid/inbound-mail-parser';
+// import sgParse from '@sendgrid/inbound-mail-parser';
 
 import { logger } from 'utils/logger';
 
@@ -49,7 +49,7 @@ export class CombaseEmailPlugin {
 	listen = async capn => {
 		const events = capn.listen();
 
-		console.log(events);
+		// console.log(events);
 
 		try {
 			for await (const event of events) {

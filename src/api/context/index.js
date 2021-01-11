@@ -5,6 +5,9 @@
  */
 import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
+import fs from 'fs-extra';
+import path from 'path';
+import slash from 'slash';
 import { logger } from 'utils/logger';
 import { streamCtx } from 'utils/streamCtx';
 
@@ -69,6 +72,8 @@ export default async ({ connection, req }) => {
 			agent,
 			organization,
 			models: Models,
+			// eslint-disable-next-line no-sync
+			integrationManifest: JSON.parse(fs.readFileSync(slash(path.join(process.cwd(), '.data', 'integration-manifest.json')))),
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
 		};
 	} catch (error) {
