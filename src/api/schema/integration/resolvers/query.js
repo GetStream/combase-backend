@@ -1,10 +1,10 @@
-import { IntegrationTC, IntegrationFilterITC } from './extend';
+import { IntegrationDefinitionTC, IntegrationDefinitionFilterITC } from '../model';
 
-export const integrations = {
-	name: 'integrations',
+export const integrationDefinitions = {
+	name: 'integrationDefinitions',
 	kind: 'query',
-	type: [IntegrationTC],
-	args: { filter: IntegrationFilterITC },
+	type: [IntegrationDefinitionTC],
+	args: { filter: IntegrationDefinitionFilterITC },
 	resolve: (_, args, { integrationManifest }) => {
 		const filter = Object.entries(args?.filter || {});
 
@@ -16,10 +16,10 @@ export const integrations = {
 	},
 };
 
-export const integration = {
-	name: 'integration',
+export const integrationDefinition = {
+	name: 'integrationDefinition',
 	kind: 'query',
-	type: IntegrationTC,
+	type: IntegrationDefinitionTC,
 	args: {
 		id: 'String',
 	},

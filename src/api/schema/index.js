@@ -18,6 +18,7 @@ import { AssetModel } from './asset/model';
 import { TicketModel } from './ticket/model';
 import { FaqModel } from './faq/model';
 import { GroupModel } from './group/model';
+import { IntegrationModel } from './integration/model';
 import { NoteModel } from './note/model';
 import { OrganizationModel } from './organization/model';
 import { TagModel } from './tag/model';
@@ -75,6 +76,7 @@ export const Models = {
 	Ticket: TicketModel,
 	Faq: FaqModel,
 	Group: GroupModel,
+	Integration: IntegrationModel,
 	Note: NoteModel,
 	Organization: OrganizationModel,
 	Tag: TagModel,
