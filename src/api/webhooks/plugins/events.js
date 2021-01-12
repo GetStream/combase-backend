@@ -1,5 +1,8 @@
 import { connect as streamFeedsClient } from 'getstream';
 
+// TODO @luke still uses test method
+
+// TODO @luke can probably use the actual trigger names from Combase now rather than using the stream chat events directly i.e. ticket:created
 export class CombaseActivityPlugin {
 	streamChatEvents = ['channel.created', 'member.added', 'user.created'];
 
