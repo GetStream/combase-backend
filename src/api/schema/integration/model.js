@@ -91,7 +91,7 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 			type: 'String',
 			resolve: source => {
 				/* eslint-disable no-sync */
-				const readme = slash(path.join(source.internal.path, 'README.md'));
+				const readme = slash(path.join(source.internal.path, 'about.md'));
 				let str = '';
 
 				if (fs.existsSync(readme)) {
