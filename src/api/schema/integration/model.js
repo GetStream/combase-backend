@@ -1,5 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import path from 'path';
+import slash from 'slash';
+import fs from 'fs-extra';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { fieldEncryption } from 'mongoose-field-encryption';
 
@@ -64,10 +67,36 @@ export const IntegrationDefinitionFilterITC = schemaComposer.createInputTC({
 	},
 });
 
+export const IntegrationCategoryETC = schemaComposer.createEnumTC({
+	name: 'EnumIntegrationCategory',
+	values: {
+		calendar: {
+			value: 'calendar',
+		},
+		email: {
+			value: 'email',
+		},
+		enrich: {
+			value: 'enrich',
+		},
+	},
+});
+
 export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 	name: 'IntegrationDefinition',
 	fields: {
+		about: {
+			type: 'String!',
+			resolve: source => {
+				// eslint-disable-next-line no-sync
+				return fs.readFileSync(slash(path.join(source.internal.path, 'README.md'))).toString();
+			},
+		},
 		configuration: 'JSON!',
+		category: {
+			description: 'Categories for this Integration',
+			type: [IntegrationCategoryETC],
+		},
 		id: 'String!',
 		fields: 'JSON!',
 		name: 'String!',
@@ -77,9 +106,9 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 				name: 'IntegrationInternal',
 				fields: {
 					name: 'String!',
-					hash: 'String',
+					hash: 'String!',
 					path: 'String!',
-					version: 'String',
+					version: 'String!',
 				},
 			}),
 		},

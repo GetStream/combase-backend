@@ -4,15 +4,15 @@ import resolvers from './resolvers';
 import { IntegrationTC } from './model';
 
 const Query = {
-	integrationById: IntegrationTC.mongooseResolvers.findById(),
-	integrationMany: IntegrationTC.mongooseResolvers.findMany(),
+	integration: IntegrationTC.mongooseResolvers.findById(),
+	integrations: IntegrationTC.mongooseResolvers.connection(),
 	...resolvers.Query,
 };
 
 const Mutation = {
 	integrationCreate: IntegrationTC.mongooseResolvers.createOne(),
-	integrationUpdateById: IntegrationTC.mongooseResolvers.updateById(),
-	integrationRemoveById: IntegrationTC.mongooseResolvers.removeById(),
+	integrationUpdate: IntegrationTC.mongooseResolvers.updateById(),
+	integrationRemove: IntegrationTC.mongooseResolvers.removeById(),
 	...resolvers.Mutation,
 };
 
