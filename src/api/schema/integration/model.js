@@ -5,7 +5,7 @@ import { fieldEncryption } from 'mongoose-field-encryption';
 
 import schemaComposer from 'api/schema/composer';
 
-const IntegrationredentialsSchema = new Schema({
+const IntegrationCredentialsSchema = new Schema({
 	name: {
 		type: String,
 		trim: true,
@@ -20,7 +20,7 @@ const IntegrationredentialsSchema = new Schema({
 	},
 });
 
-IntegrationredentialsSchema.plugin(fieldEncryption, {
+IntegrationCredentialsSchema.plugin(fieldEncryption, {
 	fields: ['value'],
 	secret: process.env.AUTH_SECRET,
 });
@@ -33,7 +33,7 @@ const IntegrationSchema = new Schema(
 			required: true,
 			description: 'A reference to the organization the Integration is associated with.',
 		},
-		credentials: IntegrationredentialsSchema,
+		credentials: IntegrationCredentialsSchema,
 		enabled: {
 			type: Boolean,
 			default: false,
