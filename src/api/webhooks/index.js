@@ -8,7 +8,7 @@ import { CombaseActivityPlugin } from './plugins/events';
 import { combaseWebhookParser } from './transformers';
 import { createDynamicPlugins } from './createDynamicPlugins';
 
-import createChangeStreamSource from './changeStreams';
+import createChangeStreamSource from './createChangeStreamSource';
 import { TicketModel } from 'api/schema/ticket/model';
 
 // TODO @luke "source" plugins for captain
