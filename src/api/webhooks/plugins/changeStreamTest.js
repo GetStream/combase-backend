@@ -10,7 +10,7 @@ export class CombaseTestChangeStream {
 
 		for await (const event of events) {
 			// eslint-disable-next-line no-console
-			console.log('User was created:', event);
+			console.log('CHANGE STREAM CAPN EVENT:', event);
 		}
 	};
 }

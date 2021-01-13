@@ -12,6 +12,29 @@ const mapPluginMethodsToTriggers = (plugin, { triggers }) => {
 	return obj;
 };
 
+const createPlugin = pluginTriggerMap => {
+	return class DynamicPlugin {
+		constructor(capn) {
+			this.capn = capn;
+			this.triggers = Object.keys(pluginTriggerMap);
+
+			Object.entries(pluginTriggerMap)
+				.filter(([trigger, method]) => trigger && method)
+				.forEach(([trigger, method]) => {
+					this[trigger] = method;
+				});
+
+			this.listen();
+		}
+
+		listen = async () => {
+			for await (const event of this.capn.listen(this.triggers)) {
+				this[event.trigger]?.(event);
+			}
+		};
+	};
+};
+
 export const createDynamicPlugins = () => {
 	// eslint-disable-next-line no-sync
 	const pluginConfigs = JSON.parse(fs.readFileSync(slash(path.join(process.cwd(), '.data', 'integration-manifest.json'))));
@@ -19,6 +42,7 @@ export const createDynamicPlugins = () => {
 
 	const triggerMap = plugins.map((plugin, i) => mapPluginMethodsToTriggers(plugin, pluginConfigs[i]));
 
-	// eslint-disable-next-line no-console
-	console.log(triggerMap);
+	const pluginObjects = triggerMap.map(createPlugin);
+
+	return pluginObjects;
 };
