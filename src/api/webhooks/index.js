@@ -4,9 +4,8 @@ import { CapnEventsEngine } from '@captain-hook/events-engine';
 import { UserModel } from 'api/schema/user/model';
 import { TicketModel } from 'api/schema/ticket/model';
 
-// import { CombaseActivityPlugin, CombaseEmailPlugin, CombaseRoutingPlugin } from './plugins';
 import { combaseWebhookParser } from './transformers';
-import { createDynamicPlugins } from './createDynamicPlugins';
+import { createDynamicPlugins } from './pluginCreator';
 
 import createChangeStreamSource from './createChangeStreamSource';
 
