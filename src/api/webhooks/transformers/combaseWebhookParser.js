@@ -25,7 +25,7 @@ export const combaseWebhookParser = async payload => {
 			organization: {
 				_id: organization._id.toString(),
 				name: organization.name,
-				stream: organization.stream._doc,
+				// stream: organization.stream._doc, //? NOTE Probably not needed now that the plugins can talk back to the API.
 			},
 			webhook,
 		};

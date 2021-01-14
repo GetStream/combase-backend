@@ -26,6 +26,4 @@ OrganizationTC.addNestedFields({
 	},
 });
 
-OrganizationTC.makeFieldNullable('stream.key');
-
-OrganizationTC.removeField('stream.secret');
+OrganizationTC.removeField('stream');
