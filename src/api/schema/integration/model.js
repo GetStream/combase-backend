@@ -107,6 +107,7 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 			description: 'Categories for this Integration',
 			type: [IntegrationCategoryETC],
 		},
+		icon: 'String',
 		id: 'String!',
 		fields: 'JSON!',
 		name: 'String!',

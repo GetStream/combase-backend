@@ -2,6 +2,7 @@ const slash = require('slash');
 const path = require('path');
 const crypto = require('crypto');
 const fs = require('fs');
+const mime = require('mime-types');
 const uuid = require('uuid').v4;
 
 const hashPkg = obj => {
@@ -13,21 +14,27 @@ const hashPkg = obj => {
 };
 
 const resolvePlugin = pluginName => {
-	const resolvedPath = slash(path.dirname(require.resolve(path.isAbsolute(pluginName) ? pluginName : `${pluginName}/package.json`)));
+	const pathToPluginDir = slash(path.dirname(require.resolve(path.isAbsolute(pluginName) ? pluginName : `${pluginName}/package.json`)));
 
 	// eslint-disable-next-line no-sync
-	const packageJSON = JSON.parse(fs.readFileSync(`${resolvedPath}/package.json`, `utf-8`));
+	const packageJSON = JSON.parse(fs.readFileSync(`${pathToPluginDir}/package.json`, `utf-8`));
 	// eslint-disable-next-line no-sync
-	const configJSON = JSON.parse(fs.readFileSync(`${resolvedPath}/combase.config.json`, `utf-8`));
+	const configJSON = JSON.parse(fs.readFileSync(`${pathToPluginDir}/combase.config.json`, `utf-8`));
+
+	const iconPath = slash(path.join(pathToPluginDir, configJSON.icon));
+
+	// eslint-disable-next-line no-sync
+	const icon = fs.existsSync(iconPath) ? fs.readFileSync(iconPath, { encoding: 'base64' }) : undefined;
 
 	const internal = {
-		path: resolvedPath,
+		path: pathToPluginDir,
 		name: packageJSON.name,
 		version: packageJSON.version,
 	};
 
 	return {
 		...configJSON,
+		icon: icon ? `data:${mime.contentType(path.extname(iconPath))};base64,${icon}` : undefined,
 		internal: {
 			...internal,
 			hash: hashPkg(packageJSON),
