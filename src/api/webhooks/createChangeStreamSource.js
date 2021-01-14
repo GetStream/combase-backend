@@ -10,39 +10,9 @@ const allTriggerNames = Object.entries(triggerManifest).flatMap(([parent, operat
 	operations.map(operation => `${parent}:${operation}`)
 );
 
-const generateTrigger = (triggerParent, operationType) => {
-	let triggerOperation;
-
-	switch (operationType) {
-		case 'create': {
-			triggerOperation = 'created';
-
-			break;
-		}
-
-		case 'update': {
-			triggerOperation = 'updated';
-
-			break;
-		}
-
-		case 'delete': {
-			triggerOperation = 'deleted';
-
-			break;
-		}
-
-		default:
-			return;
-	}
-
-	return [triggerParent, triggerOperation].join(':');
-};
-
 const validateTrigger = trigger => allTriggerNames.includes(trigger);
 
 export default (capn, models) =>
 	new CaptainChangeStreams(capn, models, {
-		generateTrigger,
 		validateTrigger,
 	});

@@ -76,8 +76,8 @@ const TicketSchema = new Schema(
 		},
 		status: {
 			type: String,
-			enum: ['open', 'closed', 'archived', 'unassigned'],
-			default: 'open',
+			enum: ['open', 'closed', 'archived', 'unassigned', 'new'],
+			default: 'new',
 			description: 'The status of the ticket.',
 			index: true,
 		},

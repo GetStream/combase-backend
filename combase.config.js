@@ -1,3 +1,3 @@
 module.exports = {
-	plugins: ['@combase.app/plugin-sendgrid', '@combase.app/plugin-activityfeed'],
+	plugins: ['@combase.app/plugin-sendgrid', '@combase.app/plugin-activityfeed', '@combase.app/plugin-autorouting'],
 };
