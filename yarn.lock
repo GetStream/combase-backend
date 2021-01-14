@@ -912,24 +912,22 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@captain-hook/core@^0.2.15":
-  version "0.2.15"
-  resolved "https://registry.yarnpkg.com/@captain-hook/core/-/core-0.2.15.tgz#83d7d6cc69f6533bf168b5f86fe39e1acbb6cb8e"
-  integrity sha512-Or3GTcNqCDf8IMRvpe8QrxO0SzcUhbtGhJZ3FwAKjU+paxU1UQ8+P2thDOvf6KBpuLOQVDd5J+VzT3O03oMhXw==
-  dependencies:
-    "@captain-hook/events-engine" "^0.1.9"
+"@captain-hook/core@^0.2.15", "@captain-hook/core@^0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@captain-hook/core/-/core-0.2.16.tgz#3fc0960abe3fcc723193e9a4cc4e3aeadbae0d0b"
+  integrity sha512-KSH15PzgDoh0FDJgQmQj0+7HLQacMWw3jrvyE8bQL2h3CeLLbPhVLu7ExDL9GHqvhJhFFntvokzJEruIVR2FxA==
 
 "@captain-hook/events-engine@^0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@captain-hook/events-engine/-/events-engine-0.1.9.tgz#14e681538ae5bdbe0e574f2f1e41760953db0cee"
-  integrity sha512-hYwpYl8fqX8qMh6r5EVVMyp4zW2BJFMePAzBlOeGuJd3JH4H1Ko6xrevoheMMNlpaFALU0+3j/OEq/pGA13ZVA==
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/@captain-hook/events-engine/-/events-engine-0.1.10.tgz#c8b6e60626e468a060820e1f3bf0d5a84bf0f2e2"
+  integrity sha512-UvAGDv/62avocs+qFMeekKbbWHu0IJ6vkQXyrnYmCv6S8RPY6sB/TF/mGHjPsckSXsU4xKg4X/YEFRfQZhoa/w==
 
 "@captain-hook/source-changestreams@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@captain-hook/source-changestreams/-/source-changestreams-0.1.3.tgz#eed3049a1b4e41a0462965f699d360a3ad303d08"
-  integrity sha512-trFHNnHi51ciN8hPpEQFZVH/tTqisL35kCMILXVJUkpqWPeuZ3vUgKi2uSxrZxqnYpAaYwOtPUYHbKgDnGp4qw==
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@captain-hook/source-changestreams/-/source-changestreams-0.1.4.tgz#610b0ec83aeff5550b48c99a24822ab7c43d6887"
+  integrity sha512-AOeP5i/5kRAixmypXOQ0A0FiYmOTZXIWSgyGa4OcdFaN0jPhWZHF8qG+Io1FFwJxVLdXAoc1HudW8eALe5xr1A==
   dependencies:
-    "@captain-hook/core" "^0.2.15"
+    "@captain-hook/core" "^0.2.16"
     changestream-iterator "^0.1.4"
 
 "@dabh/diagnostics@^2.0.2":
@@ -1240,19 +1238,19 @@
   dependencies:
     starkbank-ecdsa "^1.1.1"
 
-"@sendgrid/helpers@^7.4.0":
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/@sendgrid/helpers/-/helpers-7.4.0.tgz#be98730c89c190c8873e2f25d868a13d26b75b25"
-  integrity sha512-IQI2vemiJB0+X6bEp4HRG+0/wrzR2RDGnB5rwfq1CsPDrUFdJfxbE2zbGx//1GnlNwAtbHyc93ejU1m0KZr86w==
+"@sendgrid/helpers@^7.4.2":
+  version "7.4.2"
+  resolved "https://registry.yarnpkg.com/@sendgrid/helpers/-/helpers-7.4.2.tgz#d80f17da439fd241fd69f8a894d93a0fdd19df0f"
+  integrity sha512-b/IyBwT4zrOfXA0ISvWZsnhYz+5uAO20n68J8n/6qe5P1E2p0L7kWNTN5LYu0S7snJPUlbEa6FpfrSKzEcP9JA==
   dependencies:
     deepmerge "^4.2.2"
 
 "@sendgrid/inbound-mail-parser@^7.4.0":
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/@sendgrid/inbound-mail-parser/-/inbound-mail-parser-7.4.0.tgz#56fd31545efbebcaa3e56f3a2491964061fe21f3"
-  integrity sha512-DohUdiV+IhdQVIiQBEUPoiSZNHCxlJFuIBBe2WpXEMK6Qf0/4VnJhRQfM+xnRjnxazKUe3ZsJVEMvdhDqMWixw==
+  version "7.4.2"
+  resolved "https://registry.yarnpkg.com/@sendgrid/inbound-mail-parser/-/inbound-mail-parser-7.4.2.tgz#cd04cc0932022ec4afa487335549722f487c7bb1"
+  integrity sha512-6cTYdNvvSVAsGDJW7aNdm/VkNJRS7J0BpiKUYFp4G8CSD867YvFGWpayXih7Cv52PjGEgLvjZ1fPgs72Er9//g==
   dependencies:
-    "@sendgrid/helpers" "^7.4.0"
+    "@sendgrid/helpers" "^7.4.2"
     mailparser "^2.3.4"
 
 "@sindresorhus/is@^0.14.0":
@@ -2072,9 +2070,9 @@ atob@^2.1.2:
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
 aws-sdk@^2.810.0:
-  version "2.826.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.826.0.tgz#000064f8c3a272dac3a8547b1bd4dac4a113fc69"
-  integrity sha512-fuNWmD9gfqrxxPbIIbbTeyEDGaKLqFG9kTXqdaPVpEZhH1xc2UwVJQRA7m+SwfQOcQd6hdS1ii0102DrPiFEdg==
+  version "2.827.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.827.0.tgz#372e37cabf0e8351de6d8f07a8f519bfaaeeae2a"
+  integrity sha512-71PWS1dqJ65/SeNgDQWEgbJ6oKCuB+Ypq30TM3EyzbAHaxl69WjQRK71oJ2bjhdIHfGQJtOV0G9wg4zpge4Erg==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
