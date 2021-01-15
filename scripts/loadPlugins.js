@@ -21,10 +21,15 @@ const resolvePlugin = pluginName => {
 	// eslint-disable-next-line no-sync
 	const configJSON = JSON.parse(fs.readFileSync(`${pathToPluginDir}/combase.config.json`, `utf-8`));
 
-	const iconPath = slash(path.join(pathToPluginDir, configJSON.icon));
+	let iconPath;
+	let icon;
 
-	// eslint-disable-next-line no-sync
-	const icon = fs.existsSync(iconPath) ? fs.readFileSync(iconPath, { encoding: 'base64' }) : undefined;
+	if (configJSON.icon) {
+		iconPath = slash(path.join(pathToPluginDir, configJSON.icon));
+
+		// eslint-disable-next-line no-sync
+		icon = fs.existsSync(iconPath) ? fs.readFileSync(iconPath, { encoding: 'base64' }) : undefined;
+	}
 
 	const internal = {
 		path: pathToPluginDir,
