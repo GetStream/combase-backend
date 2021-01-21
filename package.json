@@ -13,7 +13,7 @@
 		"clean": "rm -rf .data",
 		"start": "pm2-runtime start ecosystem.prod.config.js",
 		"start:dev": "pm2-runtime start ecosystem.dev.config.js",
-		"dev": "concurrently \"nodemon --exec npx babel-node ./src/api/index.js --inspect\" \"node ngrok.js\"",
+		"dev": "nodemon --exec npx babel-node ./src/api/index.js --inspect",
 		"lint": "eslint . --ext .js",
 		"preinstall": "yarn global add pm2",
 		"postinstall": "rm -rf dist && yarn run build",
