@@ -3,7 +3,6 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
-import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const FaqSchema = new Schema(
 	{
@@ -38,7 +37,6 @@ const FaqSchema = new Schema(
 );
 
 FaqSchema.plugin(timestamps);
-FaqSchema.plugin(events);
 
 FaqSchema.index({
 	createdAt: 1,

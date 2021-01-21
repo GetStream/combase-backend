@@ -4,7 +4,6 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
-import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const AgentScheduleEntrySchema = {
 	enabled: {
@@ -131,7 +130,6 @@ const AgentSchema = new Schema(
 
 AgentSchema.plugin(bcrypt);
 AgentSchema.plugin(timestamps);
-AgentSchema.plugin(events);
 
 AgentSchema.index({
 	createdAt: 1,

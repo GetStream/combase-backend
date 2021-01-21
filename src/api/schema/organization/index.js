@@ -3,7 +3,7 @@ import './extend';
 import resolvers from './resolvers';
 import { OrganizationTC } from './model';
 
-import { syncOrganizationProfile } from 'utils/resolverMiddlewares/streamChat';
+import { createOrgChatCustomizations, syncOrganizationProfile } from 'utils/resolverMiddlewares/streamChat';
 
 const Query = {
 	organizationById: OrganizationTC.mongooseResolvers.findById(),
@@ -12,7 +12,7 @@ const Query = {
 };
 
 const Mutation = {
-	organizationCreate: OrganizationTC.mongooseResolvers.createOne().withMiddlewares([syncOrganizationProfile]),
+	organizationCreate: OrganizationTC.mongooseResolvers.createOne().withMiddlewares([syncOrganizationProfile, createOrgChatCustomizations]),
 	organizationUpdate: OrganizationTC.mongooseResolvers.updateById().withMiddlewares([syncOrganizationProfile]),
 	organizationRemove: OrganizationTC.mongooseResolvers.removeById(),
 	...resolvers.Mutation,

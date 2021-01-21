@@ -1,11 +1,15 @@
 import { OrganizationTC } from './model';
 
+// Removes these two fields entirely from GQL - they must be accessed by hitting mongo directly.
+OrganizationTC.removeField('stream.appId');
+OrganizationTC.removeField('stream.secret');
+
 OrganizationTC.addNestedFields({
 	'stream.key': {
 		type: 'String!',
 		args: {},
-		resolve: async (source, _, { models: { Organization }, organization }) => {
-			if (!organization) {
+		resolve: async (source, _, { models: { Organization }, organization, agent }) => {
+			if (!organization || !agent) {
 				throw new Error('Unauthorized');
 			}
 
@@ -25,7 +29,3 @@ OrganizationTC.addNestedFields({
 		},
 	},
 });
-
-OrganizationTC.makeFieldNullable('stream.key');
-
-OrganizationTC.removeField('stream.secret');

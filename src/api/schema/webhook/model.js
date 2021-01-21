@@ -1,9 +1,9 @@
+import 'dotenv/config';
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
-import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const WebhookSchema = new Schema(
 	{
@@ -18,33 +18,33 @@ const WebhookSchema = new Schema(
 			type: String,
 			trim: true,
 			required: true,
-			description: 'Short name describing the webhook use-case.',
+			description: 'Name of the the webhook.',
 		},
 		description: {
 			type: String,
 			trim: true,
 			default: '',
 			required: false,
-			description: 'Simple description of what this webhook URL will handle.',
+			description: 'Description of what this webhook receiver will handle.',
+		},
+		provider: {
+			type: String,
+			trim: true,
+			required: true,
+			description: 'URL of the provider for which the webhook is intended.',
 		},
 		triggers: [
 			{
 				type: String,
 				required: true,
 				trim: true,
-				description: 'The plugin triggered by this webhook event (plugin function to call).',
+				description: 'The plugin triggered by this webhook event (plugin and event to call - provider:plugin/event).',
 			},
 		],
-		auth: {
-			type: {
-				type: String,
-				enum: ['querystring', 'header'],
-				default: 'querystring',
-			},
-		},
 		active: {
 			type: Boolean,
 			default: false,
+			index: true,
 			description: 'Status of the webhook.',
 		},
 	},
@@ -52,7 +52,6 @@ const WebhookSchema = new Schema(
 );
 
 WebhookSchema.plugin(timestamps);
-WebhookSchema.plugin(events);
 
 WebhookSchema.index({
 	createdAt: 1,

@@ -5,7 +5,6 @@ import { composeMongoose } from 'graphql-compose-mongoose';
 import { fieldEncryption } from 'mongoose-field-encryption';
 
 import schemaComposer from 'api/schema/composer';
-import { mongooseEventsPlugin as events } from 'utils/mongoose-events-plugin';
 
 const StreamCredentialsSchema = new Schema({
 	appId: {
@@ -82,12 +81,16 @@ const OrganizationSchema = new Schema(
 			description: "The organization's custom theme values to be merged with the client-side theme.",
 			type: JSON,
 		},
+		active: {
+			type: Boolean,
+			default: true,
+			description: 'Status of the organization – an organization is never removed from history in order to preserve the timeline.',
+		},
 	},
 	{ collection: 'organizations' }
 );
 
 OrganizationSchema.plugin(timestamps);
-OrganizationSchema.plugin(events);
 
 OrganizationSchema.index({
 	createdAt: 1,

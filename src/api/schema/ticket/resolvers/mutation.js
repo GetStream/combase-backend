@@ -16,7 +16,7 @@ export const createTicket = {
 	},
 	resolve: async (_, { message, user }, { models: { Ticket }, organization, stream }) => {
 		try {
-			const status = 'unassigned';
+			const status = 'new';
 			const tags = [];
 
 			const { _doc: ticket } = await Ticket.create({
@@ -26,10 +26,9 @@ export const createTicket = {
 				tags,
 			});
 
-			await stream.chat.setUser({ id: user });
-
 			const channel = stream.chat.channel('messaging', ticket._id.toString(), {
 				members: [user],
+				created_by_id: user,
 				organization,
 				status,
 				tags,
@@ -40,6 +39,7 @@ export const createTicket = {
 			if (message) {
 				channel.sendMessage({
 					text: message,
+					user_id: user,
 				});
 			}
 
@@ -50,12 +50,14 @@ export const createTicket = {
 	},
 };
 
-export const addToTicket = {
-	name: 'addToTicket',
+export const ticketAssign = {
+	name: 'ticketAssign',
+	description:
+		'Calling this resolver will assign a ticket to an agent. If no status argument is provided, the chat will be marked as open by default.',
 	type: TicketTC,
 	kind: 'Mutation',
 	args: {
-		agent: 'MongoID!',
+		agent: 'MongoID',
 		ticket: 'MongoID!',
 		status: 'EnumTicketStatus',
 	},
@@ -66,39 +68,76 @@ export const addToTicket = {
 
 			await channel.watch({ state: true });
 
-			if (channel.state.members[agent.toString()]) {
-				throw new Error('That agent is already a member of this channel.');
+			if (status === 'unassigned') {
+				// TODO: Agents/Orgs should be able to override the content of these initial messages when unassigned.
+				channel.addModerators([channel.data.organization]);
+
+				await Ticket.findByIdAndUpdate(
+					channel.id,
+					{
+						agents: [],
+						status: 'unassigned',
+					},
+					{ new: true }
+				);
+
+				await channel.sendMessage({
+					text: `Sorry, all agents are currently unavailable.`,
+					user_id: channel.data.organization,
+				});
+
+				await new Promise(res => setTimeout(res, 2000));
+
+				await channel.sendMessage({
+					text: `Feel free to add additional information and we'll follow up as soon as an agent is available.`,
+					user_id: channel.data.organization,
+				});
+
+				await new Promise(res => setTimeout(res, 3000));
+
+				await channel.sendMessage({
+					text: `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
+					user_id: channel.data.organization,
+				});
+
+				return Promise.all([channel.stopTyping, channel.stopWatching]);
 			}
 
-			const addMember = channel.addModerators([agent.toString()]);
+			// If agent is truthy and ticket is not being marked as unassigned.
+			if (ticket && agent && status !== 'unassigned') {
+				if (channel.state.members[agent.toString()]) {
+					throw new Error('That agent is already a member of this channel.');
+				}
 
-			/*
-			 * TODO: We should create more 'sub-types' of system messages with a custom field so we can render them differently, would be cool to show the agent avatar when they get added etc.
-			 * const updateChannel = channel.update(
-			 * 	{
-			 * 		...channel.data,
-			 * 		status,
-			 * 	},
-			 * 	{
-			 * 		subtype: 'agent_added',
-			 * 		text: `An agent joined the chat.`,
-			 * 		user_id: agent.toString(), // eslint-disable-line camelcase
-			 * 	}
-			 * );
-			 */
+				const addMember = channel.addModerators([agent.toString()]);
 
-			await Promise.all([addMember]);
-
-			return await Ticket.findByIdAndUpdate(
-				ticket,
-				{
-					$addToSet: {
-						agents: [agent],
+				const updateChannel = channel.update(
+					{
+						...channel.data,
+						status,
 					},
-					status,
-				},
-				{ new: true }
-			).lean();
+					{
+						subtype: 'agent_added',
+						text: `An agent joined the chat.`,
+						user_id: agent.toString(), // eslint-disable-line camelcase
+					}
+				);
+
+				await Promise.all([addMember, updateChannel]);
+
+				return await Ticket.findByIdAndUpdate(
+					ticket,
+					{
+						$addToSet: {
+							agents: [agent],
+						},
+						status,
+					},
+					{ new: true }
+				).lean();
+			}
+
+			throw new Error('Assigning Ticket Failed: Missing arguments.');
 		} catch (error) {
 			throw new Error(error.message);
 		}
