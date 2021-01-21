@@ -10,8 +10,8 @@ import bodyParser from 'body-parser';
 import { mongodb } from '../utils/mongodb';
 import { logger } from '../utils/logger';
 
+import { chatCommandsHandler } from './webhooks/chatCommandsHandler';
 import context from './context';
-import captainHook from './webhooks';
 import schema from './schema';
 
 const apollo = new ApolloServer({
@@ -41,8 +41,8 @@ apollo.applyMiddleware({
 });
 
 app.use(cors());
-app.use('/webhook', bodyParser.json());
-app.use('/webhook', captainHook.onWebhook);
+app.use('/webhook-commands', bodyParser.json());
+app.use('/webhook-commands', chatCommandsHandler);
 
 const httpServer = http.createServer(app);
 

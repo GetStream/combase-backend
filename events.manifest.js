@@ -20,7 +20,7 @@ export default {
 	note: ['created', 'deleted', 'updated'],
 	organization: ['created', 'deleted', 'updated'],
 	tag: ['created', 'deleted', 'updated'],
-	ticket: ['created', 'deleted', 'updated'],
+	ticket: ['created', 'deleted', 'updated', 'archived', 'labelled', 'assigned'],
 	user: ['created', 'deleted', 'updated'],
 	webhook: ['created', 'deleted', 'updated'],
 };
