@@ -67,13 +67,6 @@ const TicketSchema = new Schema(
 				default: false,
 			},
 		},
-		type: {
-			type: String,
-			enum: ['email', 'chat', 'unassigned'],
-			default: 'unassigned',
-			description: 'The type of ticket – chat or email [defaults to unassigned].',
-			index: true,
-		},
 		status: {
 			type: String,
 			enum: ['open', 'closed', 'archived', 'unassigned', 'new'],

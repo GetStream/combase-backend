@@ -6,8 +6,8 @@ export const organization = {
 	type: OrganizationTC,
 	kind: 'query',
 	args: {},
-	resolve: (_, __, { agent, organization: orgId, models: { Organization } }) => {
-		if (!agent || !orgId) {
+	resolve: (_, __, { organization: orgId, models: { Organization } }) => {
+		if (!orgId) {
 			throw new Error('Unauthorized');
 		}
 
