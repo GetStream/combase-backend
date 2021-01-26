@@ -30,6 +30,12 @@ IntegrationCredentialsSchema.plugin(fieldEncryption, {
 
 const IntegrationSchema = new Schema(
 	{
+		name: {
+			type: String,
+			required: true,
+			trim: true,
+			description: 'The name of this integration',
+		},
 		organization: {
 			type: Schema.Types.ObjectId,
 			ref: 'Organization',
