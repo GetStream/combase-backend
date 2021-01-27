@@ -55,7 +55,7 @@ apollo.installSubscriptionHandlers(httpServer);
 		const { port = 8080 } = process.env.PORT;
 
 		httpServer.listen({ port }, () => {
-			logger.info(`🚀 //:${port}${apollo.graphqlPath} • Combase 💬`);
+			logger.info(`🚀 //:${port}${apollo.graphqlPath} • Combase API 💬`);
 		});
 	} catch (error) {
 		logger.error(error);
