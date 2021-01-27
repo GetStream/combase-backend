@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 
 const config = require('../combase.config');
 
-// const installPlugins = require('./installPlugins');
+const installPlugins = require('./installPlugins');
 const loadPlugins = require('./loadPlugins');
 
 const dataDir = path.join(process.cwd(), '.data');
@@ -12,12 +12,7 @@ const dataDir = path.join(process.cwd(), '.data');
 (async () => {
 	await fs.ensureDir(slash(dataDir));
 
-	/*
-	 * TODO: Currently commented as we are synlinking the plugin pkgs
-	 * if (process.env.NODE_ENV === 'production') {
-	 * 	await installPlugins();
-	 * }
-	 */
+	await installPlugins();
 
 	const plugins = await loadPlugins(config);
 

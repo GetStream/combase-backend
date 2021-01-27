@@ -8,17 +8,15 @@
 		"node": ">=15.x"
 	},
 	"scripts": {
+		"prebuild": "yarn combase:prepare",
+		"predev": "yarn combase:prepare",
 		"combase:prepare": "node ./scripts/prepare.js",
 		"build": "babel src --out-dir dist",
 		"clean": "rm -rf .data",
 		"start": "pm2-runtime start ecosystem.prod.config.js",
 		"start:dev": "pm2-runtime start ecosystem.dev.config.js",
 		"dev": "nodemon --exec npx babel-node ./src/api/index.js --inspect",
-		"lint": "eslint . --ext .js",
-		"preinstall": "yarn global add pm2",
-		"postinstall": "rm -rf dist && yarn run build",
-		"prebuild": "yarn combase:prepare",
-		"predev": "yarn combase:prepare"
+		"lint": "eslint . --ext .js"
 	},
 	"author": "GetStream <support@getstream.io>",
 	"license": "SEE LICENSE IN LICENSE",
@@ -40,12 +38,14 @@
 		"graphql": "15.4.0"
 	},
 	"dependencies": {
+		"@combase.app/plugin-autorouting": "^0.0.4",
+		"@combase.app/plugin-sendgrid": "^0.0.4",
+		"@combase.app/plugin-stream-activity-feeds": "^0.0.4",
 		"@graphql-tools/load-files": "^6.2.5",
 		"@graphql-tools/stitch": "^7.1.4",
 		"@sendgrid/eventwebhook": "^7.2.6",
 		"@sendgrid/inbound-mail-parser": "^7.4.0",
 		"@stream-io/graphql-feeds": "^0.1.0-alpha.9",
-		"amqplib": "^0.6.0",
 		"apollo-server-express": "^2.19.0",
 		"aws-sdk": "^2.810.0",
 		"body-parser": "^1.19.0",
@@ -71,11 +71,7 @@
 		"mongoose-bcrypt": "^1.9.0",
 		"mongoose-field-encryption": "^4.0.1",
 		"mongoose-timestamp": "^0.6.0",
-		"nodemailer": "^6.4.17",
-		"nodemailer-sendgrid-transport": "^0.2.0",
-		"phin": "^3.5.1",
 		"pm2": "^4.5.0",
-		"rascal": "^10.2.6",
 		"slash": "^3.0.0",
 		"stream-chat": "^2.9.0",
 		"uuid": "^8.3.2",
