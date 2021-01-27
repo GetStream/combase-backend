@@ -18,7 +18,7 @@
 		"dev": "nodemon --exec npx babel-node ./src/api/index.js --inspect",
 		"lint": "eslint . --ext .js"
 	},
-	"author": "GetStream <support@getstream.io>",
+	"author": "Stream.io, Inc. <support@getstream.io>",
 	"license": "SEE LICENSE IN LICENSE",
 	"eslintConfig": {
 		"extends": ".eslintrc.js"
