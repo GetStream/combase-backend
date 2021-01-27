@@ -904,34 +904,34 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@combase.app/plugin-autorouting@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@combase.app/plugin-autorouting/-/plugin-autorouting-0.0.4.tgz#ea3dd9973fd642f1f7e68dc9ee2110afaff63a6a"
-  integrity sha512-Y3WR1OJlbxdx6rjn6qFYHjGredErEDJKbDU5lYITAvCspD6+2poNrtIBhD/e7+jHn4mA9cT/crRPUeOWuxQqSQ==
+"@combase.app/plugin-autorouting@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@combase.app/plugin-autorouting/-/plugin-autorouting-0.0.5.tgz#fa67076b80a3f9473001f795cf204023f3bc9d1b"
+  integrity sha512-8Ap0keQrExM6OWeRrcc5Qnjl4gzNyCqmG+Ak1J/VJ27dCxIaK7vBH4xqzKrsMfTpzmmsIKj1DoxSTR1D0vjBAg==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@combase.app/plugin-sendgrid@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@combase.app/plugin-sendgrid/-/plugin-sendgrid-0.0.4.tgz#a6c10e9e95cf7d5efb969015a088b7470f236465"
-  integrity sha512-v821FfAJcky6n756FoNra1dr41qBaHJzJz8y4NuhzUzCZkCwRsE1sEU9mpBiE+NNn0fcbqkDd3nn5jJBN+sskg==
+"@combase.app/plugin-sendgrid@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@combase.app/plugin-sendgrid/-/plugin-sendgrid-0.0.5.tgz#189d92e3cd63778de4e7bcadf820517f1191efcc"
+  integrity sha512-+y2rdy/uRzhg7p1jxSdlYXKfr5CS4VkaKLoTv3/7uaiFwaBV2zXIM09sfEaUlNXpydrGq2JSA62fBJ51My8UUg==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@sendgrid/inbound-mail-parser" "^7.4.2"
     nodemailer "^6.4.17"
     nodemailer-sendgrid-transport "^0.2.0"
 
-"@combase.app/plugin-stream-activity-feeds@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@combase.app/plugin-stream-activity-feeds/-/plugin-stream-activity-feeds-0.0.4.tgz#06f150a3abea1344f6e22c2cf1c1290661de7f5d"
-  integrity sha512-lxzOCcQORsdLas6p1dQYtl33+jnFjT9YUE4u55710IT0iabRhgPXXsRZyY3RH5toWjLgbtiH2UPmb1UFC6wbQA==
+"@combase.app/plugin-stream-activity-feeds@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@combase.app/plugin-stream-activity-feeds/-/plugin-stream-activity-feeds-0.0.5.tgz#8823c243e74bd5ebcf30132fc607b70ae264f696"
+  integrity sha512-vbqh1kxHasNMA3FgxcrE6b+qvkJyZHWgc41yAgbtnM+ht94HXRgdov0jopef7j9OUI9NGwFtaLucmmf/77Jqhg==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
-"@combase.app/plugin-zendesk@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@combase.app/plugin-zendesk/-/plugin-zendesk-0.0.4.tgz#7606454b56f73887b3416fcdefc73b536a21a788"
-  integrity sha512-ywIKtJ3nbMXa6ee5UDB+CCLKEeBM+4FnoDvS0jr3SBr0++WOPavK+atBpPRslAMD0b7jne+qTy9B+IRfykcmQQ==
+"@combase.app/plugin-zendesk@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@combase.app/plugin-zendesk/-/plugin-zendesk-0.0.5.tgz#d6a9f596844ab35074aa36f0670037d949d0a09b"
+  integrity sha512-ko1Tm7s7PnLRGOvns2cMZMUxOjt4/S5Dt3QzhUfhdr66ZzHJGtzDDw743YuEofpwAovorp4havskARB3M4zpuA==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
