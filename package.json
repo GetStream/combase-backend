@@ -13,8 +13,8 @@
 		"combase:prepare": "node ./scripts/prepare.js",
 		"build": "babel src --out-dir dist",
 		"clean": "rm -rf .data",
-		"start": "pm2-runtime start ecosystem.prod.config.js",
-		"start:dev": "pm2-runtime start ecosystem.dev.config.js",
+		"start": "pm2-runtime start pm2.prod.js",
+		"start:dev": "pm2-runtime start pm2.dev.js",
 		"dev": "nodemon --exec npx babel-node ./src/api/index.js --inspect",
 		"lint": "eslint . --ext .js"
 	},
