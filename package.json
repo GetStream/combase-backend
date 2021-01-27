@@ -36,6 +36,7 @@
 	},
 	"dependencies": {
 		"@babel/cli": "^7.12.10",
+		"@babel/preset-env": "^7.12.11",
 		"@combase.app/plugin-autorouting": "^0.0.4",
 		"@combase.app/plugin-sendgrid": "^0.0.4",
 		"@combase.app/plugin-stream-activity-feeds": "^0.0.4",
@@ -78,12 +79,10 @@
 		"winston": "^3.3.3"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.12.9",
+		"@babel/core": "^7.12.10",
 		"@babel/node": "^7.12.6",
 		"@babel/plugin-transform-runtime": "^7.12.1",
-		"@babel/preset-env": "^7.12.7",
 		"babel-loader": "^8.2.2",
-		"babel-preset-env": "^1.7.0",
 		"concurrently": "^5.3.0",
 		"eslint": "^7.15.0",
 		"eslint-config-get-off-my-lawn": "^5.0.1",
