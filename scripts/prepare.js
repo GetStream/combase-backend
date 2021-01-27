@@ -12,6 +12,10 @@ const dataDir = path.join(process.cwd(), '.data');
 (async () => {
 	await fs.ensureDir(slash(dataDir));
 
+	if (process.env.NODE_ENV !== 'development') {
+		await installPlugins();
+	}
+
 	await installPlugins();
 
 	const plugins = await loadPlugins(config);
