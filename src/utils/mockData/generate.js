@@ -3,6 +3,7 @@ import { GROUPS, AGENTS, SCHEDULE } from './constants';
 export const generateMockAgentsAndGroups = async ({ organization, domain = 'getstream.io' }, Group, Agent, stream) => {
 	const groupIdMap = {};
 
+	// eslint-disable-next-line no-unused-vars
 	for (const key in GROUPS) {
 		if (key) {
 			const name = GROUPS[key];
@@ -17,6 +18,7 @@ export const generateMockAgentsAndGroups = async ({ organization, domain = 'gets
 		}
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	for await (const agent of AGENTS) {
 		const [firstName] = agent.name.split(' ');
 
