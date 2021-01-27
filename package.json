@@ -35,6 +35,9 @@
 		]
 	},
 	"dependencies": {
+		"@combase.app/plugin-autorouting": "^0.0.4",
+		"@combase.app/plugin-sendgrid": "^0.0.4",
+		"@combase.app/plugin-stream-activity-feeds": "^0.0.4",
 		"@graphql-tools/load-files": "^6.2.5",
 		"@graphql-tools/merge": "^6.2.7",
 		"@graphql-tools/schema": "^7.1.2",

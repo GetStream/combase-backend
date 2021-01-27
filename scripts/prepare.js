@@ -1,3 +1,4 @@
+require('dotenv').config();
 const slash = require('slash');
 const path = require('path');
 const fs = require('fs-extra');
@@ -12,7 +13,10 @@ const dataDir = path.join(process.cwd(), '.data');
 (async () => {
 	await fs.ensureDir(slash(dataDir));
 
-	if (process.env.NODE_ENV !== 'development') {
+	if (process.env.SKIP_PLUGIN_INSTALL !== 'true') {
+		// eslint-disable-next-line no-console
+		console.info(`Installing plugins...`);
+
 		await installPlugins();
 	}
 

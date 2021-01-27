@@ -52,8 +52,10 @@ apollo.installSubscriptionHandlers(httpServer);
 	try {
 		await mongodb();
 
-		httpServer.listen({ port: process.env.PORT || 8080 }, () => {
-			logger.info(`🚀 Server ready at http(s)://<HOSTNAME>:${process.env.PORT}${apollo.graphqlPath}`);
+		const { port = 8080 } = process.env.PORT;
+
+		httpServer.listen({ port }, () => {
+			logger.info(`🚀 //:${port}${apollo.graphqlPath} • Combase 💬`);
 		});
 	} catch (error) {
 		logger.error(error);
