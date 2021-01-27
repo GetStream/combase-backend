@@ -36,5 +36,13 @@ UserSchema.index({
 	updatedAt: 1,
 });
 
+UserSchema.index(
+	{
+		organization: 1,
+		email: 1,
+	},
+	{ unique: true }
+);
+
 export const UserModel = mongoose.model('User', UserSchema);
 export const UserTC = composeMongoose(UserModel, { schemaComposer });
