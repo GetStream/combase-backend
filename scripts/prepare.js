@@ -16,8 +16,6 @@ const dataDir = path.join(process.cwd(), '.data');
 		await installPlugins();
 	}
 
-	await installPlugins();
-
 	const plugins = await loadPlugins(config);
 
 	// eslint-disable-next-line no-sync

@@ -35,15 +35,10 @@
 		]
 	},
 	"dependencies": {
-		"@combase.app/plugin-autorouting": "^0.0.4",
-		"@combase.app/plugin-sendgrid": "^0.0.4",
-		"@combase.app/plugin-stream-activity-feeds": "^0.0.4",
 		"@graphql-tools/load-files": "^6.2.5",
 		"@graphql-tools/merge": "^6.2.7",
 		"@graphql-tools/schema": "^7.1.2",
 		"@graphql-tools/stitch": "^7.1.4",
-		"@sendgrid/eventwebhook": "^7.2.6",
-		"@sendgrid/inbound-mail-parser": "^7.4.0",
 		"@stream-io/graphql-feeds": "^0.1.0-alpha.9",
 		"apollo-server-express": "^2.19.0",
 		"aws-sdk": "^2.810.0",
