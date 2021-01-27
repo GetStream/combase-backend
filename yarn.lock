@@ -928,6 +928,13 @@
   dependencies:
     "@babel/runtime" "^7.12.5"
 
+"@combase.app/plugin-zendesk@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@combase.app/plugin-zendesk/-/plugin-zendesk-0.0.4.tgz#7606454b56f73887b3416fcdefc73b536a21a788"
+  integrity sha512-ywIKtJ3nbMXa6ee5UDB+CCLKEeBM+4FnoDvS0jr3SBr0++WOPavK+atBpPRslAMD0b7jne+qTy9B+IRfykcmQQ==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+
 "@dabh/diagnostics@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@dabh/diagnostics/-/diagnostics-2.0.2.tgz#290d08f7b381b8f94607dc8f471a12c675f9db31"
