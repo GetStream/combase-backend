@@ -49,7 +49,7 @@ export const generateMockAgentsAndGroups = async ({ organization, domain = 'gets
 		});
 
 		// eslint-disable-next-line no-await-in-loop
-		await stream.chat.setUser({
+		await stream.chat.upsertUser({
 			avatar: data.avatar,
 			email: data.email,
 			id: data._id.toString(),

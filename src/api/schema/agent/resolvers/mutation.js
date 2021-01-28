@@ -58,7 +58,7 @@ export const createAgent = {
 			organization,
 		});
 
-		await stream.chat.setUser({
+		await stream.chat.upsertUser({
 			avatar: agent._doc.avatar,
 			email: agent._doc.email,
 			id: agent._id.toString(),
@@ -102,7 +102,7 @@ export const createAgentAndOrganization = {
 		const chat = new StreamChat(args.organization.stream.key, args.organization.stream.secret);
 		const feeds = streamFeedsClient(args.organization.stream.key, args.organization.stream.secret);
 
-		await chat.setUser({
+		await chat.upsertUser({
 			avatar: agentDoc._doc.avatar,
 			email: agentDoc._doc.email,
 			id: agentDoc._id.toString(),

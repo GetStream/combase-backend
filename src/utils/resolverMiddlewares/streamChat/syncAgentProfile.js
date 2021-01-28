@@ -11,7 +11,7 @@ export const syncAgentProfile = async (resolve, source, args, context, info) => 
 	const { _doc } = data.record;
 
 	try {
-		await context.stream.chat.setUser({
+		await context.stream.chat.upsertUser({
 			avatar: _doc.avatar,
 			email: _doc.email,
 			id: _doc._id.toString(),

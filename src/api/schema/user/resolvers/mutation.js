@@ -23,7 +23,7 @@ export const getOrCreateUser = {
 
 			const userId = user._id.toString();
 
-			await stream.chat.setUser({
+			await stream.chat.upsertUser({
 				id: userId,
 				name: user._doc.name,
 				email: user._doc.email,
@@ -34,16 +34,14 @@ export const getOrCreateUser = {
 			// Organization feed follows the user.
 			await stream.feeds.feed('organization', organization.toString()).follow('user', userId);
 
-			/*
-			 * TODO: This should be handled by the mongo change stream events
-			 * await stream.feeds.feed('user', userId).addActivity({
-			 * 	actor: userId,
-			 * 	object: userId,
-			 * 	entity: 'User',
-			 * 	text: 'User Created',
-			 * 	verb: 'combase:user.created',
-			 * });
-			 */
+			// TODO: This should be handled by the mongo change stream events
+			await stream.feeds.feed('user', userId).addActivity({
+				actor: userId,
+				object: userId,
+				entity: 'User',
+				text: 'User Created',
+				verb: 'combase:user.created',
+			});
 		}
 
 		return user._doc;

@@ -14,13 +14,13 @@ export const syncOrganizationProfile = async (resolve, source, args, context, in
 		if (!client && args.record?.stream?.key && args.record?.stream?.secret) {
 			/*
 			 * If stream chat is not in context, its likely the org is being created for the first time,
-			 * In which case the unencrypted keys will be on the args object, which we cna use to create a chat client.
+			 * In which case the unencrypted keys will be on the args object, which we can use to create a chat client.
 			 */
 
 			client = new StreamChat(args.record?.stream?.key, args.record?.stream?.secret);
 		}
 
-		await client.setUser({
+		await client.connectUser({
 			avatar: _doc.branding.logo,
 			email: _doc.contact.email,
 			id: _doc._id.toString(),
