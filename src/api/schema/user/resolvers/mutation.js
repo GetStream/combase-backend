@@ -34,14 +34,16 @@ export const getOrCreateUser = {
 			// Organization feed follows the user.
 			await stream.feeds.feed('organization', organization.toString()).follow('user', userId);
 
-			// TODO: This should be handled by the mongo change stream events plugin for captain-hook instead.
-			await stream.feeds.feed('user', userId).addActivity({
-				actor: userId,
-				object: userId,
-				entity: 'User',
-				text: 'User Created',
-				verb: 'combase:user.created',
-			});
+			/*
+			 * TODO: This should be handled by the mongo change stream events
+			 * await stream.feeds.feed('user', userId).addActivity({
+			 * 	actor: userId,
+			 * 	object: userId,
+			 * 	entity: 'User',
+			 * 	text: 'User Created',
+			 * 	verb: 'combase:user.created',
+			 * });
+			 */
 		}
 
 		return user._doc;
