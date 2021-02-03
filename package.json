@@ -38,7 +38,7 @@
 		"@babel/cli": "^7.12.10",
 		"@babel/preset-env": "^7.12.11",
 		"@combase.app/plugin-autorouting": "^0.0.6",
-		"@combase.app/plugin-sendgrid": "^0.0.7",
+		"@combase.app/plugin-sendgrid": "^0.0.8",
 		"@combase.app/plugin-stream-activity-feeds": "^0.0.6",
 		"@combase.app/plugin-zendesk": "^0.0.6",
 		"@graphql-tools/load-files": "^6.2.5",
