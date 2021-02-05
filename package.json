@@ -8,9 +8,6 @@
 		"node": "15.x"
 	},
 	"scripts": {
-		"prebuild": "yarn combase:prepare",
-		"predev": "yarn combase:prepare",
-		"combase:prepare": "node ./scripts/prepare.js",
 		"build": "babel src --out-dir dist",
 		"clean": "rm -rf .data",
 		"start": "pm2-runtime start pm2prod.config.js",
