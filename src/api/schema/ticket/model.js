@@ -32,6 +32,12 @@ const TicketSchema = new Schema(
 			required: false,
 			description: 'A reference to the group the a ticket is assigned to.',
 		},
+		source: {
+			type: Schema.Types.String,
+			enum: ['email', 'chat'],
+			required: true,
+			description: 'The original source of a Ticket.',
+		},
 		tags: [
 			{
 				type: Schema.Types.ObjectId,
@@ -40,7 +46,19 @@ const TicketSchema = new Schema(
 				description: 'Tag for categorizing a ticket.',
 			},
 		],
+		priority: {
+			type: Schema.Types.Number,
+			min: 0,
+			max: 2,
+			default: 0,
+			description: 'The priority level between 0 and 2 for a ticket.',
+		},
+		starred: {
+			type: Boolean,
+			description: 'Flag indicating whether a ticket has been starred.',
+		},
 		labels: [
+			// TODO: remove
 			{
 				type: String,
 				enum: ['priority', 'starred'],

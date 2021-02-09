@@ -1,6 +1,7 @@
 import './extend';
 import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
 
+import { syncChannel } from './middlewares/stream';
 import resolvers from './resolvers';
 import { TicketTC } from './model';
 
@@ -15,12 +16,8 @@ const Query = {
 
 const Mutation = {
 	ticketCreateOne: TicketTC.mongooseResolvers.createOne(),
-	ticketCreateMany: TicketTC.mongooseResolvers.createMany(),
-	ticketUpdateById: TicketTC.mongooseResolvers.updateById(),
-	ticketUpdateOne: TicketTC.mongooseResolvers.updateOne(),
-	ticketUpdateMany: TicketTC.mongooseResolvers.updateMany(),
+	ticketUpdateById: TicketTC.mongooseResolvers.updateById().withMiddlewares([syncChannel()]),
 	ticketRemoveById: TicketTC.mongooseResolvers.removeById(),
-	ticketRemoveOne: TicketTC.mongooseResolvers.removeOne(),
 	ticketRemoveMany: TicketTC.mongooseResolvers.removeMany().withMiddlewares([organizationFilter]),
 	...resolvers.Mutation,
 };

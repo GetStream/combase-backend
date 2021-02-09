@@ -3,7 +3,7 @@
  */
 export const syncAgentProfile = async (resolve, source, args, context, info) => {
 	if (!context.organization) {
-		throw new Error('Unauthorized.');
+		throw new Error('Unauthenticated.');
 	}
 
 	const data = await resolve(source, args, context, info);
