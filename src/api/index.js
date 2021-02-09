@@ -5,12 +5,10 @@ import cors from 'cors';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
 
 import { mongodb } from '../utils/mongodb';
 import { logger } from '../utils/logger';
 
-import { chatCommandsHandler } from './webhooks/chatCommandsHandler';
 import context from './context';
 import schema from './schema';
 
@@ -41,8 +39,6 @@ apollo.applyMiddleware({
 });
 
 app.use(cors());
-app.use('/webhook-commands', bodyParser.json());
-app.use('/webhook-commands', chatCommandsHandler);
 
 const httpServer = http.createServer(app);
 
