@@ -20,7 +20,7 @@ export const syncOrganizationProfile = async (resolve, source, args, context, in
 			client = new StreamChat(args.record?.stream?.key, args.record?.stream?.secret);
 		}
 
-		await client.connectUser({
+		await client.updateUser({
 			avatar: _doc.branding.logo,
 			email: _doc.contact.email,
 			id: _doc._id.toString(),

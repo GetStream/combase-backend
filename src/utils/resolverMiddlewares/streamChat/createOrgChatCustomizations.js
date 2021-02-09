@@ -54,8 +54,8 @@ export const createOrgChatCustomizations = async (resolve, source, args, context
 		await Promise.all([
 			...chatCommands.map(cmd => client.createCommand(cmd)),
 			client.updateAppSettings({
-				webhook_url: 'https://combase-api.ngrok.io/webhook',
-				custom_action_handler_url: 'https://combase-api.ngrok.io/webhook-commands?type={type}',
+				webhook_url: 'https://combase-webhooks.ngrok.io/webhook',
+				custom_action_handler_url: `https://combase-api.ngrok.io/webhook-commands?organization=${data.record._id.toString()},type={type}`,
 			}),
 		]);
 
