@@ -1,7 +1,7 @@
-// Generate the JWT Payload for a Dashboard User (Agent/Moderator/Admin)
-const getTokenPayload = account => ({
+const getTokenPayload = (account, type) => ({
 	organization: account.organization.toString(),
 	sub: account._id.toString(),
+	type,
 });
 
 export { getTokenPayload };

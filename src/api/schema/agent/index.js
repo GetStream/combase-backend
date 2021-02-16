@@ -13,93 +13,92 @@ AgentTC.getITC('FilterFindManyAgentInput').addFields({
 	available: 'Boolean',
 });
 
-AgentTC.mongooseResolvers.findManyAvailable = () => ({
-	name: 'findManyAvailable',
-	description:
-		'Same as agentMany but uses an aggregated query to return only agents that are avulable today, and includes a timezone-aware availability status for each agent.',
-	type: '[Agent!]',
-	args: { filter: 'FilterFindManyAgentInput' },
-	resolve: (source, args, context) => {
-		if (!context.organization) {
-			throw new Error('Unauthorized');
-		}
+AgentTC.mongooseResolvers.findManyAvailable = () =>
+	AgentTC.schemaComposer.createResolver({
+		name: 'findManyAvailable',
+		description:
+			'Same as agentMany but uses an aggregated query to return only agents that are avulable today, and includes a timezone-aware availability status for each agent.',
+		type: '[Agent!]',
+		args: { filter: 'FilterFindManyAgentInput' },
+		resolve: ({ args, context }) => {
+			const now = new Date();
+			const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+			const userTimezone = 'Europe/Amsterdam';
 
-		const now = new Date();
-		const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-		const userTimezone = 'Europe/Amsterdam';
+			const organization = args?.filter?.organization || context.organization;
 
-		return context.models.Agent.aggregate()
-			.match({
-				active: true,
-				// eslint-disable-next-line new-cap
-				organization: mongoose.Types.ObjectId(context.organization),
-				[`schedule.${dayName}`]: {
-					$elemMatch: {
-						enabled: true,
+			return context.models.Agent.aggregate()
+				.match({
+					active: true,
+					// eslint-disable-next-line new-cap
+					organization: mongoose.Types.ObjectId(organization),
+					[`schedule.${dayName}`]: {
+						$elemMatch: {
+							enabled: true,
+						},
 					},
-				},
-			})
-			.addFields({
-				available: {
-					$anyElementTrue: {
-						$map: {
-							input: `$schedule.${dayName}`,
-							as: 'today',
-							in: {
-								$cond: [
-									{
-										$let: {
-											vars: {
-												startTime: {
-													$dateFromParts: {
-														hour: '$$today.start.hour',
-														minute: '$$today.start.minute',
-														timezone: '$timezone',
-														year: 2020,
+				})
+				.addFields({
+					available: {
+						$anyElementTrue: {
+							$map: {
+								input: `$schedule.${dayName}`,
+								as: 'today',
+								in: {
+									$cond: [
+										{
+											$let: {
+												vars: {
+													startTime: {
+														$dateFromParts: {
+															hour: '$$today.start.hour',
+															minute: '$$today.start.minute',
+															timezone: '$timezone',
+															year: 2020,
+														},
+													},
+													endTime: {
+														$dateFromParts: {
+															hour: '$$today.end.hour',
+															minute: '$$today.end.minute',
+															timezone: '$timezone',
+															year: 2020,
+														},
+													},
+													userTime: {
+														$dateFromParts: {
+															hour: now.getHours(),
+															minute: now.getMinutes() + 1,
+															timezone: userTimezone,
+															year: 2020,
+														},
 													},
 												},
-												endTime: {
-													$dateFromParts: {
-														hour: '$$today.end.hour',
-														minute: '$$today.end.minute',
-														timezone: '$timezone',
-														year: 2020,
-													},
+												in: {
+													$and: [
+														{
+															$gt: ['$$userTime', '$$startTime'],
+														},
+														{
+															$lt: ['$$userTime', '$$endTime'],
+														},
+													],
 												},
-												userTime: {
-													$dateFromParts: {
-														hour: now.getHours(),
-														minute: now.getMinutes() + 1,
-														timezone: userTimezone,
-														year: 2020,
-													},
-												},
-											},
-											in: {
-												$and: [
-													{
-														$gt: ['$$userTime', '$$startTime'],
-													},
-													{
-														$lt: ['$$userTime', '$$endTime'],
-													},
-												],
 											},
 										},
-									},
-									true,
-									false,
-								],
+										true,
+										false,
+									],
+								},
 							},
 						},
 					},
-				},
-			})
-			.match({
-				available: true,
-			});
-	},
-});
+				})
+				.match({
+					available: true,
+				});
+		},
+	});
 
 const Query = {
 	agentById: AgentTC.mongooseResolvers.findById().withMiddlewares([organizationFilter]),
@@ -110,7 +109,9 @@ const Query = {
 };
 
 const Mutation = {
-	agentCreate: AgentTC.mongooseResolvers.createOne().withMiddlewares([createAgentFeedRelationships, syncAgentProfile, enrichWithAuthToken]),
+	agentCreate: AgentTC.mongooseResolvers
+		.createOne()
+		.withMiddlewares([createAgentFeedRelationships, syncAgentProfile, enrichWithAuthToken('agent')]),
 	agentUpdate: AgentTC.mongooseResolvers.updateById().withMiddlewares([syncAgentProfile]),
 	agentRemove: AgentTC.mongooseResolvers.removeById(),
 	agentRemoveMany: AgentTC.mongooseResolvers.removeMany().withMiddlewares([organizationFilter]),

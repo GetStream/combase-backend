@@ -32,7 +32,7 @@ export const loginAgent = {
 			throw new Error('Incorrect password.');
 		}
 
-		const token = jwt.sign(getTokenPayload(agent._doc), process.env.AUTH_SECRET);
+		const token = jwt.sign(getTokenPayload(agent._doc, 'agent'), process.env.AUTH_SECRET);
 
 		return {
 			...agent._doc,
@@ -67,7 +67,7 @@ export const createAgent = {
 			entity: 'Agent',
 		});
 
-		const token = jwt.sign(getTokenPayload(agent._doc), process.env.AUTH_SECRET);
+		const token = jwt.sign(getTokenPayload(agent._doc, 'agent'), process.env.AUTH_SECRET);
 
 		return {
 			...agent._doc,
@@ -113,7 +113,7 @@ export const createAgentAndOrganization = {
 
 		await feeds.feed('organization', _id.toString()).follow('agent', agentDoc._id.toString());
 
-		const token = jwt.sign(getTokenPayload(agentDoc._doc), process.env.AUTH_SECRET);
+		const token = jwt.sign(getTokenPayload(agentDoc._doc, 'agent'), process.env.AUTH_SECRET);
 
 		return {
 			...agentDoc._doc,

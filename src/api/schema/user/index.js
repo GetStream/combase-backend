@@ -1,4 +1,4 @@
-import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
+import { organizationFilter, organizationRecord } from 'utils/resolverMiddlewares/scopes';
 
 import './extend';
 import resolvers from './resolvers';
@@ -22,7 +22,7 @@ const Mutation = {
 	userRemoveById: UserTC.mongooseResolvers.removeById(),
 	userRemoveOne: UserTC.mongooseResolvers.removeOne(),
 	userRemoveMany: UserTC.mongooseResolvers.removeMany().withMiddlewares([organizationFilter]),
-	...resolvers.Mutation,
+	userGetOrCreate: resolvers.Mutation.getOrCreate().withMiddlewares([organizationRecord]),
 };
 
 const Subscription = {

@@ -35,7 +35,7 @@ const TicketSchema = new Schema(
 		source: {
 			type: Schema.Types.String,
 			enum: ['email', 'chat'],
-			required: true,
+			default: 'chat',
 			description: 'The original source of a Ticket.',
 		},
 		tags: [

@@ -12,4 +12,7 @@ UserTC.addFields({
 		type: 'String',
 		resolve: ({ _id }, _, { stream: { chat } }) => chat?.createToken(_id.toString()),
 	},
+	token: {
+		type: 'String',
+	},
 });

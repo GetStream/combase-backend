@@ -23,21 +23,17 @@ const authorizeRequest = async ({ req, connection }) => {
 			organization = req.headers['combase-organization'] ? req.headers['combase-organization'] : '';
 		}
 
-		let scopes = {};
+		let scopes = {
+			organization,
+		};
 
-		if (!token) {
-			// Widget
-			scopes = {
-				organization,
-			}; // TODO: use referrer from headers...
-		} else {
-			// Dashboard
-
-			const payload = jwt.verify(token, process.env.AUTH_SECRET);
+		if (token) {
+			const payload = token ? jwt.verify(token, process.env.AUTH_SECRET) : null;
 
 			scopes = {
-				agent: payload.sub,
-				organization: payload.organization,
+				...scopes,
+				[payload?.type || 'user']: payload?.sub,
+				organization: payload?.organization || organization,
 			};
 		}
 

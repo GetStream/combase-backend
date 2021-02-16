@@ -1,49 +1,65 @@
+import { enrichWithAuthToken } from 'utils/resolverMiddlewares/auth';
+
 import { UserTC } from '../model';
 
-export const getOrCreateUser = {
-	name: 'getOrCreateUser',
-	description: 'Creates a new user, or returns existing user if the orgId & email match',
-	type: UserTC,
-	args: { record: UserTC.getInputTypeComposer().makeFieldNullable('organization') },
-	resolve: async (_, { record }, { models: { User }, organization, stream }) => {
-		if (!organization) {
-			throw new Error('Unauthorized.');
-		}
+export const getOrCreate = () =>
+	UserTC.schemaComposer
+		.createResolver({
+			name: 'getOrCreateUser',
+			description: 'Creates a new user, or returns existing user if the orgId & email match',
+			type: UserTC,
+			args: { record: UserTC.getInputTypeComposer().makeFieldNullable('organization') },
+			resolve: async ({
+				args: { record },
+				context: {
+					models: { User },
+					stream,
+				},
+			}) => {
+				const { email, organization } = record;
 
-		let user = await User.findOne({
-			email: record.email,
-			organization,
-		});
+				const user = await User.findOneAndUpdate(
+					{
+						email,
+						organization,
+					},
+					{
+						$setOnInsert: record,
+					},
+					{
+						new: true,
+						upsert: true,
+					}
+				);
 
-		if (!user) {
-			user = await User.create({
-				...record,
-				organization,
-			});
+				const userId = user._id.toString();
+				const orgId = organization.toString();
 
-			const userId = user._id.toString();
+				await stream.chat.upsertUser({
+					id: userId,
+					name: user._doc.name,
+					email: user._doc.email,
+					organization: orgId,
+					entity: 'User',
+				});
 
-			await stream.chat.upsertUser({
-				id: userId,
-				name: user._doc.name,
-				email: user._doc.email,
-				organization: organization.toString(),
-				entity: 'User',
-			});
+				// Organization feed follows the user.
+				await stream.feeds.feed('organization', orgId).follow('user', userId);
 
-			// Organization feed follows the user.
-			await stream.feeds.feed('organization', organization.toString()).follow('user', userId);
+				/*
+				 * TODO: This should be handled by the mongo change stream events
+				 * await stream.feeds.feed('user', userId).addActivity({
+				 * 	actor: userId,
+				 * 	object: userId,
+				 * 	entity: 'User',
+				 * 	text: 'User Created',
+				 * 	verb: 'combase:user.created',
+				 * });
+				 */
 
-			// TODO: This should be handled by the mongo change stream events
-			await stream.feeds.feed('user', userId).addActivity({
-				actor: userId,
-				object: userId,
-				entity: 'User',
-				text: 'User Created',
-				verb: 'combase:user.created',
-			});
-		}
-
-		return user._doc;
-	},
-};
+				return {
+					record: user,
+				};
+			},
+		})
+		.withMiddlewares([enrichWithAuthToken('user')]);

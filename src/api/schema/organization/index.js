@@ -6,8 +6,7 @@ import { OrganizationTC } from './model';
 import { createOrgChatCustomizations, syncOrganizationProfile } from 'utils/resolverMiddlewares/streamChat';
 
 const Query = {
-	organizationById: OrganizationTC.mongooseResolvers.findById(),
-	organizationCount: OrganizationTC.mongooseResolvers.count(),
+	organization: OrganizationTC.mongooseResolvers.findById(),
 	...resolvers.Query,
 };
 
