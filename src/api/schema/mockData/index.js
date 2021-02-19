@@ -1,12 +1,7 @@
 import faker from 'faker';
-import { createOrgChatCustomizations, syncOrganizationProfile } from 'utils/resolverMiddlewares/streamChat';
+import { streamCtx } from 'utils/streamCtx';
 
 import schemaComposer from '../composer';
-
-import { OrganizationTC } from '../organization/model';
-import { AgentTC } from '../agent/model';
-
-const Query = {};
 
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -65,6 +60,7 @@ const Mutation = {
 
 				const schedule = {};
 
+				// eslint-disable-next-line no-unused-vars
 				for (const dayName of daysOfWeek) {
 					schedule[dayName] = {
 						enabled: !dayName.startsWith('s'),
@@ -79,6 +75,7 @@ const Mutation = {
 					};
 				}
 
+				// Create 'You' Agent
 				const you = createMockAgentData({
 					domain,
 					schedule,
@@ -86,45 +83,67 @@ const Mutation = {
 					name: rp.args.you,
 				});
 
-				const agents = [you];
-
-				const orgDoc = await OrganizationTC.mongooseResolvers
-					.createOne()
-					.withMiddlewares([syncOrganizationProfile, createOrgChatCustomizations])
-					.resolve({
-						...rp,
-						args: {
-							record: {
-								name: organizationName,
-								contact: {
-									email: you.email,
-								},
-								stream: rp.args.stream,
+				/** Create organization with 'You' as the contact email */
+				const orgDoc = await schemaComposer.Mutation.getField('organizationCreate').resolve(
+					rp.source,
+					{
+						record: {
+							name: organizationName,
+							contact: {
+								email: you.email,
 							},
+							stream: rp.args.stream,
 						},
-					});
+					},
+					rp.context,
+					rp.info
+				);
 
-				console.log(orgDoc);
-				agents[0].organization = orgDoc.record._id;
+				/** update you with the org id */
+				you.organization = orgDoc.record._id;
 
-				for (let i = 0; i < agentCount; i++) {
-					agents.push(
+				/** concat any additionally requested fake agents */
+				const agents = [you].concat(
+					new Array(Math.max(agentCount - 1, 0)).fill(() =>
 						createMockAgentData({
 							domain,
 							schedule,
 							organization: orgDoc.record._id,
-							timezone: i % 2 ? 'Europe/Amsterdam' : 'America/Denver',
+							timezone: Math.random() < 0.5 ? 'Europe/Amsterdam' : 'America/Denver',
 						})
-					);
-				}
+					)
+				);
 
-				await AgentTC.mongooseResolvers.createMany().resolve({
-					...rp,
-					args: { records: agents },
-				});
+				/** Create a mock authenticated context object that includes the stream clients and org id, to ensure agentCreate goes off without a hitch */
+				const mockContext = {
+					...rp.context,
+					organization: orgDoc.record._id,
+					stream: streamCtx(rp.args.stream.key, rp.args.stream.secret, rp.args.stream.appId),
+				};
 
-				return agents;
+				/** Get unresolved promises for all agents */
+				/**
+				 * it's no doubt a little slower this way, but allows us to call the same agentCreate as when using the UI.
+				 * This takes care of creating the agent, and also synching data with Stream Chat/Feeds and creating follow relationships
+				 */
+				const agentPromises = agents.map(agent =>
+					schemaComposer.Mutation.getField('agentCreate').resolve(
+						rp.source,
+						{
+							record: agent,
+						},
+						mockContext,
+						rp.info
+					)
+				);
+
+				await Promise.all(agentPromises);
+
+				return {
+					organization: orgDoc.record._id,
+				};
 			} catch (error) {
+				// eslint-disable-next-line no-console
 				console.error(error);
 			}
 		},
@@ -132,6 +151,6 @@ const Mutation = {
 };
 
 export default {
-	Query,
+	Query: {},
 	Mutation,
 };
