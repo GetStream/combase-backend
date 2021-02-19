@@ -13,7 +13,7 @@ export const integrationDefinitions = {
 			method: 'GET',
 			parse: 'json',
 			timeout: 2000,
-			url: `${process.env.INGRESS_URL}integration-definitions`,
+			url: `${process.env.INGRESS_URL}/integration-definitions`,
 		});
 
 		if (filter?.length) {

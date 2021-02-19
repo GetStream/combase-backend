@@ -1,8 +1,7 @@
 import './extend';
-import UserResolvers from 'api/schema/user/resolvers';
+import userResolvers from 'api/schema/user/resolvers';
 import { UserTC } from 'api/schema/user/model';
 import { organizationFilter } from 'utils/resolverMiddlewares/scopes';
-import { enrichWithAuthToken } from 'utils/resolverMiddlewares/auth';
 
 import { createChannel, syncChannel } from './middlewares/stream';
 import resolvers from './resolvers';
@@ -25,7 +24,7 @@ const wrapTicketCreate = newResolver => {
 
 	newResolver.setArgType('record', itc);
 	newResolver.addArgs({
-		user: UserTC.getInputTypeComposer().makeFieldNullable('organization'),
+		user: UserTC.getInputTypeComposer().makeFieldNullable('organization').makeOptional(),
 	});
 
 	const outputType = newResolver.getTypeComposer().clone('CreateTicketAndUserPayload');
@@ -47,25 +46,21 @@ const wrapTicketCreateResolve = next => async rp => {
 			organization: rp.context.organization,
 		};
 
-		user = await UserResolvers.Mutation.getOrCreate()
-			.withMiddlewares([enrichWithAuthToken('user')])
-			.resolve({
-				source: undefined,
-				args: { record },
-				context: rp.context,
-				info: rp.info,
-			});
+		user = await userResolvers.Mutation.getOrCreate().resolve({
+			source: undefined,
+			args: { record },
+			context: rp.context,
+			info: rp.info,
+		});
 
 		userId = user.record._id.toString();
 	} else {
-		user = await UserResolvers.Mutation.findById()
-			.withMiddlewares([enrichWithAuthToken('user')])
-			.resolve({
-				source: undefined,
-				args: { _id: userId },
-				context: rp.context,
-				info: rp.info,
-			});
+		user = await UserTC.mongooseResolvers.findById().resolve({
+			source: undefined,
+			args: { _id: userId },
+			context: rp.context,
+			info: rp.info,
+		});
 	}
 
 	if (!user) {

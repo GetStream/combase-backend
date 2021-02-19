@@ -8,6 +8,7 @@ import Ticket from './ticket';
 import Faq from './faq';
 import Group from './group';
 import Integration from './integration';
+import MockData from './mockData';
 import Note from './note';
 import Organization from './organization';
 import Tag from './tag';
@@ -34,6 +35,7 @@ schemaComposer.Query.addFields({
 	...Faq.Query,
 	...Group.Query,
 	...Integration.Query,
+	...MockData.Query,
 	...Note.Query,
 	...Organization.Query,
 	...Tag.Query,
@@ -49,6 +51,7 @@ schemaComposer.Mutation.addFields({
 	...Faq.Mutation,
 	...Group.Mutation,
 	...Integration.Mutation,
+	...MockData.Mutation,
 	...Note.Mutation,
 	...Organization.Mutation,
 	...Tag.Mutation,

@@ -8,8 +8,8 @@ OrganizationTC.addNestedFields({
 	'stream.key': {
 		type: 'String!',
 		args: {},
-		resolve: async (source, _, { models: { Organization }, organization, agent }) => {
-			if (!organization || !agent) {
+		resolve: async (source, _, { models: { Organization }, organization }) => {
+			if (!organization) {
 				throw new Error('Unauthorized');
 			}
 
