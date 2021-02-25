@@ -66,8 +66,6 @@ export const ticketAssign = {
 		try {
 			const channel = stream.chat.channel('messaging', ticket.toString());
 
-			await channel.watch({ state: true });
-
 			if (status === 'unassigned') {
 				// TODO: Agents/Orgs should be able to override the content of these initial messages when unassigned.
 				channel.addModerators([channel.data.organization]);
@@ -86,44 +84,40 @@ export const ticketAssign = {
 					user_id: channel.data.organization,
 				});
 
-				await new Promise(res => setTimeout(res, 2000));
+				await new Promise(res => setTimeout(() => res(), 2000));
 
 				await channel.sendMessage({
 					text: `Feel free to add additional information and we'll follow up as soon as an agent is available.`,
 					user_id: channel.data.organization,
 				});
 
-				await new Promise(res => setTimeout(res, 3000));
+				await new Promise(res => setTimeout(() => res, 3000));
 
 				await channel.sendMessage({
 					text: `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
 					user_id: channel.data.organization,
 				});
-
-				return channel.stopWatching;
 			}
 
 			// If agent is truthy and ticket is not being marked as unassigned.
 			if (ticket && agent && status !== 'unassigned') {
-				if (channel.state.members[agent.toString()]) {
+				const { members } = await channel.queryMembers({ id: { $in: [agent.toString()] } });
+
+				if (members[agent.toString()]) {
 					throw new Error('That agent is already a member of this channel.');
 				}
 
 				const addMember = channel.addModerators([agent.toString()]);
 
-				const updateChannel = channel.update(
-					{
-						...channel.data,
-						status,
-					},
-					{
-						subtype: 'agent_added',
-						text: `An agent joined the chat.`,
-						user_id: agent.toString(), // eslint-disable-line camelcase
-					}
-				);
+				const updateChannel = channel.updatePartial({ set: { status } });
 
-				await Promise.all([addMember, updateChannel]);
+				const sendMessage = channel.sendMessage({
+					type: 'system',
+					subtype: 'agent_added',
+					user_id: agent.toString(),
+				});
+
+				await Promise.all([addMember, sendMessage, updateChannel]);
 
 				return await Ticket.findByIdAndUpdate(
 					ticket,
@@ -136,8 +130,6 @@ export const ticketAssign = {
 					{ new: true }
 				).lean();
 			}
-
-			throw new Error('Assigning Ticket Failed: Missing arguments.');
 		} catch (error) {
 			throw new Error(error.message);
 		}
