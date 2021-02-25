@@ -100,7 +100,7 @@ export const ticketAssign = {
 					user_id: channel.data.organization,
 				});
 
-				return Promise.all([channel.stopTyping, channel.stopWatching]);
+				return channel.stopWatching;
 			}
 
 			// If agent is truthy and ticket is not being marked as unassigned.
