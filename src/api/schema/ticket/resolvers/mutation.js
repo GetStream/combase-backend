@@ -62,7 +62,7 @@ export const ticketAssign = {
 		status: 'EnumTicketStatus',
 	},
 	// TODO Show status has a default of open
-	resolve: async (_, { ticket, agent, status = 'open' }, { models: { Ticket }, stream }) => {
+	resolve: async (_, { ticket, agent, status = 'open' }, { organization, models: { Ticket }, stream }) => {
 		try {
 			const channel = stream.chat.channel('messaging', ticket.toString());
 
@@ -81,21 +81,21 @@ export const ticketAssign = {
 
 				await channel.sendMessage({
 					text: `Sorry, all agents are currently unavailable.`,
-					user_id: channel.data.organization,
+					user_id: organization,
 				});
 
 				await new Promise(res => setTimeout(() => res(), 2000));
 
 				await channel.sendMessage({
 					text: `Feel free to add additional information and we'll follow up as soon as an agent is available.`,
-					user_id: channel.data.organization,
+					user_id: organization,
 				});
 
 				await new Promise(res => setTimeout(() => res, 3000));
 
 				await channel.sendMessage({
 					text: `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
-					user_id: channel.data.organization,
+					user_id: organization,
 				});
 			}
 
