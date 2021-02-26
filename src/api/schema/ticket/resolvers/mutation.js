@@ -101,23 +101,22 @@ export const ticketAssign = {
 
 			// If agent is truthy and ticket is not being marked as unassigned.
 			if (ticket && agent && status !== 'unassigned') {
-				const { members } = await channel.queryMembers({ id: { $in: [agent.toString()] } });
+				const agentId = agent.toString();
 
-				if (members[agent.toString()]) {
+				const { members } = await channel.queryMembers({ id: { $in: [agentId] } });
+
+				if (members[agentId]) {
 					throw new Error('That agent is already a member of this channel.');
 				}
 
-				const addMember = channel.addModerators([agent.toString()]);
+				const addMember = channel.addMembers([agentId], {
+					text: 'An agent joined the chat.',
+					user_id: agentId,
+				});
 
 				const updateChannel = channel.updatePartial({ set: { status } });
 
-				const sendMessage = channel.sendMessage({
-					type: 'system',
-					subtype: 'agent_added',
-					user_id: agent.toString(),
-				});
-
-				await Promise.all([addMember, sendMessage, updateChannel]);
+				await Promise.all([addMember, updateChannel]);
 
 				return await Ticket.findByIdAndUpdate(
 					ticket,
