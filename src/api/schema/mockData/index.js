@@ -103,16 +103,20 @@ const Mutation = {
 				you.organization = orgDoc.record._id;
 
 				/** concat any additionally requested fake agents */
-				const agents = [you].concat(
-					new Array(Math.max(agentCount - 1, 0)).fill(() =>
-						createMockAgentData({
-							domain,
-							schedule,
-							organization: orgDoc.record._id,
-							timezone: Math.random() < 0.5 ? 'Europe/Amsterdam' : 'America/Denver',
-						})
-					)
-				);
+				const agents = [you];
+
+				if (agentCount > 0) {
+					for (let i = 0; i < agentCount; i++) {
+						agents.push(
+							createMockAgentData({
+								domain,
+								schedule,
+								organization: orgDoc.record._id,
+								timezone: Math.random() < 0.5 ? 'Europe/Amsterdam' : 'America/Denver',
+							})
+						);
+					}
+				}
 
 				/** Create a mock authenticated context object that includes the stream clients and org id, to ensure agentCreate goes off without a hitch */
 				const mockContext = {

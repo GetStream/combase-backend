@@ -68,7 +68,7 @@ export const ticketAssign = {
 
 			if (status === 'unassigned') {
 				// TODO: Agents/Orgs should be able to override the content of these initial messages when unassigned.
-				channel.addModerators([channel.data.organization]);
+				channel.addModerators([organization]);
 
 				await Ticket.findByIdAndUpdate(
 					channel.id,
