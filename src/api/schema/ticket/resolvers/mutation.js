@@ -68,9 +68,24 @@ export const ticketAssign = {
 
 			if (status === 'unassigned') {
 				// TODO: Agents/Orgs should be able to override the content of these initial messages when unassigned.
-				channel.addModerators([organization]);
+				await channel.addModerators([organization]);
 
-				await Ticket.findByIdAndUpdate(
+				await channel.sendMessage({
+					text: `Sorry, all agents are currently unavailable.`,
+					user_id: organization,
+				});
+
+				await channel.sendMessage({
+					text: `Feel free to add additional information and we'll follow up as soon as an agent is available.`,
+					user_id: organization,
+				});
+
+				await channel.sendMessage({
+					text: `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
+					user_id: organization,
+				});
+
+				return Ticket.findByIdAndUpdate(
 					channel.id,
 					{
 						agents: [],
@@ -78,25 +93,6 @@ export const ticketAssign = {
 					},
 					{ new: true }
 				);
-
-				await channel.sendMessage({
-					text: `Sorry, all agents are currently unavailable.`,
-					user_id: organization,
-				});
-
-				await new Promise(res => setTimeout(() => res(), 2000));
-
-				await channel.sendMessage({
-					text: `Feel free to add additional information and we'll follow up as soon as an agent is available.`,
-					user_id: organization,
-				});
-
-				await new Promise(res => setTimeout(() => res, 3000));
-
-				await channel.sendMessage({
-					text: `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
-					user_id: organization,
-				});
 			}
 
 			// If agent is truthy and ticket is not being marked as unassigned.
