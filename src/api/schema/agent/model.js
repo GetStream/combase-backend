@@ -5,54 +5,55 @@ import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
 
-const AgentScheduleEntrySchema = {
+const AgentScheduleEntrySchema = new Schema({
 	enabled: {
 		type: Boolean,
 		default: false,
 		description: 'Whether this day is enabled on the schedule.',
 	},
-	start: {
-		hour: {
-			type: Number,
-			min: 0,
-			max: 23,
-			default: 9,
-			description: 'Start of availability for this day [hour as a numeral representation].',
+	day: [
+		{
+			type: String,
+			enum: ['monday', 'tuesday', 'thursday', 'friday', 'saturday', 'sunday'],
+			default: 'monday',
 		},
-		minute: {
-			type: Number,
-			min: 0,
-			max: 59,
-			default: 0,
-			description: 'Start of availability for this day [minute as a numeral representation].',
+	],
+	time: [
+		{
+			start: {
+				hour: {
+					type: Number,
+					min: 0,
+					max: 23,
+					default: 9,
+					description: 'Start of availability for this day [hour as a numeral representation].',
+				},
+				minute: {
+					type: Number,
+					min: 0,
+					max: 59,
+					default: 0,
+					description: 'Start of availability for this day [minute as a numeral representation].',
+				},
+			},
+			end: {
+				hour: {
+					type: Number,
+					min: 0,
+					max: 23,
+					default: 17,
+					description: 'End of availability for this day [hour as a numeral representation].',
+				},
+				minute: {
+					type: Number,
+					min: 0,
+					max: 59,
+					default: 0,
+					description: 'End of availability for this day [minute as a numeral representation].',
+				},
+			},
 		},
-	},
-	end: {
-		hour: {
-			type: Number,
-			min: 0,
-			max: 23,
-			default: 17,
-			description: 'End of availability for this day [hour as a numeral representation].',
-		},
-		minute: {
-			type: Number,
-			min: 0,
-			max: 59,
-			default: 0,
-			description: 'End of availability for this day [minute as a numeral representation].',
-		},
-	},
-};
-
-const AgentScheduleSchema = new Schema({
-	monday: [AgentScheduleEntrySchema],
-	tuesday: [AgentScheduleEntrySchema],
-	wednesday: [AgentScheduleEntrySchema],
-	thursday: [AgentScheduleEntrySchema],
-	friday: [AgentScheduleEntrySchema],
-	saturday: [AgentScheduleEntrySchema],
-	sunday: [AgentScheduleEntrySchema],
+	],
 });
 
 const AgentSchema = new Schema(
@@ -113,7 +114,7 @@ const AgentSchema = new Schema(
 			required: true,
 			description: 'Password for the agent – bcrypted internally.',
 		},
-		schedule: AgentScheduleSchema,
+		schedule: [AgentScheduleEntrySchema],
 		timezone: {
 			type: String,
 			default: 'Europe/London',
