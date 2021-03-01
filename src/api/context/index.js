@@ -7,8 +7,9 @@ import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 import { logger } from 'utils/logger';
 import { streamCtx } from 'utils/streamCtx';
+import s3 from 'utils/s3';
 
-import { Models } from '../schema';
+import { OrganizationModel } from 'api/schema/organization/model';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {
@@ -41,7 +42,7 @@ const authorizeRequest = async ({ req, connection }) => {
 		const timezone = 'Europe/Amsterdam'; // TODO: For agent, get timezone / For user, send timezone from the widget
 
 		if (scopes?.organization) {
-			orgData = await Models.Organization.findOne({ _id: scopes.organization }, { stream: true });
+			orgData = await OrganizationModel.findOne({ _id: scopes.organization }, { stream: true });
 		}
 
 		return {
@@ -64,7 +65,7 @@ export default async ({ connection, req }) => {
 		return {
 			agent,
 			organization,
-			models: Models,
+			s3,
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
 		};
 	} catch (error) {

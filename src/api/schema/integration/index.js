@@ -1,27 +1,7 @@
-import './extend';
+import integrationModifiers from './modifiers/integration';
+import integrationDefModifiers from './modifiers/integrationDefinition';
 
-import resolvers from './resolvers';
-import { IntegrationTC } from './model';
+import { IntegrationTC, IntegrationDefinitionTC } from './model';
 
-const Query = {
-	integration: IntegrationTC.mongooseResolvers.findById(),
-	integrations: IntegrationTC.mongooseResolvers.connection(),
-	...resolvers.Query,
-};
-
-const Mutation = {
-	integrationCreate: IntegrationTC.mongooseResolvers.createOne(),
-	integrationUpdate: IntegrationTC.mongooseResolvers.updateById(),
-	integrationRemove: IntegrationTC.mongooseResolvers.removeById(),
-	...resolvers.Mutation,
-};
-
-const Subscription = {
-	...resolvers.Subscription,
-};
-
-export default {
-	Query,
-	Mutation,
-	Subscription,
-};
+export const Integration = [IntegrationTC, integrationModifiers];
+export const IntegrationDefinition = [IntegrationDefinitionTC, integrationDefModifiers];

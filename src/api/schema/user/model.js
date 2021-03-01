@@ -3,7 +3,6 @@ import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
-import { OrganizationTC } from 'api/schema/organization/model';
 
 const UserSchema = new Schema(
 	{
@@ -47,13 +46,5 @@ UserSchema.index(
 
 const UserModel = mongoose.model('User', UserSchema);
 const UserTC = composeMongoose(UserModel, { schemaComposer });
-
-UserTC.addRelation('parentOrganization', {
-	prepareArgs: {
-		_id: ({ organization }) => organization.toString(),
-	},
-	projection: { organization: true },
-	resolver: OrganizationTC.mongooseResolvers.findById(),
-});
 
 export { UserModel, UserTC };
