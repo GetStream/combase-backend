@@ -2,6 +2,7 @@ import { delegateToSchema } from 'apollo-server-express';
 import { schema as streamFeeds } from '@stream-io/graphql-feeds';
 
 import { AgentTC } from './model';
+import { TicketTC } from '../ticket/model';
 
 AgentTC.addFields({
 	activity: {
@@ -26,3 +27,15 @@ AgentTC.addFields({
 });
 
 AgentTC.removeField('password');
+
+AgentTC.addRelation('tickets', {
+	prepareArgs: {
+		filter: source => ({
+			agents: {
+				$in: [source._id],
+			},
+		}),
+	},
+	projection: { _id: true },
+	resolver: () => TicketTC.mongooseResolvers.connection({ name: 'AgentTickets' }),
+});

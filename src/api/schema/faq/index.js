@@ -2,22 +2,15 @@ import resolvers from './resolvers';
 import { FaqTC } from './model';
 
 const Query = {
-	faqById: FaqTC.mongooseResolvers.findById(),
-	faqByIds: FaqTC.mongooseResolvers.findByIds(),
-	faqOne: FaqTC.mongooseResolvers.findOne(),
-	faqMany: FaqTC.mongooseResolvers.findMany(),
-	faqCount: FaqTC.mongooseResolvers.count(),
+	faq: FaqTC.mongooseResolvers.findById(),
+	faqs: FaqTC.mongooseResolvers.connection(),
 	...resolvers.Query,
 };
 
 const Mutation = {
-	faqCreateOne: FaqTC.mongooseResolvers.createOne(),
-	faqCreateMany: FaqTC.mongooseResolvers.createMany(),
-	faqUpdateById: FaqTC.mongooseResolvers.updateById(),
-	faqUpdateOne: FaqTC.mongooseResolvers.updateOne(),
-	faqUpdateMany: FaqTC.mongooseResolvers.updateMany(),
-	faqRemoveById: FaqTC.mongooseResolvers.removeById(),
-	faqRemoveOne: FaqTC.mongooseResolvers.removeOne(),
+	faqCreate: FaqTC.mongooseResolvers.createOne(),
+	faqUpdate: FaqTC.mongooseResolvers.updateById(),
+	faqRemove: FaqTC.mongooseResolvers.removeById(),
 	faqRemoveMany: FaqTC.mongooseResolvers.removeMany(),
 	...resolvers.Mutation,
 };

@@ -21,36 +21,14 @@ const AgentScheduleEntrySchema = new Schema({
 	time: [
 		{
 			start: {
-				hour: {
-					type: Number,
-					min: 0,
-					max: 23,
-					default: 9,
-					description: 'Start of availability for this day [hour as a numeral representation].',
-				},
-				minute: {
-					type: Number,
-					min: 0,
-					max: 59,
-					default: 0,
-					description: 'Start of availability for this day [minute as a numeral representation].',
-				},
+				type: String,
+				description: 'Start of availability for this day as a meridian-less 24h notation i.e. "17:00".',
+				required: true,
 			},
 			end: {
-				hour: {
-					type: Number,
-					min: 0,
-					max: 23,
-					default: 17,
-					description: 'End of availability for this day [hour as a numeral representation].',
-				},
-				minute: {
-					type: Number,
-					min: 0,
-					max: 59,
-					default: 0,
-					description: 'End of availability for this day [minute as a numeral representation].',
-				},
+				type: String,
+				description: 'Start of availability for this day as a meridian-less 24h notation i.e. "17:00".',
+				required: true,
 			},
 		},
 	],

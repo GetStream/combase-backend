@@ -1,3 +1,4 @@
+import { AgentTC } from 'api/schema/agent/model';
 import { OrganizationTC } from './model';
 
 // Removes these two fields entirely from GQL - they must be accessed by hitting mongo directly.
@@ -28,4 +29,14 @@ OrganizationTC.addNestedFields({
 			}
 		},
 	},
+});
+
+OrganizationTC.addRelation('availableAgents', {
+	prepareArgs: {
+		filter: ({ _id }) => ({
+			organization: _id.toString(),
+		}),
+	},
+	projection: { _id: true },
+	resolver: () => AgentTC.mongooseResolvers.findManyAvailable(),
 });

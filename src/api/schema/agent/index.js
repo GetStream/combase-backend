@@ -101,8 +101,8 @@ AgentTC.mongooseResolvers.findManyAvailable = () =>
 	});
 
 const Query = {
-	agentById: AgentTC.mongooseResolvers.findById().withMiddlewares([organizationFilter]),
-	agentMany: AgentTC.mongooseResolvers.findMany().withMiddlewares([organizationFilter]),
+	agent: AgentTC.mongooseResolvers.findById().withMiddlewares([organizationFilter]),
+	agents: AgentTC.mongooseResolvers.connection(),
 	agentCount: AgentTC.mongooseResolvers.count().withMiddlewares([organizationFilter]),
 	agentsAvailable: AgentTC.mongooseResolvers.findManyAvailable(),
 	...resolvers.Query,
