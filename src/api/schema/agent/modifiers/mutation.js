@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import bcrypt from 'bcrypt';
 import { StreamChat } from 'stream-chat';
 import { connect as streamFeedsClient } from 'getstream';
 import jwt from 'jsonwebtoken';
@@ -45,38 +46,42 @@ export const agentActivate = tc =>
 		.clone({ name: 'activate' });
 
 export const agentLogin = tc =>
-	tc.schemaComposer.createResolver({
-		name: 'login',
-		type: tc,
-		kind: 'mutation',
-		args: {
+	tc.mongooseResolvers
+		.findOne()
+		.removeArg('record')
+		.addArgs({
 			email: 'String!',
 			password: 'String!',
-		},
-		resolve: async rp => {
-			const data = await tc.mongooseResolvers.findOne().resolve(deepmerge(rp, { args: { filter: { email: rp.args.email } } }));
+		})
+		.wrapResolve(next => async rp => {
+			// eslint-disable-next-line callback-return
+			const data = await next(
+				deepmerge(rp, {
+					args: {
+						filter: {
+							email: rp.args.email,
+						},
+					},
+					projection: {
+						_id: true,
+						organization: true,
+						password: true,
+					},
+				})
+			);
 
-			// const valid = await data.verifyPassword(rp.args.password);
+			const valid = await bcrypt.compare(rp.args.password, data?.password);
 
-			/*
-			 * if (!valid) {
-			 * 	throw new Error('Incorrect Password.');
-			 * }
-			 */
+			if (!valid) {
+				throw new Error('Unauthorized');
+			}
 
-			const newRp = {
-				...rp,
-				args: {},
-				context: {
-					...rp.context,
-					organization: data?.organization.toString(),
-					agent: data._id.toString(),
-				},
-			};
+			delete data.password;
+			data.token = jwt.sign(getTokenPayload(data, 'agent'), process.env.AUTH_SECRET);
 
-			return tc.getResolver('me').resolve(newRp);
-		},
-	});
+			return data;
+		})
+		.clone({ name: 'login' });
 
 export const onboard = tc =>
 	tc.schemaComposer.createResolver({

@@ -21,10 +21,16 @@ const IntegrationCredentialsSchema = new Schema({
 		required: true,
 		description: 'Value of the stored credential.',
 	},
+	meta: [
+		{
+			type: Schema.Types.Mixed,
+			description: 'Unstructured data associated with the integration.',
+		},
+	],
 });
 
 IntegrationCredentialsSchema.plugin(fieldEncryption, {
-	fields: ['value'],
+	fields: ['value', 'meta'],
 	secret: process.env.AUTH_SECRET,
 });
 
