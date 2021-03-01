@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { v4 as uuid } from 'uuid';
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
@@ -97,7 +98,28 @@ const OrganizationSchema = new Schema(
 					description: 'The tageline message displayed beneath the title in the widget home screen',
 				},
 			},
+			domains: [
+				{
+					type: String,
+					default: 'localhost',
+					description: 'Allowed root domain and path to display widget on.',
+				},
+			],
 		},
+		secrets: [
+			{
+				name: {
+					type: String,
+					default: 'Default API secret',
+					description: 'A user generated description of the what the API secret will be used for.',
+				},
+				value: {
+					type: String,
+					default: uuid(),
+					description: 'A random API secret generated to sign a JWT.',
+				},
+			},
+		],
 		active: {
 			type: Boolean,
 			default: true,
