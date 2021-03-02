@@ -152,8 +152,11 @@ schemaComposer.Mutation.addFields({
 	/**
 	 * @name Ticket
 	 */
+	ticketAddLabel: schemaComposer.getOTC('Ticket').getResolver('addLabel'),
+	ticketRemoveLabel: schemaComposer.getOTC('Ticket').getResolver('removeLabel'),
 	ticketAssign: schemaComposer.getOTC('Ticket').getResolver('assign'),
 	ticketCreate: schemaComposer.getOTC('Ticket').getResolver('create'),
+	ticketToggleLabel: schemaComposer.getOTC('Ticket').getResolver('toggleLabel'),
 	ticketUpdate: schemaComposer.getOTC('Ticket').getResolver('update'),
 
 	/**

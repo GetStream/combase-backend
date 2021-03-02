@@ -17,15 +17,7 @@ export const fields = tc => {
 				_id: true,
 				organization: true,
 			},
-			resolve: (source, _, { user, organization, stream }) => {
-				if (!user || user !== source._id?.toString?.()) {
-					throw new Error('Unauthorized');
-				}
-
-				if (!stream?.feeds || !organization || organization !== source.organization?.toString?.()) {
-					throw new Error('Unauthorized');
-				}
-
+			resolve: (source, _, { stream }) => {
 				return stream.feeds.createUserToken(source._id?.toString?.());
 			},
 		},

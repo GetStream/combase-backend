@@ -105,7 +105,7 @@ export const ticketAssign = tc =>
 
 export const ticketAddLabel = tc =>
 	tc.schemaComposer.createResolver({
-		name: 'ticketAddLabel',
+		name: 'addLabel',
 		description: 'Add a label to a chat channel.',
 		type: tc,
 		kind: 'mutation',
@@ -147,7 +147,7 @@ export const ticketAddLabel = tc =>
 
 export const ticketRemoveLabel = tc =>
 	tc.schemaComposer.createResolver({
-		name: 'ticketRemoveLabel',
+		name: 'removeLabel',
 		description: 'Remove a label from a chat channel.',
 		type: tc,
 		kind: 'mutation',
@@ -185,7 +185,7 @@ export const ticketRemoveLabel = tc =>
 
 export const ticketToggleLabel = tc =>
 	tc.schemaComposer.createResolver({
-		name: 'ticketToggleLabel',
+		name: 'toggleLabel',
 		description: 'Toggle a label on a chat channel.',
 		type: tc,
 		kind: 'mutation',

@@ -1,4 +1,5 @@
 import { enrichWithAuthToken } from 'utils/resolverMiddlewares/auth';
+import { UserModel } from '../model';
 
 export const getOrCreate = tc =>
 	tc.schemaComposer
@@ -7,16 +8,10 @@ export const getOrCreate = tc =>
 			description: 'Creates a new user, or returns existing user if the orgId & email match',
 			type: tc,
 			args: { record: tc.getInputTypeComposer().makeFieldNullable('organization') },
-			resolve: async ({
-				args: { record },
-				context: {
-					models: { User },
-					stream,
-				},
-			}) => {
+			resolve: async ({ args: { record }, context: { stream } }) => {
 				const { email, organization } = record;
 
-				const user = await User.findOneAndUpdate(
+				const user = await UserModel.findOneAndUpdate(
 					{
 						email,
 						organization,
