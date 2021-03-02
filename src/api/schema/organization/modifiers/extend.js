@@ -92,7 +92,7 @@ export const extend = tc => {
 	});
 };
 
-export const relateAgent = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Agent'));
+export const relateAgents = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Agent'));
 export const relateAsset = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Asset'));
 export const relateFaq = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Faq'));
 export const relateGroup = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Group'));

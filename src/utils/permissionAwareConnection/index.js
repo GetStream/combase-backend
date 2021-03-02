@@ -34,6 +34,23 @@ const permissionAwareConnection = (tc, resolverOpts = {}, opts) => {
 	});
 };
 
+/**
+ * Create a findById resolver that uses the source object as the filter. (i.e. source.space will scope all results that have space === source.space)
+ * @param {Object} filter - merged with the source object and eventually becomes the mongo query filter
+ */
+const permissionAwareFindById = (tc, resolverOpts = {}, opts) => {
+	if (!opts) throw new Error('No options provided to permissionAwareConnection');
+
+	return tc.mongooseResolvers.findById(resolverOpts).wrapResolve(next => rp => {
+		const filter = getPermissionsScopes(rp, opts);
+
+		// eslint-disable-next-line no-param-reassign
+		rp.args = deepmerge(rp.args, { filter });
+
+		return next(rp);
+	});
+};
+
 /*
  * ParentTC === Organization
  * ChildTC === Ticket | Agent | Faq | Group | Webhook | ...
@@ -43,11 +60,13 @@ export const createPermissionAwareRelationship = (parentTC, childTC, opts) => {
 	const parentField = parentTypeName.toLowerCase();
 
 	const childTypeName = childTC.getTypeName();
-	const relatedFieldName = pluralize(childTypeName.toLowerCase());
+	const relatedFieldName = childTypeName.toLowerCase();
+	const relatedFieldNamePlural = pluralize(relatedFieldName);
 
-	const connectionName = `${parentTypeName}${childTypeName}`;
+	const findByIdResolverName = `${parentTypeName}${childTypeName}`;
+	const connectionResolverName = `${parentTypeName}${childTypeName}`;
 
-	parentTC.addRelation(relatedFieldName, {
+	parentTC.addRelation(relatedFieldNamePlural, {
 		prepareArgs: {},
 		projection: {
 			_id: true,
@@ -55,10 +74,25 @@ export const createPermissionAwareRelationship = (parentTC, childTC, opts) => {
 		},
 		resolver: permissionAwareConnection(
 			childTC,
-			{ name: connectionName },
+			{ name: connectionResolverName },
 			{
 				_idField: parentField,
-				teamField: opts?.teamField || 'members',
+				schemaComposer: parentTC.schemaComposer,
+			}
+		),
+	});
+
+	parentTC.addRelation(relatedFieldName, {
+		prepareArgs: {},
+		projection: {
+			_id: true,
+			[opts?._idField]: true,
+		},
+		resolver: permissionAwareFindById(
+			childTC,
+			{ name: findByIdResolverName },
+			{
+				_idField: parentField,
 				schemaComposer: parentTC.schemaComposer,
 			}
 		),
