@@ -17,4 +17,32 @@ export const extend = tc => {
 		projection: { organization: true },
 		resolver: () => tc.schemaComposer.getOTC('Organization').getResolver('get'),
 	});
+
+	tc.addRelation('tickets', {
+		prepareArgs: {
+			filter: ({ _id, organization }) => ({
+				organization: organization.toString(),
+				_operators: {
+					agents: { in: [_id] },
+				},
+			}),
+		},
+		projection: {
+			_id: true,
+			organization: true,
+		},
+		resolver: () =>
+			tc.schemaComposer
+				.getOTC('Ticket')
+				.mongooseResolvers.connection({
+					findManyOpts: {
+						filter: {
+							operators: {
+								agents: ['in'],
+							},
+						},
+					},
+				})
+				.clone({ name: 'AgentTickets' }),
+	});
 };

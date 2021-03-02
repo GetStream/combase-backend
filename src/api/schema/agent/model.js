@@ -144,4 +144,6 @@ AgentSchema.index({
 
 export const AgentModel = mongoose.model('Agent', AgentSchema);
 
-export const AgentTC = composeMongoose(AgentModel, { schemaComposer });
+export const AgentTC = composeMongoose(AgentModel, {
+	schemaComposer,
+});
