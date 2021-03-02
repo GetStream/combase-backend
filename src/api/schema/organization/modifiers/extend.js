@@ -1,23 +1,74 @@
+import jwt from 'jsonwebtoken';
 import { createPermissionAwareRelationship } from 'utils/permissionAwareConnection';
+import { OrganizationModel } from 'api/schema/organization/model';
+
+export const OrganizationSecrets = tc => {
+	tc.schemaComposer.getOTC('OrganizationSecrets').addFields({
+		token: {
+			type: 'String!',
+			projection: {
+				_id: true,
+				value: true,
+				scope: true,
+			},
+			resolve: ({ value, _id }, _, { organization }) =>
+				jwt.sign(
+					{
+						organization,
+						_id,
+					},
+					value
+				),
+		},
+		verify: {
+			type: 'Boolean!',
+			args: {
+				token: 'String!',
+			},
+			projection: {
+				value: true,
+			},
+			kind: 'query',
+			resolve: async (source, args) => {
+				try {
+					await jwt.verify(args?.token, source.value);
+
+					return true;
+				} catch (error) {
+					return false;
+				}
+			},
+		},
+	});
+};
 
 export const extend = tc => {
 	tc.removeField('stream.appId');
 	tc.removeField('stream.secret');
 
+	tc.addFields({
+		secret: {
+			type: 'OrganizationSecrets',
+			args: { _id: 'MongoID!' },
+			projection: { secrets: true },
+			resolve: (source, args) => source?.secrets?.find(({ _id }) => args._id === _id.toString()),
+		},
+	});
+
 	tc.addNestedFields({
 		'stream.key': {
 			type: 'String!',
 			args: {},
-			resolve: async (source, _, { models: { Organization }, organization }) => {
+			resolve: async (source, _, { organization }) => {
 				if (!organization) {
 					throw new Error('Unauthorized');
 				}
 
 				try {
-					const { stream } = await Organization.findById(organization, { 'stream.key': true });
+					const { stream } = await OrganizationModel.findById(organization, { 'stream.key': true });
 
 					if (source.key === stream?.key) {
-						const decrypted = await Organization.findOne({ _id: organization }, { stream: true });
+						const decrypted = await OrganizationModel.findOne({ _id: organization }, { stream: true });
 
 						return decrypted?.stream?.key;
 					}
