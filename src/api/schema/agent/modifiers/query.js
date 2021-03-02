@@ -15,7 +15,8 @@ export const availableAgents = tc =>
 		args: { filter: 'FilterFindManyAgentInput' },
 		resolve: ({ args, context }) => {
 			const now = new Date();
-			const userTimezone = context?.timezone;
+			const userTimezone = context?.timezone || 'Europe/Amsterdam';
+
 			const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
 			const organization = args?.filter?.organization || context.organization;
 

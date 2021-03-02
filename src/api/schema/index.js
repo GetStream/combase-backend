@@ -1,6 +1,7 @@
 import schemaComposer from 'api/schema/composer';
 import chain from 'utils/composer-chain';
 
+import { StreamActivity, StreamAddActivity } from './activity';
 import Agent from './agent';
 import Asset from './asset';
 import Faq from './faq';
@@ -12,7 +13,21 @@ import Ticket from './ticket';
 import User from './user';
 import Webhook from './webhook';
 
-chain([Agent, Asset, Faq, Group, Integration, IntegrationDefinition, Organization, Tag, Ticket, User, Webhook]);
+chain([
+	Agent,
+	Asset,
+	Faq,
+	Group,
+	Integration,
+	IntegrationDefinition,
+	Organization,
+	StreamActivity,
+	StreamAddActivity,
+	Tag,
+	Ticket,
+	User,
+	Webhook,
+]);
 
 schemaComposer.Query.addFields({
 	/**
@@ -137,6 +152,7 @@ schemaComposer.Mutation.addFields({
 	/**
 	 * @name Ticket
 	 */
+	ticketAssign: schemaComposer.getOTC('Ticket').getResolver('assign'),
 	ticketCreate: schemaComposer.getOTC('Ticket').getResolver('create'),
 	ticketUpdate: schemaComposer.getOTC('Ticket').getResolver('update'),
 

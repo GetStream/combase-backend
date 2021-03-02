@@ -23,7 +23,7 @@ export const ticketUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewa
 
 export const ticketAssign = tc =>
 	tc.schemaComposer.createResolver({
-		name: 'ticketAssign',
+		name: 'assign',
 		description:
 			'Calling this resolver will assign a ticket to an agent. If no status argument is provided, the chat will be marked as open by default.',
 		type: tc,
@@ -34,7 +34,7 @@ export const ticketAssign = tc =>
 			status: 'EnumTicketStatus',
 		},
 		// TODO Show status has a default of open
-		resolve: async (_, { ticket, agent, status = 'open' }, { organization, stream }) => {
+		resolve: async ({ args: { ticket, agent, status = 'open' }, context: { organization, stream } }) => {
 			try {
 				const channel = stream.chat.channel('messaging', ticket.toString());
 
@@ -113,7 +113,7 @@ export const ticketAddLabel = tc =>
 			ticket: 'MongoID!',
 			label: 'EnumTicketLabels!',
 		},
-		resolve: async (_, { ticket, label }, { stream }) => {
+		resolve: async ({ args: { ticket, label }, context: { stream } }) => {
 			try {
 				const channel = stream.chat.channel('messaging', ticket);
 
@@ -155,7 +155,7 @@ export const ticketRemoveLabel = tc =>
 			ticket: 'MongoID!',
 			label: 'EnumTicketLabels!',
 		},
-		resolve: async (_, { ticket, label }, { stream }) => {
+		resolve: async ({ args: { ticket, label }, context: { stream } }) => {
 			try {
 				const channel = stream.chat.channel('messaging', ticket.toString());
 
@@ -193,7 +193,7 @@ export const ticketToggleLabel = tc =>
 			ticket: 'MongoID!',
 			label: 'EnumTicketLabels!',
 		},
-		resolve: async (_, { ticket, label }, { stream }) => {
+		resolve: async ({ args: { ticket, label }, context: { stream } }) => {
 			try {
 				const channel = stream.chat.channel('messaging', ticket.toString());
 

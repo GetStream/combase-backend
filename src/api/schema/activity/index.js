@@ -1,10 +1,10 @@
-import './extend';
-import * as Query from './query';
-import * as Mutation from './mutation';
-import * as Subscription from './subscription';
+import schemaComposer from 'api/schema/composer';
 
-export default {
-	Mutation: Mutation.default || Mutation,
-	Query: Query.default || Query,
-	Subscription: Subscription.default || Subscription,
-};
+import inputModifiers from './inputModifiers';
+import modifiers from './modifiers';
+
+const StreamActivityTC = schemaComposer.getOTC('StreamActivity');
+const StreamAddActivityITC = schemaComposer.getITC('StreamAddActivityInput');
+
+export const StreamActivity = [StreamActivityTC, modifiers];
+export const StreamAddActivity = [StreamAddActivityITC, inputModifiers];
