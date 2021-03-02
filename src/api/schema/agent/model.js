@@ -68,6 +68,11 @@ const AgentSchema = new Schema(
 			type: String,
 			description: 'The defined role of the agent',
 		},
+		access: {
+			type: String,
+			enum: ['super_admin', 'admin', 'moderator', 'guest'],
+			default: 'guest',
+		},
 		title: {
 			type: String,
 			trim: true,
@@ -116,4 +121,5 @@ AgentSchema.index({
 });
 
 export const AgentModel = mongoose.model('Agent', AgentSchema);
+
 export const AgentTC = composeMongoose(AgentModel, { schemaComposer });

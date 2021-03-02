@@ -115,7 +115,7 @@ const OrganizationSchema = new Schema(
 				},
 				value: {
 					type: String,
-					default: uuid(),
+					default: () => uuid(),
 					description: 'A random API secret generated to sign a JWT.',
 				},
 				scope: {

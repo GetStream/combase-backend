@@ -18,6 +18,7 @@ schemaComposer.Query.addFields({
 	/**
 	 * @name Agent
 	 */
+	me: schemaComposer.getOTC('Agent').getResolver('me'),
 	agent: schemaComposer.getOTC('Agent').getResolver('get'),
 	agents: schemaComposer.getOTC('Agent').getResolver('list'),
 	agentsAvailable: schemaComposer.getOTC('Agent').getResolver('getAvailable'),
@@ -123,6 +124,7 @@ schemaComposer.Mutation.addFields({
 	 * @name Organization
 	 */
 	organizationUpdate: schemaComposer.getOTC('Organization').getResolver('update'),
+	organizationCreateApiCredentials: schemaComposer.getOTC('Organization').getResolver('createApiCredentials'),
 
 	/**
 	 * @name Tag

@@ -10,6 +10,7 @@ import { streamCtx } from 'utils/streamCtx';
 import s3 from 'utils/s3';
 
 import { OrganizationModel } from 'api/schema/organization/model';
+import { AgentModel } from 'api/schema/agent/model';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {
@@ -38,16 +39,31 @@ const authorizeRequest = async ({ req, connection }) => {
 			};
 		}
 
+		// TODO: User timezone
+
 		let orgData;
-		const timezone = 'Europe/Amsterdam'; // TODO: For agent, get timezone / For user, send timezone from the widget
+		let access;
 
 		if (scopes?.organization) {
+			access = await AgentModel.findOne(
+				{
+					_id: scopes.agent,
+					organization: scopes.organization,
+				},
+				{
+					access: true,
+					timezone: true,
+				}
+			).lean();
+
+			delete access._id;
+
 			orgData = await OrganizationModel.findOne({ _id: scopes.organization }, { stream: true });
 		}
 
 		return {
 			...scopes,
-			timezone,
+			...access,
 			stream: orgData?.stream,
 		};
 	} catch (error) {
@@ -57,14 +73,13 @@ const authorizeRequest = async ({ req, connection }) => {
 
 export default async ({ connection, req }) => {
 	try {
-		const { agent, organization, stream } = await authorizeRequest({
+		const { stream, ...scopes } = await authorizeRequest({
 			connection,
 			req,
 		});
 
 		return {
-			agent,
-			organization,
+			...scopes,
 			s3,
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
 		};
