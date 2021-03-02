@@ -1,13 +1,31 @@
+import { deepmerge } from 'graphql-compose';
+
 export const extend = tc => {
-	tc.addFields({
-		memberCount: {
-			type: 'Int!',
-			args: {},
-			resolve: ({ _id }, _, { models: { Agent }, organization }) =>
-				Agent.countDocuments({
-					groups: { $in: [_id] },
-					organization,
-				}),
+	tc.addRelation('members', {
+		prepareArgs: {
+			filter: ({ _id }) => ({
+				operators: {
+					_groups: {
+						in: [_id],
+					},
+				},
+			}),
 		},
+		projection: { _id: true },
+		resolver: tc.schemaComposer
+			.getOTC('Agent')
+			.mongooseResolvers.connection({
+				name: 'GroupMember',
+				findManyOpts: {
+					filter: {
+						operators: {
+							groups: ['in'],
+						},
+					},
+				},
+			})
+			.wrapResolve(next => rp => {
+				return next(deepmerge(rp, { args: { organization: rp.context.organization } }));
+			}),
 	});
 };

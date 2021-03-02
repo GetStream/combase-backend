@@ -21,13 +21,6 @@ const GroupSchema = new Schema(
 			trim: true,
 			type: String,
 		},
-		agents: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Agent',
-				required: true,
-			},
-		],
 	},
 	{ collection: 'groups' }
 );
