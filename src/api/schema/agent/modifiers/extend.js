@@ -7,6 +7,7 @@ export const extend = tc => {
 
 	tc.addFields({
 		token: 'String',
+		available: 'Boolean',
 	});
 
 	tc.addRelation('organization', {

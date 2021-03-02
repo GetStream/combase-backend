@@ -69,12 +69,19 @@ const authorizeRequest = async ({ req, connection }) => {
 		}
 
 		if (scopes?.organization) {
+			const orgQuery = {
+				_id: scopes.organization,
+			};
+
+			if (process.env.NODE_ENV === 'production') {
+				orgQuery['widget.domains'] = {
+					$in: [domain],
+				};
+			}
+
 			orgData = await OrganizationModel.findOne(
 				{
 					_id: scopes.organization,
-					'widget.domains': {
-						$in: [domain],
-					},
 				},
 				{ stream: true }
 			);

@@ -10,86 +10,115 @@ export const availableAgents = tc =>
 	tc.schemaComposer.createResolver({
 		name: 'getAvailable',
 		description:
-			'Same as agentMany but uses an aggregated query to return only agents that are avulable today, and includes a timezone-aware availability status for each agent.',
+			'Same as agentMany but uses an aggregated query to return only agents that are available today, and includes a timezone-aware availability status for each agent.',
 		type: '[Agent!]',
 		args: { filter: 'FilterFindManyAgentInput' },
 		resolve: ({ args, context }) => {
 			const now = new Date();
+			const userTimezone = context?.timezone;
 			const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-			const userTimezone = 'Europe/Amsterdam';
-
 			const organization = args?.filter?.organization || context.organization;
 
-			return AgentModel.aggregate()
-				.match({
-					active: true,
-					// eslint-disable-next-line new-cap
-					organization: mongoose.Types.ObjectId(organization),
-					[`schedule.${dayName}`]: {
-						$elemMatch: {
-							enabled: true,
-						},
-					},
-				})
-				.addFields({
-					available: {
-						$anyElementTrue: {
-							$map: {
-								input: `$schedule.${dayName}`,
-								as: 'today',
-								in: {
-									$cond: [
-										{
-											$let: {
-												vars: {
-													startTime: {
-														$dateFromParts: {
-															hour: '$$today.start.hour',
-															minute: '$$today.start.minute',
-															timezone: '$timezone',
-															year: 2020,
+			return (
+				AgentModel.aggregate()
+					.match({
+						active: true,
+						// eslint-disable-next-line new-cap
+						organization: mongoose.Types.ObjectId(organization),
+					})
+					// eslint-disable-next-line multiline-comment-style
+					.addFields({
+						available: {
+							$anyElementTrue: {
+								$map: {
+									input: '$schedule',
+									as: 'entry',
+									in: {
+										$cond: [
+											{
+												$and: [
+													{
+														$eq: ['$$entry.enabled', true],
+													},
+													{
+														$anyElementTrue: {
+															$map: {
+																input: '$$entry.day',
+																as: 'day',
+																in: {
+																	$eq: ['$$day', dayName],
+																},
+															},
 														},
 													},
-													endTime: {
-														$dateFromParts: {
-															hour: '$$today.end.hour',
-															minute: '$$today.end.minute',
-															timezone: '$timezone',
-															year: 2020,
+													{
+														$anyElementTrue: {
+															$map: {
+																input: '$$entry.time',
+																as: 'time',
+																in: {
+																	$cond: [
+																		{
+																			$let: {
+																				vars: {
+																					startTime: {
+																						$dateFromParts: {
+																							hour: '$$time.start.hour',
+																							minute: '$$time.start.minute',
+																							timezone: '$timezone',
+																							year: 2021,
+																						},
+																					},
+																					endTime: {
+																						$dateFromParts: {
+																							hour: '$$time.end.hour',
+																							minute: '$$time.end.minute',
+																							timezone: '$timezone',
+																							year: 2021,
+																						},
+																					},
+																					userTime: {
+																						$dateFromParts: {
+																							hour: now.getHours(),
+																							minute: now.getMinutes() + 1,
+																							timezone: userTimezone,
+																							year: 2021,
+																						},
+																					},
+																				},
+																				in: {
+																					$and: [
+																						{
+																							$gte: ['$$userTime', '$$startTime'],
+																						},
+																						{
+																							$lt: ['$$userTime', '$$endTime'],
+																						},
+																					],
+																				},
+																			},
+																		},
+																		true,
+																		false,
+																	],
+																},
+															},
 														},
 													},
-													userTime: {
-														$dateFromParts: {
-															hour: now.getHours(),
-															minute: now.getMinutes() + 1,
-															timezone: userTimezone,
-															year: 2020,
-														},
-													},
-												},
-												in: {
-													$and: [
-														{
-															$gt: ['$$userTime', '$$startTime'],
-														},
-														{
-															$lt: ['$$userTime', '$$endTime'],
-														},
-													],
-												},
+												],
 											},
-										},
-										true,
-										false,
-									],
+											true,
+											false,
+										],
+									},
 								},
 							},
 						},
-					},
-				})
-				.match({
-					available: true,
-				});
+					})
+					.match({
+						available: true,
+					})
+			);
 		},
 	});
 
