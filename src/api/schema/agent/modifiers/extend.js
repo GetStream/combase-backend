@@ -5,13 +5,15 @@ export const extend = tc => {
 		available: 'Boolean',
 	});
 
-	tc.addRelation('organization', {
-		prepareArgs: {
-			_id: ({ organization }) => organization,
-		},
-		projection: { organization: true },
-		resolver: () => tc.schemaComposer.getOTC('Organization').getResolver('get'),
-	});
+	/*
+	 * tc.addRelation('organization', {
+	 * 	prepareArgs: {
+	 * 		_id: ({ organization }) => organization,
+	 * 	},
+	 * 	projection: { organization: true },
+	 * 	resolver: () => tc.schemaComposer.getOTC('Organization').getResolver('get'),
+	 * });
+	 */
 
 	tc.addRelation('tickets', {
 		prepareArgs: {
@@ -30,6 +32,7 @@ export const extend = tc => {
 			tc.schemaComposer
 				.getOTC('Ticket')
 				.mongooseResolvers.connection({
+					name: 'AgentTickets',
 					findManyOpts: {
 						filter: {
 							operators: {

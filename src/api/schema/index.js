@@ -80,6 +80,12 @@ schemaComposer.Query.addFields({
 	tags: schemaComposer.getOTC('Tag').getResolver('list'),
 
 	/**
+	 * @name Ticket
+	 */
+	ticket: schemaComposer.getOTC('Ticket').getResolver('get'),
+	tickets: schemaComposer.getOTC('Ticket').getResolver('list'),
+
+	/**
 	 * @name User
 	 */
 	user: schemaComposer.getOTC('User').getResolver('get'),
@@ -152,12 +158,14 @@ schemaComposer.Mutation.addFields({
 	/**
 	 * @name Ticket
 	 */
-	ticketAddLabel: schemaComposer.getOTC('Ticket').getResolver('addLabel'),
-	ticketRemoveLabel: schemaComposer.getOTC('Ticket').getResolver('removeLabel'),
 	ticketAssign: schemaComposer.getOTC('Ticket').getResolver('assign'),
 	ticketCreate: schemaComposer.getOTC('Ticket').getResolver('create'),
-	ticketToggleLabel: schemaComposer.getOTC('Ticket').getResolver('toggleLabel'),
 	ticketUpdate: schemaComposer.getOTC('Ticket').getResolver('update'),
+	ticketMarkAs: schemaComposer.getOTC('Ticket').getResolver('markAs'),
+	ticketAddTag: schemaComposer.getOTC('Ticket').getResolver('addTag'),
+	ticketRemoveTag: schemaComposer.getOTC('Ticket').getResolver('removeTag'),
+	ticketStar: schemaComposer.getOTC('Ticket').getResolver('star'),
+	ticketSetPriority: schemaComposer.getOTC('Ticket').getResolver('setPriority'),
 
 	/**
 	 * @name User

@@ -1,12 +1,7 @@
-import { TicketModel as Ticket } from '../model';
-import { createChannel, syncChannel, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
+import { deepmerge } from 'graphql-compose';
 
-// TODOOOOOOOOOO
-/**
- * Takes the User _id (the customer using the widget) and the organization ID as
- * arguments. Then creates a channel with just the user (ready to be routed to an agent)
- * and returns the ticket object so we can connect to the channel on the client-side.
- */
+import { TicketModel as Ticket, TicketModel } from '../model';
+import { createChannel, syncChannel, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
 
 export const ticketCreate = tc =>
 	tc.mongooseResolvers
@@ -16,10 +11,86 @@ export const ticketCreate = tc =>
 		.withMiddlewares([createChannel()])
 		.clone({ name: 'create' });
 export const ticketUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]).clone({ name: 'update' });
+
 /*
- * export const ticketArchive = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]);
- * export const ticketArchiveMany = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]); // TODO
+ * TODO: Add Tag
  */
+export const ticketAddTag = tc =>
+	tc.schemaComposer.createResolver({
+		name: 'addTag',
+		type: tc,
+		kind: 'mutation',
+		args: {
+			id: 'MongoID!',
+			tag: 'MongoID!',
+		},
+		resolve: (_, args) =>
+			TicketModel.findByIdAndUpdate(
+				args?._id,
+				{
+					$addToSet: {
+						tags: [args.tag],
+					},
+					status,
+				},
+				{ new: true }
+			).lean(),
+	});
+
+export const ticketRemoveTag = tc =>
+	tc.schemaComposer.createResolver({
+		name: 'removeTag',
+		type: tc,
+		kind: 'mutation',
+		args: {
+			id: 'MongoID!',
+			tag: 'MongoID!',
+		},
+		resolve: (_, args) =>
+			TicketModel.findByIdAndUpdate(
+				args?._id,
+				{
+					$pull: {
+						tags: [args.tag],
+					},
+					status,
+				},
+				{ new: true }
+			).lean(),
+	});
+
+export const ticketMarkAs = tc =>
+	tc.mongooseResolvers
+		.updateById()
+		.removeArg('record')
+		.addArgs({
+			status: 'EnumTicketStatus!',
+		})
+		.wrapResolve(next => rp => next(deepmerge(rp, { args: { record: { status: rp?.args.status } } })))
+		.withMiddlewares([syncChannel()])
+		.clone({ name: 'markAs' });
+
+export const ticketStar = tc =>
+	tc.mongooseResolvers
+		.updateById()
+		.removeArg('record')
+		.addArgs({
+			starred: 'Boolean!',
+		})
+		.wrapResolve(next => rp => next(deepmerge(rp, { args: { record: { starred: rp?.args.starred } } })))
+		.withMiddlewares([syncChannel()])
+		.clone({ name: 'star' });
+
+export const ticketSetPriority = tc =>
+	tc.mongooseResolvers
+		.updateById()
+		.removeArg('record')
+		.addArgs({
+			level: 'Int!',
+		})
+		.wrapResolve(next => rp => next(deepmerge(rp, { args: { record: { priority: rp?.args.level } } })))
+		.withMiddlewares([syncChannel()])
+		.clone({ name: 'setPriority' });
 
 export const ticketAssign = tc =>
 	tc.schemaComposer.createResolver({
@@ -97,130 +168,6 @@ export const ticketAssign = tc =>
 						{ new: true }
 					).lean();
 				}
-			} catch (error) {
-				throw new Error(error.message);
-			}
-		},
-	});
-
-export const ticketAddLabel = tc =>
-	tc.schemaComposer.createResolver({
-		name: 'addLabel',
-		description: 'Add a label to a chat channel.',
-		type: tc,
-		kind: 'mutation',
-		args: {
-			ticket: 'MongoID!',
-			label: 'EnumTicketLabels!',
-		},
-		resolve: async ({ args: { ticket, label }, context: { stream } }) => {
-			try {
-				const channel = stream.chat.channel('messaging', ticket);
-
-				await channel.watch();
-
-				/*
-				 * Ensure that labels are always unique, if the user calls ticketAddLabel
-				 * again for the same toggle, it will result in no change.
-				 */
-				const labels = [...new Set([...(channel.data?.labels || []), label])];
-
-				await channel.update({
-					...channel.data,
-					labels,
-				});
-
-				return await Ticket.findByIdAndUpdate(
-					ticket,
-					{
-						labels,
-					},
-					{
-						new: true,
-					}
-				);
-			} catch (error) {
-				throw new Error(error.message);
-			}
-		},
-	});
-
-export const ticketRemoveLabel = tc =>
-	tc.schemaComposer.createResolver({
-		name: 'removeLabel',
-		description: 'Remove a label from a chat channel.',
-		type: tc,
-		kind: 'mutation',
-		args: {
-			ticket: 'MongoID!',
-			label: 'EnumTicketLabels!',
-		},
-		resolve: async ({ args: { ticket, label }, context: { stream } }) => {
-			try {
-				const channel = stream.chat.channel('messaging', ticket.toString());
-
-				await channel.watch();
-
-				const labels = channel.data.labels.filter(l => l !== label);
-
-				await channel.update({
-					...channel.data,
-					labels,
-				});
-
-				return await Ticket.findByIdAndUpdate(
-					ticket,
-					{
-						labels,
-					},
-					{
-						new: true,
-					}
-				);
-			} catch (error) {
-				throw new Error(error.message);
-			}
-		},
-	});
-
-export const ticketToggleLabel = tc =>
-	tc.schemaComposer.createResolver({
-		name: 'toggleLabel',
-		description: 'Toggle a label on a chat channel.',
-		type: tc,
-		kind: 'mutation',
-		args: {
-			ticket: 'MongoID!',
-			label: 'EnumTicketLabels!',
-		},
-		resolve: async ({ args: { ticket, label }, context: { stream } }) => {
-			try {
-				const channel = stream.chat.channel('messaging', ticket.toString());
-
-				await channel.watch();
-
-				let labels = channel.data?.labels || [];
-
-				if (labels.includes(label)) {
-					labels = channel.data.labels.filter(l => l !== label);
-				} else {
-					labels = [...new Set([...labels, label])];
-				}
-
-				await channel.update({
-					...channel.data,
-					labels,
-				});
-
-				return await Ticket.findByIdAndUpdate(
-					ticket,
-					{
-						labels,
-					},
-					{
-						new: true,
-					}
-				);
 			} catch (error) {
 				throw new Error(error.message);
 			}

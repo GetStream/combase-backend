@@ -57,27 +57,11 @@ const TicketSchema = new Schema(
 			type: Boolean,
 			description: 'Flag indicating whether a ticket has been starred.',
 		},
-		labels: [
-			// TODO: remove
-			{
-				type: String,
-				enum: ['priority', 'starred'],
-				description: 'Label for categorizing a ticket.',
-			},
-		],
-		notes: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Note',
-				required: false,
-				description: 'Internal notes for a ticket – visible to organization agents only.',
-			},
-		],
 		sentiment: {
 			score: {
 				type: String,
-				enum: ['negative', 'nuetral', 'positive'],
-				defualt: 'neutral',
+				enum: ['negative', 'neutral', 'positive'],
+				default: 'neutral',
 				description: 'The sentiment of a ticket – on a scale of 0 to 2.',
 			},
 			collected: {
