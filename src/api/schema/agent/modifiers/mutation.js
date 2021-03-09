@@ -70,6 +70,10 @@ export const agentLogin = tc =>
 				})
 			);
 
+			if (!data) {
+				throw new Error('User not found.');
+			}
+
 			const valid = await bcrypt.compare(rp.args.password, data?.password);
 
 			if (!valid) {
