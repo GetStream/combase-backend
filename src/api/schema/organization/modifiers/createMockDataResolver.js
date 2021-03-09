@@ -1,8 +1,6 @@
 import faker from 'faker';
 import { streamCtx } from 'utils/streamCtx';
 
-import schemaComposer from '../composer';
-
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 const processNames = (firstName, lastName) => [
@@ -32,8 +30,8 @@ const createMockAgentData = (args = {}) => {
 	};
 };
 
-const Mutation = {
-	generateMockData: schemaComposer.createResolver({
+export const createMockDataResolver = tc =>
+	tc.schemaComposer.createResolver({
 		kind: 'mutation',
 		name: 'generateMockData',
 		type: 'JSON',
@@ -43,7 +41,7 @@ const Mutation = {
 			color: 'String',
 			domain: 'String',
 			stream: 'OrganizationStreamInput!',
-			you: schemaComposer
+			you: tc.schemaComposer
 				.createInputTC({
 					name: 'MockAgentInput',
 					fields: {
@@ -84,7 +82,7 @@ const Mutation = {
 				});
 
 				/** Create organization with 'You' as the contact email */
-				const orgDoc = await schemaComposer.Mutation.getField('organizationCreate').resolve(
+				const orgDoc = await tc.mongooseResolvers.createOne().resolve(
 					rp.source,
 					{
 						record: {
@@ -131,7 +129,7 @@ const Mutation = {
 				 * This takes care of creating the agent, and also synching data with Stream Chat/Feeds and creating follow relationships
 				 */
 				const agentPromises = agents.map(agent =>
-					schemaComposer.Mutation.getField('agentCreate').resolve(
+					tc.schemaComposer.getOTC('Agent').mongooseResolvers.createOne().resolve(
 						rp.source,
 						{
 							record: agent,
@@ -151,10 +149,4 @@ const Mutation = {
 				console.error(error);
 			}
 		},
-	}),
-};
-
-export default {
-	Query: {},
-	Mutation,
-};
+	});

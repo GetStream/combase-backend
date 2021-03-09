@@ -1,19 +1,10 @@
 import 'dotenv/config';
+import zeroFill from 'zero-fill';
 
 export const extend = tc => {
 	tc.getITC('FilterFindManyAgentInput').addFields({
 		available: 'Boolean',
 	});
-
-	/*
-	 * tc.addRelation('organization', {
-	 * 	prepareArgs: {
-	 * 		_id: ({ organization }) => organization,
-	 * 	},
-	 * 	projection: { organization: true },
-	 * 	resolver: () => tc.schemaComposer.getOTC('Organization').getResolver('get'),
-	 * });
-	 */
 
 	tc.addRelation('tickets', {
 		prepareArgs: {
@@ -68,5 +59,20 @@ export const fields = tc => {
 				return stream.feeds.createUserToken(source._id?.toString?.());
 			},
 		},
+	});
+
+	const createTimeStringField = field =>
+		tc.schemaComposer.createResolver({
+			name: 'convertTimeToStr',
+			projection: { [field]: true },
+			type: 'String!',
+			kind: 'Mutation',
+			description: `Creates a HTML compatible string from the '${field}' fields time parts.`,
+			resolve: ({ source }) => `${zeroFill(2, source[field].hour)}:${zeroFill(2, source[field].minute)}`,
+		});
+
+	tc.schemaComposer.getOTC('AgentScheduleTime').addFields({
+		startTime: createTimeStringField('start'),
+		endTime: createTimeStringField('end'),
 	});
 };

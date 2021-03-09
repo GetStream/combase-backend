@@ -63,8 +63,8 @@ export const createPermissionAwareRelationship = (parentTC, childTC, opts) => {
 	const relatedFieldName = childTypeName.toLowerCase();
 	const relatedFieldNamePlural = pluralize(relatedFieldName);
 
-	const findByIdResolverName = `${parentTypeName}${childTypeName}`;
-	const connectionResolverName = `${parentTypeName}${childTypeName}`;
+	const findByIdResolverName = `${parentTypeName}`;
+	const connectionResolverName = `${parentTypeName}`;
 
 	parentTC.addRelation(relatedFieldNamePlural, {
 		prepareArgs: {},

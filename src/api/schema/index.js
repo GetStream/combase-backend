@@ -146,6 +146,7 @@ schemaComposer.Mutation.addFields({
 	 */
 	organizationUpdate: schemaComposer.getOTC('Organization').getResolver('update'),
 	organizationCreateApiCredentials: schemaComposer.getOTC('Organization').getResolver('createApiCredentials'),
+	generateMockData: schemaComposer.getOTC('Organization').getResolver('generateMockData'),
 
 	/**
 	 * @name Tag

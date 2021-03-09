@@ -14,7 +14,7 @@ const AgentScheduleEntrySchema = new Schema({
 	day: [
 		{
 			type: String,
-			enum: ['monday', 'tuesday', 'thursday', 'friday', 'saturday', 'sunday'],
+			enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
 			default: 'monday',
 		},
 	],

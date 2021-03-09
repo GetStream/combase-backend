@@ -77,7 +77,8 @@
 		"slash": "^3.0.0",
 		"stream-chat": "^2.12.0",
 		"uuid": "^8.3.2",
-		"winston": "^3.3.3"
+		"winston": "^3.3.3",
+		"zero-fill": "^2.2.4"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.10",

@@ -10,6 +10,7 @@ export const ticketCreate = tc =>
 		.wrapResolve(wrapTicketCreateResolve)
 		.withMiddlewares([createChannel()])
 		.clone({ name: 'create' });
+
 export const ticketUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]).clone({ name: 'update' });
 
 /*

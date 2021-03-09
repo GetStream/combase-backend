@@ -17,14 +17,16 @@ export const createChannel = () => async (resolve, source, args, context, info) 
 		created_by_id: _doc.user.toString(),
 		organization: context.organization.toString(),
 		status: 'new',
+		starred: false,
+		priority: 0,
 		tags: null,
 	});
 
 	await channel.create();
 
-	if (args?.message) {
+	if (args?.record?.message) {
 		channel.sendMessage({
-			text: args.message,
+			text: args.record.message,
 			user_id: _doc.user.toString(),
 		});
 	}
@@ -32,7 +34,7 @@ export const createChannel = () => async (resolve, source, args, context, info) 
 	return res;
 };
 
-export const syncChannel = (fields = ['priority', 'starred']) => async (resolve, source, args, context, info) => {
+export const syncChannel = (fields = ['priority', 'starred', 'tags', 'status']) => async (resolve, source, args, context, info) => {
 	if (!context.organization) {
 		throw new Error('Unauthenticated.');
 	}

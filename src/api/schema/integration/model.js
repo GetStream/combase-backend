@@ -48,7 +48,15 @@ const IntegrationSchema = new Schema(
 			required: true,
 			description: 'A reference to the organization the Integration is associated with.',
 		},
-		credentials: IntegrationCredentialsSchema,
+		triggers: [
+			{
+				type: String,
+				required: true,
+				trim: true,
+				description: 'The trigger used to listen for event from this integration',
+			},
+		],
+		credentials: [IntegrationCredentialsSchema],
 		enabled: {
 			type: Boolean,
 			default: false,

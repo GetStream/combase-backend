@@ -1,4 +1,5 @@
 import { OrganizationModel } from 'api/schema/organization/model';
+import { createMockDataResolver } from './createMockDataResolver';
 
 export const organizationUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
 
@@ -20,3 +21,5 @@ export const organizationCreateApiCredentials = tc =>
 			return OrganizationModel.findByIdAndUpdate(context?.organization, { $addToSet: { secrets: args } }, { new: true });
 		},
 	});
+
+export const generateMockData = createMockDataResolver;
