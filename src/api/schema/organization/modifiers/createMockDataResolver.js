@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { deepmerge } from 'graphql-compose';
 import { streamCtx } from 'utils/streamCtx';
 
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -9,11 +10,24 @@ const processNames = (firstName, lastName) => [
 	`${firstName}.${lastName.charAt(0)}`.toLowerCase(),
 ];
 
+const CACHE = {
+	agents: [],
+};
+const cacheExists = (key, value) => CACHE[key].includes(value);
+const cachePut = (key, value) => CACHE[key].push(value);
+
 const createMockAgentData = (args = {}) => {
 	const firstName = args?.name?.firstName || faker.name.firstName();
 	const lastName = args?.name?.lastName || faker.name.lastName();
 
 	const [full, display, slug] = processNames(firstName, lastName);
+	let email = `${firstName}@${args.domain}`;
+
+	if (cacheExists('agents', email)) {
+		email = `${slug}@${args.domain}`;
+	}
+
+	cachePut('agents', email);
 
 	return {
 		name: {
@@ -23,7 +37,7 @@ const createMockAgentData = (args = {}) => {
 		role: 'Customer Support',
 		avatar: '',
 		organization: args.organization,
-		email: `${slug}@${args.domain}`,
+		email,
 		password: 'password1',
 		timezone: args.timezone,
 		schedule: args.schedule,
@@ -83,18 +97,17 @@ export const createMockDataResolver = tc =>
 
 				/** Create organization with 'You' as the contact email */
 				const orgDoc = await tc.mongooseResolvers.createOne().resolve(
-					rp.source,
-					{
-						record: {
-							name: organizationName,
-							contact: {
-								email: you.email,
+					deepmerge(rp, {
+						args: {
+							record: {
+								name: organizationName,
+								contact: {
+									email: you.email,
+								},
+								stream: rp.args.stream,
 							},
-							stream: rp.args.stream,
 						},
-					},
-					rp.context,
-					rp.info
+					})
 				);
 
 				/** update you with the org id */
@@ -129,14 +142,16 @@ export const createMockDataResolver = tc =>
 				 * This takes care of creating the agent, and also synching data with Stream Chat/Feeds and creating follow relationships
 				 */
 				const agentPromises = agents.map(agent =>
-					tc.schemaComposer.getOTC('Agent').mongooseResolvers.createOne().resolve(
-						rp.source,
-						{
-							record: agent,
-						},
-						mockContext,
-						rp.info
-					)
+					tc.schemaComposer
+						.getOTC('Agent')
+						.mongooseResolvers.createOne()
+						.resolve(
+							deepmerge(rp, {
+								args: {
+									record: agent,
+								},
+							})
+						)
 				);
 
 				await Promise.all(agentPromises);

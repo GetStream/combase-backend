@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
+import { nanoid } from 'nanoid';
 import { composeMongoose } from 'graphql-compose-mongoose';
 
 import schemaComposer from 'api/schema/composer';
@@ -23,6 +24,12 @@ const FaqSchema = new Schema(
 			required: true,
 			description: 'A reference to the organization to the FAQ is associated with.',
 		},
+		shortId: {
+			type: String,
+			unique: true,
+			description: 'An ID generated client-side, used to cache optimistic responses properly in Apollo Client without the network.',
+			default: () => nanoid(10),
+		},
 		tags: [
 			{
 				type: Schema.Types.ObjectId,
@@ -42,7 +49,6 @@ const FaqSchema = new Schema(
 		},
 		content: {
 			type: JSON,
-			required: true,
 			default: defaultContent,
 			description:
 				'Original Slate JSON from the editor: used as a backup to re-serialize content if necessary, or on the fly. Title & Body should be serialized when the document is updated',
@@ -65,4 +71,9 @@ FaqSchema.index({
 });
 
 export const FaqModel = mongoose.model('Faq', FaqSchema);
-export const FaqTC = composeMongoose(FaqModel, { schemaComposer });
+export const FaqTC = composeMongoose(FaqModel, {
+	inputType: {
+		onlyFields: ['content', 'tags', 'shortId'],
+	},
+	schemaComposer,
+});

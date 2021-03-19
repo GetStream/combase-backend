@@ -71,6 +71,7 @@
 		"mongoose-bcrypt": "^1.9.0",
 		"mongoose-field-encryption": "^4.0.1",
 		"mongoose-timestamp": "^0.6.0",
+		"nanoid": "^3.1.22",
 		"ora": "^5.3.0",
 		"phin": "^3.5.1",
 		"pm2": "^4.5.1",
