@@ -3,7 +3,7 @@ import { deepmerge } from 'graphql-compose';
 export const faqCreate = tc =>
 	tc.mongooseResolvers
 		.createOne()
-		.wrapResolve(next => async rp => {
+		.wrapResolve(next => rp => {
 			const { agent, organization } = rp.context;
 
 			/**

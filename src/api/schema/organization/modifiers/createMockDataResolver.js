@@ -1,6 +1,5 @@
 import faker from 'faker';
 import { deepmerge } from 'graphql-compose';
-import { streamCtx } from 'utils/streamCtx';
 
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -70,22 +69,34 @@ export const createMockDataResolver = tc =>
 			try {
 				const { agentCount = 0, organizationName = 'Test', domain = 'testing.io' } = rp.args;
 
-				const schedule = {};
+				const schedule = [];
 
-				// eslint-disable-next-line no-unused-vars
-				for (const dayName of daysOfWeek) {
-					schedule[dayName] = {
-						enabled: !dayName.startsWith('s'),
-						start: {
-							hour: 9,
-							minute: 0,
+				schedule.push({
+					enabled: true,
+					day: daysOfWeek,
+					time: [
+						{
+							start: {
+								hour: 9,
+								minute: 0,
+							},
+							end: {
+								hour: 12,
+								minute: 0,
+							},
 						},
-						end: {
-							hour: 17,
-							minute: 0,
+						{
+							start: {
+								hour: 12,
+								minute: 30,
+							},
+							end: {
+								hour: 17,
+								minute: 30,
+							},
 						},
-					};
-				}
+					],
+				});
 
 				// Create 'You' Agent
 				const you = createMockAgentData({
@@ -129,12 +140,12 @@ export const createMockDataResolver = tc =>
 					}
 				}
 
-				/** Create a mock authenticated context object that includes the stream clients and org id, to ensure agentCreate goes off without a hitch */
-				const mockContext = {
-					...rp.context,
-					organization: orgDoc.record._id,
-					stream: streamCtx(rp.args.stream.key, rp.args.stream.secret, rp.args.stream.appId),
-				};
+				// /** Create a mock authenticated context object that includes the stream clients and org id, to ensure agentCreate goes off without a hitch */
+				// const mockContext = {
+				// 	...rp.context,
+				// 	organization: orgDoc.record._id,
+				// 	stream: streamCtx(rp.args.stream.key, rp.args.stream.secret, rp.args.stream.appId),
+				// };
 
 				/** Get unresolved promises for all agents */
 				/**

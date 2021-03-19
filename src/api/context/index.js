@@ -114,7 +114,7 @@ export default async ({ connection, req }) => {
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
 		};
 	} catch (error) {
-		logger.error(error.message);
+		logger.error(error);
 		throw new Error(error);
 	}
 };
