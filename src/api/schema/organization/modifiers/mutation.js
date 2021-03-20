@@ -64,16 +64,23 @@ export const organizationCreate = tc =>
 					entity: tc.getTypeName(),
 				});
 
-				// Create stream chat customizations for the new organization
-				await Promise.all([
-					...chatCommands.map(cmd => stream.chat.createCommand(cmd)),
-					stream.chat.updateAppSettings({
-						webhook_url: `${process.env.INGRESS_URL}/webhook`,
-						custom_action_handler_url: `${process.env.INGRESS_URL}/chat-commands?type={type}`,
-					}),
-				]);
+				try {
+					// Create stream chat customizations for the new organization
+					await Promise.all([
+						...chatCommands.map(cmd => stream.chat.createCommand(cmd)),
+						stream.chat.updateAppSettings({
+							webhook_url: `${process.env.INGRESS_URL}/webhook`,
+							custom_action_handler_url: `${process.env.INGRESS_URL}/chat-commands?type={type}`,
+						}),
+					]);
 
-				return data;
+					return data;
+				} catch (error) {
+					// eslint-disable-next-line no-console
+					console.error(error.message);
+
+					return data;
+				}
 			} catch (error) {
 				// eslint-disable-next-line no-console
 				console.error(error.message);
