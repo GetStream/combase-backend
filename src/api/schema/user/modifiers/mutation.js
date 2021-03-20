@@ -33,7 +33,7 @@ export const getOrCreate = tc =>
 					name: user._doc.name,
 					email: user._doc.email,
 					organization: orgId,
-					entity: 'User',
+					entity: tc.getTypeName(),
 				});
 
 				// Organization feed follows the user.
