@@ -28,13 +28,13 @@ export const agentCreate = tc =>
 					name: _doc.name.display,
 					organization: _doc.organization.toString(),
 					timezone: _doc.timezone,
-					entity: 'Agent',
+					entity: tc.getTypeName(),
 				});
 
 				return data;
 			} catch (error) {
 				// eslint-disable-next-line no-console
-				console.log('FAILED TO CREATED AGNE STREAM USER', error.message);
+				console.error(error.message);
 			}
 		})
 		.clone({ name: 'create' });
