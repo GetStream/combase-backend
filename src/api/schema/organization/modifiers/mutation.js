@@ -1,6 +1,39 @@
 import { OrganizationModel } from 'api/schema/organization/model';
 import { createMockDataResolver } from './createMockDataResolver';
 
+const chatCommands = [
+	{
+		args: '',
+		description: 'Mark this ticket as closed or open.',
+		name: 'mark',
+		set: 'combase_set',
+	},
+	{
+		args: '[level{0,1,2}]',
+		description: 'Set the priority level of this ticket.',
+		name: 'priority',
+		set: 'combase_set',
+	},
+	{
+		args: '',
+		description: 'Star this ticket.',
+		name: 'star',
+		set: 'combase_set',
+	},
+	{
+		args: '[tag name]',
+		description: 'Add a tag to this ticket.',
+		name: 'tag',
+		set: 'combase_set',
+	},
+	{
+		args: '',
+		description: 'Transfer this ticket to another agent.',
+		name: 'transfer',
+		set: 'combase_set',
+	},
+];
+
 export const organizationCreate = tc =>
 	tc.mongooseResolvers
 		.createOne()
@@ -10,10 +43,15 @@ export const organizationCreate = tc =>
 			 * to chats for system messages, unassigned handling & eventually "bot" messages.
 			 */
 			try {
+				const { stream } = rp.context;
+
+				if (!stream?.chat) {
+					throw new Error('No stream client in context. Something went wrong');
+				}
+
 				// eslint-disable-next-line callback-return
 				const data = await next(rp);
 
-				const { stream } = rp.context;
 				const { _doc } = data.record;
 
 				await stream.chat.upsertUser({
@@ -25,6 +63,15 @@ export const organizationCreate = tc =>
 					timezone: '',
 					entity: tc.getTypeName(),
 				});
+
+				// Create stream chat customizations for the new organization
+				await Promise.all([
+					...chatCommands.map(cmd => stream.chat.createCommand(cmd)),
+					stream.chat.updateAppSettings({
+						webhook_url: `${process.env.INGRESS_URL}/webhook`,
+						custom_action_handler_url: `${process.env.INGRESS_URL}/chat-commands?type={type}`,
+					}),
+				]);
 
 				return data;
 			} catch (error) {

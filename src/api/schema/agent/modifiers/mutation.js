@@ -1,14 +1,12 @@
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
-import { StreamChat } from 'stream-chat';
-import { connect as streamFeedsClient } from 'getstream';
 import jwt from 'jsonwebtoken';
 
 import { getTokenPayload } from 'utils/auth';
 import { deepmerge } from 'graphql-compose';
-import { OrganizationModel, OrganizationTC } from 'api/schema/organization/model';
+import { OrganizationTC } from 'api/schema/organization/model';
 
-import { AgentModel } from '../model';
+import { streamCtx } from 'utils/streamCtx';
 
 export const agentCreate = tc =>
 	tc.mongooseResolvers
@@ -123,29 +121,38 @@ export const onboard = tc =>
 			agent: tc.getInputTypeComposer().makeFieldNullable('organization'),
 			organization: OrganizationTC.getInputType(),
 		},
-		resolve: async ({ args }) => {
-			const { _id } = await OrganizationModel.create(args.organization);
+		resolve: async rp => {
+			const { args } = rp;
 
-			const agent = {
-				...args.agent,
-				organization: _id,
-			};
+			const streamContext = streamCtx(args.organization.stream.key, args.organization.stream.secret, args.organization.stream.appId);
 
-			const agentDoc = await AgentModel.create(agent);
+			const { record: orgDoc } = await tc.schemaComposer
+				.getOTC('Organization')
+				.getResolver('create')
+				.resolve(
+					deepmerge(rp, {
+						args: {
+							record: args.organization,
+						},
+						context: {
+							stream: streamContext,
+						},
+					})
+				);
 
-			const chat = new StreamChat(args.organization.stream.key, args.organization.stream.secret);
-			const feeds = streamFeedsClient(args.organization.stream.key, args.organization.stream.secret);
-
-			await chat.upsertUser({
-				avatar: agentDoc._doc.avatar,
-				email: agentDoc._doc.email,
-				id: agentDoc._id.toString(),
-				name: agentDoc._doc.name.display,
-				organization: _id.toString(),
-				entity: 'Agent',
-			});
-
-			await feeds.feed('organization', _id.toString()).follow('agent', agentDoc._id.toString());
+			const { record: agentDoc } = await tc.getResolver('create').resolve(
+				deepmerge(rp, {
+					args: {
+						record: {
+							...args.agent,
+							organization: orgDoc._id,
+						},
+					},
+					context: {
+						stream: streamContext,
+					},
+				})
+			);
 
 			const token = jwt.sign(getTokenPayload(agentDoc._doc, 'agent'), process.env.AUTH_SECRET);
 
