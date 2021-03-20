@@ -1,5 +1,6 @@
 import faker from 'faker';
 import { deepmerge } from 'graphql-compose';
+import { streamCtx } from 'utils/streamCtx';
 
 const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -106,8 +107,10 @@ export const createMockDataResolver = tc =>
 					name: rp.args.you,
 				});
 
+				const streamContext = streamCtx(rp.args.stream.key, rp.args.stream.secret, rp.args.stream.appId);
+
 				/** Create organization with 'You' as the contact email */
-				const orgDoc = await tc.mongooseResolvers.createOne().resolve(
+				const orgDoc = await tc.getResolver('create').resolve(
 					deepmerge(rp, {
 						args: {
 							record: {
@@ -117,6 +120,9 @@ export const createMockDataResolver = tc =>
 								},
 								stream: rp.args.stream,
 							},
+						},
+						context: {
+							stream: streamContext,
 						},
 					})
 				);
@@ -140,13 +146,6 @@ export const createMockDataResolver = tc =>
 					}
 				}
 
-				// /** Create a mock authenticated context object that includes the stream clients and org id, to ensure agentCreate goes off without a hitch */
-				// const mockContext = {
-				// 	...rp.context,
-				// 	organization: orgDoc.record._id,
-				// 	stream: streamCtx(rp.args.stream.key, rp.args.stream.secret, rp.args.stream.appId),
-				// };
-
 				/** Get unresolved promises for all agents */
 				/**
 				 * it's no doubt a little slower this way, but allows us to call the same agentCreate as when using the UI.
@@ -155,11 +154,15 @@ export const createMockDataResolver = tc =>
 				const agentPromises = agents.map(agent =>
 					tc.schemaComposer
 						.getOTC('Agent')
-						.mongooseResolvers.createOne()
+						.getResolver('create')
 						.resolve(
 							deepmerge(rp, {
 								args: {
 									record: agent,
+								},
+								context: {
+									organization: orgDoc.record._id,
+									stream: streamContext,
 								},
 							})
 						)

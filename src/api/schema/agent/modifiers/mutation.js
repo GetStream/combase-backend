@@ -10,7 +10,34 @@ import { OrganizationModel, OrganizationTC } from 'api/schema/organization/model
 
 import { AgentModel } from '../model';
 
-export const agentCreate = tc => tc.mongooseResolvers.createOne().clone({ name: 'create' });
+export const agentCreate = tc =>
+	tc.mongooseResolvers
+		.createOne()
+		.wrapResolve(next => async rp => {
+			try {
+				// eslint-disable-next-line callback-return
+				const data = await next(rp);
+
+				const { stream } = rp.context;
+				const { _doc } = data.record;
+
+				await stream.chat.upsertUser({
+					avatar: _doc.avatar,
+					email: _doc.email,
+					id: _doc._id.toString(),
+					name: _doc.name.display,
+					organization: _doc.organization.toString(),
+					timezone: _doc.timezone,
+					entity: 'Agent',
+				});
+
+				return data;
+			} catch (error) {
+				// eslint-disable-next-line no-console
+				console.log('FAILED TO CREATED AGNE STREAM USER', error.message);
+			}
+		})
+		.clone({ name: 'create' });
 export const agentUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
 
 export const agentDeactivate = tc =>
