@@ -21,6 +21,34 @@ export const faqCreate = tc =>
 			);
 		})
 		.clone({ name: 'create' });
-export const faqUpdate = tc => tc.mongooseResolvers.updateOne().clone({ name: 'update' });
+export const faqUpdate = tc =>
+	tc.mongooseResolvers
+		.updateOne()
+		.wrap(resolve => {
+			// eslint-disable-next-line no-param-reassign
+			delete resolve.args.filter;
+			// eslint-disable-next-line no-param-reassign
+			resolve.args.shortId = 'String!';
+
+			return resolve;
+		})
+		.wrapResolve(next => rp => {
+			const { organization } = rp.context;
+
+			/**
+			 * Force createdBy and organization from the authenticated user in context.
+			 */
+			return next(
+				deepmerge(rp, {
+					args: {
+						filter: {
+							shortId: rp.args.shortId,
+							organization,
+						},
+					},
+				})
+			);
+		})
+		.clone({ name: 'update' });
 export const faqRemove = tc => tc.mongooseResolvers.removeOne().clone({ name: 'remove' });
 export const faqRemoveMany = tc => tc.mongooseResolvers.removeMany().clone({ name: 'removeMany' });
