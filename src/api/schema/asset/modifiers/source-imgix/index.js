@@ -49,6 +49,8 @@ export const sourceImgix = domain => tc => {
 				.setType('JSON'),
 	});
 
-	ImgixAssetTC.setIsTypeOf(value => value?.type === 'image');
+	ImgixAssetTC.setIsTypeOf(value => {
+		return value.type === 'image' || value.contentType?.split?.('/')?.[0] === 'image';
+	});
 	composer.addSchemaMustHaveType(ImgixAssetTC);
 };

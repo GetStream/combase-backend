@@ -42,6 +42,7 @@ schemaComposer.Query.addFields({
 	 * @name Asset
 	 */
 	asset: schemaComposer.getOTC('Asset').getResolver('get'),
+	imageAsset: schemaComposer.getOTC('Asset').getResolver('getImage'),
 	assets: schemaComposer.getOTC('Asset').getResolver('list'),
 
 	/**

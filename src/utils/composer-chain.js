@@ -1,4 +1,20 @@
-const composerChain = step =>
+const returnFuncFlattenObject = value => {
+	if (typeof value === 'function') {
+		return value;
+	}
+
+	return Object.values(value);
+};
+
+const createResolverIfReturn = (fn, tc) => {
+	const resolver = fn(tc);
+
+	if (resolver) {
+		tc.addResolver(resolver);
+	}
+};
+
+const chain = step =>
 	step.forEach(typeModifiers =>
 		typeModifiers.reduce((tc, tcOrModifiers) => {
 			if (!tc) return tcOrModifiers;
@@ -6,17 +22,11 @@ const composerChain = step =>
 			const modifiers = tcOrModifiers;
 
 			Object.values(modifiers)
-				.flatMap(Object.values)
-				.forEach(fn => {
-					const resolver = fn(tc);
-
-					if (resolver) {
-						tc.addResolver(resolver);
-					}
-				});
+				.flatMap(returnFuncFlattenObject)
+				.forEach(fn => createResolverIfReturn(fn, tc));
 
 			return tc;
 		}, null)
 	);
 
-export default composerChain;
+export default chain;

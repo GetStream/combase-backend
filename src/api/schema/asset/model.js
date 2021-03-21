@@ -23,11 +23,13 @@ const AssetSchema = new Schema(
 			enum: ['image'],
 			required: true,
 		},
+		contentType: {
+			type: String,
+			required: true,
+		},
 		ref: {
 			type: String,
 			trim: true,
-			unique: true,
-			required: true,
 			description: 'Path to the asset on the source platform.',
 		},
 	},
@@ -50,7 +52,7 @@ const AssetInterface = schemaComposer.createInterfaceTC(`
 	interface AssetInterface {
 		_id: MongoID!
 		source: EnumAssetSource!
-		ref: String!
+		ref: String
 		type: EnumAssetType!
 		organization: MongoID!
 	}
