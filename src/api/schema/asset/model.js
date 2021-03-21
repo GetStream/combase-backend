@@ -12,12 +12,23 @@ const AssetSchema = new Schema(
 			required: true,
 			description: 'Organization the asset is associated with.',
 		},
-		url: {
+		source: {
+			type: String,
+			enum: ['s3'],
+			default: 's3',
+			required: true,
+		},
+		type: {
+			type: String,
+			enum: ['image'],
+			required: true,
+		},
+		ref: {
 			type: String,
 			trim: true,
-			unqiue: true,
+			unique: true,
 			required: true,
-			description: 'Absolute URL to the uploaded asset.',
+			description: 'Path to the asset on the source platform.',
 		},
 	},
 	{ collection: 'assets' }
@@ -30,5 +41,21 @@ AssetSchema.index({
 	updatedAt: 1,
 });
 
-export const AssetModel = mongoose.model('Asset', AssetSchema);
-export const AssetTC = composeMongoose(AssetModel, { schemaComposer });
+const AssetModel = mongoose.model('Asset', AssetSchema);
+const AssetTC = composeMongoose(AssetModel, {
+	schemaComposer,
+});
+
+const AssetInterface = schemaComposer.createInterfaceTC(`
+	interface AssetInterface {
+		_id: MongoID!
+		source: EnumAssetSource!
+		ref: String!
+		type: EnumAssetType!
+		organization: MongoID!
+	}
+`);
+
+AssetTC.addInterface(AssetInterface);
+
+export { AssetModel, AssetTC };
