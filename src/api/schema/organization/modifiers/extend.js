@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { createPermissionAwareRelationship } from 'utils/permissionAwareConnection';
 import { OrganizationModel } from 'api/schema/organization/model';
+import { deepmerge } from 'graphql-compose';
 
 export const OrganizationSecrets = tc => {
 	tc.schemaComposer.getOTC('OrganizationSecrets').addFields({
@@ -94,7 +95,36 @@ export const extend = tc => {
 
 export const relateAgents = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Agent'));
 export const relateAsset = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Asset'));
-export const relateFaq = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Faq'));
+
+export const relateFaqs = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Faq'), { noFindOne: true });
+
+export const relateFaq = tc => {
+	tc.addRelation('faq', {
+		prepareArgs: {},
+		resolver: () =>
+			tc.schemaComposer
+				.getOTC('Faq')
+				.getResolver('get')
+				.wrapResolve(next => rp => {
+					const { organization } = rp.context;
+
+					if (!organization) {
+						throw new Error('Unauthorized');
+					}
+
+					return next(
+						deepmerge(rp, {
+							args: {
+								filter: {
+									organization,
+								},
+							},
+						})
+					);
+				}),
+	});
+};
+
 export const relateGroup = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Group'));
 export const relateIntegration = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Integration'));
 export const relateTag = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Tag'));
