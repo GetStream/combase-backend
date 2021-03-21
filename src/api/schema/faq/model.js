@@ -37,15 +37,11 @@ const FaqSchema = new Schema(
 				description: 'Tag used to categorize a FAQ.',
 			},
 		],
-		title: {
-			type: String,
-			trim: true,
-			description: 'Title of the FAQ.',
-		},
 		body: {
 			type: String,
 			trim: true,
-			description: 'Body of the FAQ.',
+			description: 'Serialized Markdown Body of the FAQ.',
+			default: '',
 		},
 		content: {
 			type: JSON,

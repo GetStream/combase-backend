@@ -1,0 +1,1 @@
+export { FaqSerializer } from './Serializer';

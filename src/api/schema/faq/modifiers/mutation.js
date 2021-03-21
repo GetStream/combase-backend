@@ -1,4 +1,5 @@
 import { deepmerge } from 'graphql-compose';
+import { FaqSerializer } from './serialize';
 
 export const faqCreate = tc =>
 	tc.mongooseResolvers
@@ -35,12 +36,18 @@ export const faqUpdate = tc =>
 		.wrapResolve(next => rp => {
 			const { organization } = rp.context;
 
+			const serializer = FaqSerializer.getSerializer('markdown');
+			const serialized = serializer.serialize(rp.args.record.content[0].children);
+
 			/**
 			 * Force createdBy and organization from the authenticated user in context.
 			 */
 			return next(
 				deepmerge(rp, {
 					args: {
+						record: {
+							body: serialized,
+						},
 						filter: {
 							shortId: rp.args.shortId,
 							organization,
