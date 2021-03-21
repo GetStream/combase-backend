@@ -39,7 +39,7 @@ const permissionAwareConnection = (tc, resolverOpts = {}, opts) => {
  * @param {Object} filter - merged with the source object and eventually becomes the mongo query filter
  */
 const permissionAwareFindById = (tc, resolverOpts = {}, opts) => {
-	if (!opts) throw new Error('No options provided to permissionAwareConnection');
+	if (!opts) throw new Error('No options provided to permissionAwareFindById');
 
 	return tc.mongooseResolvers.findById(resolverOpts).wrapResolve(next => rp => {
 		const filter = getPermissionsScopes(rp, opts);
@@ -55,7 +55,7 @@ const permissionAwareFindById = (tc, resolverOpts = {}, opts) => {
  * ParentTC === Organization
  * ChildTC === Ticket | Agent | Faq | Group | Webhook | ...
  */
-export const createPermissionAwareRelationship = (parentTC, childTC, opts) => {
+export const createPermissionAwareRelationship = (parentTC, childTC, opts = {}) => {
 	const parentTypeName = parentTC.getTypeName();
 	const parentField = parentTypeName.toLowerCase();
 
@@ -82,19 +82,21 @@ export const createPermissionAwareRelationship = (parentTC, childTC, opts) => {
 		),
 	});
 
-	parentTC.addRelation(relatedFieldName, {
-		prepareArgs: {},
-		projection: {
-			_id: true,
-			[opts?._idField]: true,
-		},
-		resolver: permissionAwareFindById(
-			childTC,
-			{ name: findByIdResolverName },
-			{
-				_idField: parentField,
-				schemaComposer: parentTC.schemaComposer,
-			}
-		),
-	});
+	if (!opts?.noFindOne) {
+		parentTC.addRelation(relatedFieldName, {
+			prepareArgs: {},
+			projection: {
+				_id: true,
+				[opts?._idField]: true,
+			},
+			resolver: permissionAwareFindById(
+				childTC,
+				{ name: findByIdResolverName },
+				{
+					_idField: parentField,
+					schemaComposer: parentTC.schemaComposer,
+				}
+			),
+		});
+	}
 };
