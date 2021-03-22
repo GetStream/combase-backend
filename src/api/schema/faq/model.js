@@ -43,6 +43,12 @@ const FaqSchema = new Schema(
 			description: 'Serialized Markdown Body of the FAQ.',
 			default: '',
 		},
+		status: {
+			type: String,
+			enum: ['draft', 'unpublished', 'published'],
+			default: 'draft',
+			description: 'The published status of the article, only published articles can be seen by anyone',
+		},
 		content: {
 			type: JSON,
 			default: defaultContent,
@@ -69,7 +75,7 @@ FaqSchema.index({
 export const FaqModel = mongoose.model('Faq', FaqSchema);
 export const FaqTC = composeMongoose(FaqModel, {
 	inputType: {
-		onlyFields: ['content', 'tags', 'shortId'],
+		onlyFields: ['content', 'tags', 'shortId', 'status'],
 	},
 	schemaComposer,
 });
