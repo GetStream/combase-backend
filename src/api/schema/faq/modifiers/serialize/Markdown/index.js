@@ -34,7 +34,7 @@ export class MarkdownSerializer extends BaseSerializer {
 			h6: node => `###### ${node.children.map(this.serializeLeaf).join('')}`,
 			p: node => `${node.children.map(this.serializeLeaf).join('')}`,
 			blockquote: node => `> ${node.children.map(this.serializeLeaf).join('')}`,
-			img: node => `![alt](${node.src})`, // TODO: Add Alt Text
+			img: node => `!['${node?.children?.[0]?.text || ''}'](${node.url})`, // TODO: Add Alt Text
 			a: node => `[${node.children.map(this.serializeLeaf).join('')}](${node.url})`,
 			script: node => `<script src="${node.url}"></script>`,
 			ul: listSerializer,
