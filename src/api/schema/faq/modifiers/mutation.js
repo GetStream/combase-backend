@@ -35,9 +35,13 @@ export const faqUpdate = tc =>
 		})
 		.wrapResolve(next => rp => {
 			const { organization } = rp.context;
+			const record = {};
 
-			const serializer = FaqSerializer.getSerializer('markdown');
-			const serialized = serializer.serialize(rp.args.record.content[0].children);
+			if (rp.args.record.content) {
+				const serializer = FaqSerializer.getSerializer('markdown');
+
+				record.body = serializer.serialize(rp.args.record.content[0].children);
+			}
 
 			/**
 			 * Force createdBy and organization from the authenticated user in context.
@@ -45,9 +49,7 @@ export const faqUpdate = tc =>
 			return next(
 				deepmerge(rp, {
 					args: {
-						record: {
-							body: serialized,
-						},
+						record,
 						filter: {
 							shortId: rp.args.shortId,
 							organization,
