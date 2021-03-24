@@ -67,6 +67,7 @@
 		"graphql-subscriptions": "^1.1.0",
 		"imgix-url-params": "^11.11.2",
 		"jsonwebtoken": "^8.5.1",
+		"lodash.castarray": "^4.4.0",
 		"lodash.defaultsdeep": "^4.6.1",
 		"luxon": "^1.25.0",
 		"mime-types": "^2.1.29",

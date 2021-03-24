@@ -1,4 +1,5 @@
 import { deepmerge } from 'graphql-compose';
+import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTaggableEntity';
 
 import { TicketModel as Ticket, TicketModel } from '../model';
 import { createChannel, syncChannel, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
@@ -12,53 +13,6 @@ export const ticketCreate = tc =>
 		.clone({ name: 'create' });
 
 export const ticketUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]).clone({ name: 'update' });
-
-/*
- * TODO: Add Tag
- */
-export const ticketAddTag = tc =>
-	tc.schemaComposer.createResolver({
-		name: 'addTag',
-		type: tc,
-		kind: 'mutation',
-		args: {
-			id: 'MongoID!',
-			tag: 'MongoID!',
-		},
-		resolve: (_, args) =>
-			TicketModel.findByIdAndUpdate(
-				args?._id,
-				{
-					$addToSet: {
-						tags: [args.tag],
-					},
-					status,
-				},
-				{ new: true }
-			).lean(),
-	});
-
-export const ticketRemoveTag = tc =>
-	tc.schemaComposer.createResolver({
-		name: 'removeTag',
-		type: tc,
-		kind: 'mutation',
-		args: {
-			id: 'MongoID!',
-			tag: 'MongoID!',
-		},
-		resolve: (_, args) =>
-			TicketModel.findByIdAndUpdate(
-				args?._id,
-				{
-					$pull: {
-						tags: [args.tag],
-					},
-					status,
-				},
-				{ new: true }
-			).lean(),
-	});
 
 export const ticketMarkAs = tc =>
 	tc.mongooseResolvers
@@ -174,3 +128,7 @@ export const ticketAssign = tc =>
 			}
 		},
 	});
+
+export const groupAddTag = tc => createAddTagResolver(tc);
+
+export const groupRemoveTag = tc => createRemoveTagResolver(tc);

@@ -1,4 +1,5 @@
 import { deepmerge } from 'graphql-compose';
+import { createChildTagRelationship } from 'utils/createTaggableEntity';
 
 export const extend = tc => {
 	tc.addRelation('members', {
@@ -29,3 +30,5 @@ export const extend = tc => {
 			}),
 	});
 };
+
+export const childTags = createChildTagRelationship;

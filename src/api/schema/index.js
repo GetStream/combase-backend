@@ -125,6 +125,8 @@ schemaComposer.Mutation.addFields({
 	faqUpdate: schemaComposer.getOTC('Faq').getResolver('update'),
 	faqRemove: schemaComposer.getOTC('Faq').getResolver('remove'),
 	faqRemoveMany: schemaComposer.getOTC('Faq').getResolver('removeMany'),
+	faqAddTag: schemaComposer.getOTC('Faq').getResolver('addTag'),
+	faqRemoveTag: schemaComposer.getOTC('Faq').getResolver('removeTag'),
 
 	/**
 	 * @name Group
@@ -133,6 +135,8 @@ schemaComposer.Mutation.addFields({
 	groupUpdate: schemaComposer.getOTC('Group').getResolver('update'),
 	groupRemove: schemaComposer.getOTC('Group').getResolver('remove'),
 	groupRemoveMany: schemaComposer.getOTC('Group').getResolver('removeMany'),
+	groupAddTag: schemaComposer.getOTC('Group').getResolver('addTag'),
+	groupRemoveTag: schemaComposer.getOTC('Group').getResolver('removeTag'),
 
 	/**
 	 * @name Integrations
@@ -164,10 +168,10 @@ schemaComposer.Mutation.addFields({
 	ticketCreate: schemaComposer.getOTC('Ticket').getResolver('create'),
 	ticketUpdate: schemaComposer.getOTC('Ticket').getResolver('update'),
 	ticketMarkAs: schemaComposer.getOTC('Ticket').getResolver('markAs'),
-	ticketAddTag: schemaComposer.getOTC('Ticket').getResolver('addTag'),
-	ticketRemoveTag: schemaComposer.getOTC('Ticket').getResolver('removeTag'),
 	ticketStar: schemaComposer.getOTC('Ticket').getResolver('star'),
 	ticketSetPriority: schemaComposer.getOTC('Ticket').getResolver('setPriority'),
+	ticketAddTag: schemaComposer.getOTC('Ticket').getResolver('addTag'),
+	ticketRemoveTag: schemaComposer.getOTC('Ticket').getResolver('removeTag'),
 
 	/**
 	 * @name User

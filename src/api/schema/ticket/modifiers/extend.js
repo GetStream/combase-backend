@@ -1,3 +1,5 @@
+import { createChildTagRelationship } from 'utils/createTaggableEntity';
+
 export const extend = tc => {
 	tc.addRelation('userData', {
 		prepareArgs: {
@@ -7,3 +9,5 @@ export const extend = tc => {
 		resolver: () => tc.schemaComposer.getOTC('User').getResolver('get'),
 	});
 };
+
+export const childTags = createChildTagRelationship;

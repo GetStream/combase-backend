@@ -21,6 +21,14 @@ const GroupSchema = new Schema(
 			trim: true,
 			type: String,
 		},
+		tags: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Tag',
+				required: false,
+				description: 'Tags for categorizing a group of agents.',
+			},
+		],
 	},
 	{ collection: 'groups' }
 );

@@ -1,5 +1,9 @@
 import { deepmerge } from 'graphql-compose';
+import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTaggableEntity';
+
 import { FaqSerializer } from './serialize';
+
+const findParentFaqBy = { shortId: 'String!' };
 
 export const faqCreate = tc =>
 	tc.mongooseResolvers
@@ -89,3 +93,7 @@ export const faqRemove = tc =>
 		})
 		.clone({ name: 'remove' });
 export const faqRemoveMany = tc => tc.mongooseResolvers.removeMany().clone({ name: 'removeMany' });
+
+export const faqAddTag = tc => createAddTagResolver(tc, { findParentBy: findParentFaqBy });
+
+export const faqRemoveTag = tc => createRemoveTagResolver(tc, { findParentBy: findParentFaqBy });

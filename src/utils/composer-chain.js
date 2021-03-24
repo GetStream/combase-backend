@@ -21,6 +21,14 @@ const chain = step =>
 
 			const modifiers = tcOrModifiers;
 
+			/*
+			 * If the 'modifiers' in this pass a singular modifier,
+			 * just run it without flattening anything
+			 */
+			if (typeof modifiers === 'function') {
+				createResolverIfReturn(modifiers, tc);
+			}
+
 			Object.values(modifiers)
 				.flatMap(returnFuncFlattenObject)
 				.forEach(fn => createResolverIfReturn(fn, tc));
