@@ -1,4 +1,3 @@
-import { pluralize } from 'graphql-compose';
 import mongoose from 'mongoose';
 
 const defaultOpts = {

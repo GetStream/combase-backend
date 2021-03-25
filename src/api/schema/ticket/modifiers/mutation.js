@@ -1,7 +1,7 @@
 import { deepmerge } from 'graphql-compose';
 import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTaggableEntity';
 
-import { TicketModel as Ticket, TicketModel } from '../model';
+import { TicketModel as Ticket } from '../model';
 import { createChannel, syncChannel, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
 
 export const ticketCreate = tc =>
@@ -62,7 +62,7 @@ export const ticketAssign = tc =>
 		// TODO Show status has a default of open
 		resolve: async ({ args: { ticket, agent, status = 'open' }, context: { organization, stream } }) => {
 			try {
-				const channel = stream.chat.channel('messaging', ticket.toString());
+				const channel = stream.chat.channel('combase', ticket.toString());
 
 				if (status === 'unassigned') {
 					// TODO: Agents/Orgs should be able to override the content of these initial messages when unassigned.

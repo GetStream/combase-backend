@@ -12,7 +12,7 @@ export const createChannel = () => async (resolve, source, args, context, info) 
 	const { chat } = context.stream;
 	const { _doc } = res.record;
 
-	const channel = chat.channel('messaging', _doc._id.toString(), {
+	const channel = chat.channel('combase', _doc._id.toString(), {
 		members: [_doc.user.toString()],
 		created_by_id: _doc.user.toString(),
 		organization: context.organization.toString(),
@@ -53,7 +53,7 @@ export const syncChannel = (fields = ['priority', 'starred', 'tags', 'status']) 
 		syncObj[field] = _doc[field];
 	});
 
-	await context.stream.chat.channel('messaging', _doc._id.toString()).updatePartial({
+	await context.stream.chat.channel('combase', _doc._id.toString()).updatePartial({
 		set: syncObj,
 	});
 
