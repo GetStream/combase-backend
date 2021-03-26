@@ -5,8 +5,8 @@ export const extend = tc => {
 	tc.addRelation('members', {
 		prepareArgs: {
 			filter: ({ _id }) => ({
-				operators: {
-					_groups: {
+				_operators: {
+					groups: {
 						in: [_id],
 					},
 				},

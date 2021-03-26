@@ -109,6 +109,8 @@ schemaComposer.Mutation.addFields({
 	agentDeactivate: schemaComposer.getOTC('Agent').getResolver('deactivate'),
 	agentLogin: schemaComposer.getOTC('Agent').getResolver('login'),
 	agentOnboard: schemaComposer.getOTC('Agent').getResolver('onboard'),
+	agentAddToGroup: schemaComposer.getOTC('Agent').getResolver('addToGroup'),
+	agentRemoveFromGroup: schemaComposer.getOTC('Agent').getResolver('removeFromGroup'),
 
 	/**
 	 * @name Asset
