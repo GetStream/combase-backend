@@ -168,6 +168,7 @@ schemaComposer.Mutation.addFields({
 	ticketCreate: schemaComposer.getOTC('Ticket').getResolver('create'),
 	ticketUpdate: schemaComposer.getOTC('Ticket').getResolver('update'),
 	ticketMarkAs: schemaComposer.getOTC('Ticket').getResolver('markAs'),
+	ticketTransfer: schemaComposer.getOTC('Ticket').getResolver('transfer'),
 	ticketStar: schemaComposer.getOTC('Ticket').getResolver('star'),
 	ticketSetPriority: schemaComposer.getOTC('Ticket').getResolver('setPriority'),
 	ticketAddTag: schemaComposer.getOTC('Ticket').getResolver('addTag'),

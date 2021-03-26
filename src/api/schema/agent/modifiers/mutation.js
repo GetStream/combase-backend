@@ -12,16 +12,21 @@ export const agentCreate = tc =>
 	tc.mongooseResolvers
 		.createOne()
 		.wrapResolve(next => async rp => {
-			try {
-				// eslint-disable-next-line callback-return
-				const data = await next(rp);
+			if (!rp.context.organization) {
+				throw new Error('Unauthorized.');
+			}
 
+			// eslint-disable-next-line callback-return
+			const data = await next(rp);
+
+			try {
 				const { stream } = rp.context;
 				const { _doc } = data.record;
 
 				await stream.chat.upsertUser({
 					avatar: _doc.avatar,
 					email: _doc.email,
+					role: 'admin',
 					id: _doc._id.toString(),
 					name: _doc.name.display,
 					organization: _doc.organization.toString(),
@@ -33,6 +38,8 @@ export const agentCreate = tc =>
 			} catch (error) {
 				// eslint-disable-next-line no-console
 				console.error(error.message);
+
+				return data;
 			}
 		})
 		.clone({ name: 'create' });

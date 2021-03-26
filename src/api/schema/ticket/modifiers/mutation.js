@@ -1,8 +1,10 @@
+import mongoose from 'mongoose';
 import { deepmerge } from 'graphql-compose';
 import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTaggableEntity';
 
 import { TicketModel as Ticket } from '../model';
 import { createChannel, syncChannel, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
+import { logger } from 'utils/logger';
 
 export const ticketCreate = tc =>
 	tc.mongooseResolvers
@@ -55,7 +57,7 @@ export const ticketAssign = tc =>
 		type: tc,
 		kind: 'Mutation',
 		args: {
-			agent: 'MongoID',
+			agent: 'MongoID!',
 			ticket: 'MongoID!',
 			status: 'EnumTicketStatus',
 		},
@@ -129,6 +131,68 @@ export const ticketAssign = tc =>
 		},
 	});
 
-export const groupAddTag = tc => createAddTagResolver(tc);
+export const ticketTransfer = tc =>
+	tc.schemaComposer.createResolver({
+		name: 'transfer',
+		kind: 'mutation',
+		type: tc,
+		args: {
+			_id: 'MongoID!',
+			agent: 'MongoID!',
+		},
+		resolve: async rp => {
+			try {
+				const { _id, agent } = rp.args;
 
-export const groupRemoveTag = tc => createRemoveTagResolver(tc);
+				if (!rp.context.agent || !rp.context.organization) {
+					throw new Error('Unauthorized');
+				}
+
+				const { stream } = rp.context;
+
+				const tickets = mongoose.model(tc.getTypeName());
+
+				const exists = await tickets.countDocuments({
+					_id,
+					agents: {
+						$in: [agent],
+					},
+				});
+
+				if (exists) {
+					throw new Error(`${agent} is already a member on this ticket.`);
+				}
+
+				const channel = stream.chat.channel('combase', _id.toString());
+
+				// Reassign
+				await Promise.all([
+					channel.addMembers([agent]),
+					tickets.findByIdAndUpdate(_id, {
+						$addToSet: { agents: [agent] },
+					}),
+				]);
+
+				// Remove Self
+				const [, ticket] = await Promise.all([
+					channel.removeMembers([rp.context.agent]),
+					tickets.findByIdAndUpdate(
+						_id,
+						{
+							$pull: { agents: { $in: [rp.context.agent] } },
+						},
+						{ new: true }
+					),
+				]);
+
+				//TODO: Ticket transferred activity (need to set up the trigger on the ingress.)
+				return ticket;
+			} catch (error) {
+				logger.error(error.message);
+			}
+		},
+	});
+
+export const ticketAddTag = tc => createAddTagResolver(tc);
+
+export const ticketRemoveTag = tc => createRemoveTagResolver(tc);
