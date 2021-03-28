@@ -37,6 +37,7 @@ schemaComposer.Query.addFields({
 	agent: schemaComposer.getOTC('Agent').getResolver('get'),
 	agents: schemaComposer.getOTC('Agent').getResolver('list'),
 	agentsAvailable: schemaComposer.getOTC('Agent').getResolver('getAvailable'),
+	agentSearch: schemaComposer.getOTC('Agent').getResolver('search'),
 
 	/**
 	 * @name Asset
