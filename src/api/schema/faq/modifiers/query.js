@@ -22,4 +22,5 @@ export const faq = tc =>
 			return next(rp);
 		})
 		.clone({ name: 'get' });
+
 export const faqs = tc => tc.mongooseResolvers.connection().clone({ name: 'list' });

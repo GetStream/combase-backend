@@ -21,6 +21,16 @@ const GroupSchema = new Schema(
 			trim: true,
 			type: String,
 		},
+		emoji: {
+			trim: true,
+			type: String,
+			description: 'An emoji used to represent the group in-app',
+		},
+		description: {
+			trim: true,
+			type: String,
+			description: 'A short description about this group of agents.',
+		},
 		tags: [
 			{
 				type: Schema.Types.ObjectId,
@@ -39,6 +49,14 @@ GroupSchema.index({
 	createdAt: 1,
 	updatedAt: 1,
 });
+
+GroupSchema.index(
+	{
+		name: 1,
+		organization: 1,
+	},
+	{ unique: true }
+);
 
 export const GroupModel = mongoose.model('Group', GroupSchema);
 export const GroupTC = composeMongoose(GroupModel, { schemaComposer });
