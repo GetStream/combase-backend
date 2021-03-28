@@ -18,37 +18,63 @@ const getPermissionsScopes = ({ source, context }, opts) => {
 };
 
 /**
- * Create a connection resolver that uses the source object as the filter. (i.e. source.space will scope all results that have space === source.space)
+ * Create a `list` resolver that uses the source object as the filter. (i.e. source.organization will scope all results that have organization === source.organization)
  * @param {Object} filter - merged with the source object and eventually becomes the mongo query filter
  */
-const permissionAwareConnection = (tc, resolverOpts = {}, opts) => {
-	if (!opts) throw new Error('No options provided to permissionAwareConnection');
+const permissionAwareList = (tc, resolverOpts = {}, opts) => {
+	if (!opts) throw new Error('No options provided to permissionAwareList');
 
-	return tc.mongooseResolvers.connection(resolverOpts).wrapResolve(next => rp => {
-		const filter = getPermissionsScopes(rp, opts);
+	return tc
+		.getResolver('list')
+		.clone(resolverOpts)
+		.wrapResolve(next => rp => {
+			const filter = getPermissionsScopes(rp, opts);
 
-		// eslint-disable-next-line no-param-reassign
-		rp.args = deepmerge(rp.args, { filter });
+			// eslint-disable-next-line no-param-reassign
+			rp.args = deepmerge(rp.args, { filter });
 
-		return next(rp);
-	});
+			return next(rp);
+		});
 };
 
 /**
- * Create a findById resolver that uses the source object as the filter. (i.e. source.space will scope all results that have space === source.space)
+ * Create a `get` resolver that uses the source object as the filter. (i.e. source.organization will scope all results that have organization === source.organization)
  * @param {Object} filter - merged with the source object and eventually becomes the mongo query filter
  */
-const permissionAwareFindById = (tc, resolverOpts = {}, opts) => {
-	if (!opts) throw new Error('No options provided to permissionAwareFindById');
+const permissionAwareGet = (tc, resolverOpts = {}, opts) => {
+	if (!opts) throw new Error('No options provided to permissionAwareGet');
 
-	return tc.mongooseResolvers.findById(resolverOpts).wrapResolve(next => rp => {
-		const filter = getPermissionsScopes(rp, opts);
+	return tc
+		.getResolver('get')
+		.clone(resolverOpts)
+		.wrapResolve(next => rp => {
+			const filter = getPermissionsScopes(rp, opts);
 
-		// eslint-disable-next-line no-param-reassign
-		rp.args = deepmerge(rp.args, { filter });
+			// eslint-disable-next-line no-param-reassign
+			rp.args = deepmerge(rp.args, { filter });
 
-		return next(rp);
-	});
+			return next(rp);
+		});
+};
+
+/**
+ * Create a search resolver that uses the source object as the filter. (i.e. source.organization will scope all results that have organization === source.organization)
+ * @param {Object} filter - merged with the source object and eventually becomes the mongo query filter
+ */
+const permissionAwareSearch = (tc, resolverOpts = {}, opts) => {
+	if (!opts) throw new Error('No options provided to permissionAwareSearch');
+
+	return tc
+		.getResolver('search')
+		.clone(resolverOpts)
+		.wrapResolve(next => rp => {
+			const filter = getPermissionsScopes(rp, opts);
+
+			// eslint-disable-next-line no-param-reassign
+			rp.args = deepmerge(rp.args, { filter });
+
+			return next(rp);
+		});
 };
 
 /*
@@ -70,26 +96,25 @@ export const createPermissionAwareRelationship = (parentTC, childTC, opts = {}) 
 		prepareArgs: {},
 		projection: {
 			_id: true,
-			[opts?._idField]: true,
 		},
-		resolver: permissionAwareConnection(
-			childTC,
-			{ name: connectionResolverName },
-			{
-				_idField: parentField,
-				schemaComposer: parentTC.schemaComposer,
-			}
-		),
+		resolver: () =>
+			permissionAwareList(
+				childTC,
+				{ name: connectionResolverName },
+				{
+					_idField: parentField,
+					schemaComposer: parentTC.schemaComposer,
+				}
+			),
 	});
 
-	if (!opts?.noFindOne) {
-		parentTC.addRelation(relatedFieldName, {
-			prepareArgs: {},
-			projection: {
-				_id: true,
-				[opts?._idField]: true,
-			},
-			resolver: permissionAwareFindById(
+	parentTC.addRelation(relatedFieldName, {
+		prepareArgs: {},
+		projection: {
+			_id: true,
+		},
+		resolver: () =>
+			permissionAwareGet(
 				childTC,
 				{ name: findByIdResolverName },
 				{
@@ -97,6 +122,23 @@ export const createPermissionAwareRelationship = (parentTC, childTC, opts = {}) 
 					schemaComposer: parentTC.schemaComposer,
 				}
 			),
+	});
+
+	if (opts?.search) {
+		parentTC.addRelation(`${relatedFieldName}Search`, {
+			prepareArgs: {},
+			projection: {
+				_id: true,
+			},
+			resolver: () =>
+				permissionAwareSearch(
+					childTC,
+					{ name: findByIdResolverName },
+					{
+						_idField: parentField,
+						schemaComposer: parentTC.schemaComposer,
+					}
+				),
 		});
 	}
 };
