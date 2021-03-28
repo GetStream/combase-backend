@@ -142,6 +142,26 @@ AgentSchema.index({
 	updatedAt: 1,
 });
 
+AgentSchema.index(
+	{
+		'name.full': 'text',
+		'name.display': 'text',
+		email: 'text',
+		role: 'text',
+	},
+	{
+		name: 'AgentTextIndex',
+		default_language: 'english',
+		weights: {
+			'name.full': 10,
+			'name.display': 10,
+			email: 5,
+			role: 2,
+			// rest fields get weight equals to 1
+		},
+	}
+);
+
 export const AgentModel = mongoose.model('Agent', AgentSchema);
 
 export const AgentTC = composeMongoose(AgentModel, {
