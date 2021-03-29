@@ -47,7 +47,9 @@ export const tagCreate = tc =>
 			return next(newRp);
 		})
 		.clone({ name: 'create' });
+
 export const tagUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
+
 export const tagRemove = tc =>
 	tc.mongooseResolvers
 		.removeOne()
@@ -79,4 +81,5 @@ export const tagRemove = tc =>
 			return next(newRp);
 		})
 		.clone({ name: 'remove' });
+
 export const tagRemoveMany = tc => tc.mongooseResolvers.removeMany().clone({ name: 'removeMany' });
