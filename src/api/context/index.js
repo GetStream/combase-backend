@@ -1,3 +1,4 @@
+/* eslint-disable multiline-comment-style */
 /**
  * Create context for each request through the apollo server,
  * here we process the users JWT, add their userID to the context
@@ -14,19 +15,19 @@ import { AgentModel } from 'api/schema/agent/model';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {
-		let token, organization, domain, timezone;
+		let token, organization, timezone;
 
 		if (connection) {
 			token = connection.context.Authorization ? connection.context.Authorization.replace(/^Bearer\s/u, '') : '';
 			organization = connection.context['combase-organization'] ? connection.context['combase-organization'] : '';
 		} else {
-			const [protocol, domainAndPort] = req.headers?.origin?.split('://') || [];
+			// const [protocol, domainAndPort] = req.headers?.origin?.split('://') || [];
 
-			if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
-				throw new Error('Unauthorized domain.');
-			}
+			// if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
+			// 	throw new Error('Unauthorized domain.');
+			// }
 
-			domain = domainAndPort?.split(':')[0];
+			// domain = domainAndPort?.split(':')[0];
 
 			token = req.headers.authorization ? req.headers.authorization.replace(/^Bearer\s/u, '') : '';
 			organization = req.headers['combase-organization'] ? req.headers['combase-organization'] : '';
@@ -69,15 +70,15 @@ const authorizeRequest = async ({ req, connection }) => {
 		}
 
 		if (scopes?.organization) {
-			const orgQuery = {
-				_id: scopes.organization,
-			};
+			// const orgQuery = {
+			// 	_id: scopes.organization,
+			// };
 
-			if (process.env.NODE_ENV === 'production') {
-				orgQuery['widget.domains'] = {
-					$in: [domain],
-				};
-			}
+			// if (process.env.NODE_ENV === 'production') {
+			// 	orgQuery['widget.domains'] = {
+			// 		$in: [domain],
+			// 	};
+			// }
 
 			orgData = await OrganizationModel.findOne(
 				{
@@ -118,3 +119,4 @@ export default async ({ connection, req }) => {
 		throw new Error(error);
 	}
 };
+/* eslint-enable multiline-comment-style */
