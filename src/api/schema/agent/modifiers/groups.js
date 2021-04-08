@@ -71,13 +71,15 @@ export const createRemoveFromGroupResolver = tc =>
 export const createGroupsRelation = tc => {
 	tc.addRelation('parentGroups', {
 		prepareArgs: {
-			filter: source => ({
-				_operators: {
-					groups: {
-						in: source?.groups,
+			filter: source => {
+				return {
+					_operators: {
+						groups: {
+							in: source?.groups,
+						},
 					},
-				},
-			}),
+				};
+			},
 		},
 		projection: { groups: true },
 		resolver: () =>

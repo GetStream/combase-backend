@@ -138,6 +138,10 @@ AgentSchema.plugin(bcrypt);
 AgentSchema.plugin(timestamps);
 
 AgentSchema.index({
+	groups: 1,
+});
+
+AgentSchema.index({
 	createdAt: 1,
 	updatedAt: 1,
 });
