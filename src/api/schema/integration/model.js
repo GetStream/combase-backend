@@ -99,6 +99,12 @@ export const IntegrationCategoryETC = schemaComposer.createEnumTC({
 		enrich: {
 			value: 'enrich',
 		},
+		organization: {
+			value: 'organization',
+		},
+		organizational: {
+			value: 'organizational',
+		},
 	},
 });
 
@@ -125,7 +131,7 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 		configuration: 'JSON!',
 		category: {
 			description: 'Categories for this Integration',
-			type: [IntegrationCategoryETC],
+			type: '[String!]',
 		},
 		icon: 'String',
 		id: 'String!',

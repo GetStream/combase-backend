@@ -43,7 +43,6 @@ export const OrganizationSecrets = tc => {
 };
 
 export const extend = tc => {
-	tc.removeField('stream.appId');
 	tc.removeField('stream.secret');
 
 	tc.addFields({
