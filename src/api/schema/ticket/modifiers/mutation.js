@@ -57,7 +57,7 @@ export const ticketAssign = tc =>
 		type: tc,
 		kind: 'Mutation',
 		args: {
-			agent: 'MongoID!',
+			agent: 'MongoID',
 			ticket: 'MongoID!',
 			status: 'EnumTicketStatus',
 		},

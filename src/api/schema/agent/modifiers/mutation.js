@@ -109,7 +109,7 @@ export const agentLogin = tc =>
 			const valid = await bcrypt.compare(rp.args.password, data?.password);
 
 			if (!valid) {
-				throw new Error('Unauthorized');
+				throw new Error('Incorrect password');
 			}
 
 			delete data.password;

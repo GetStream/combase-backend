@@ -21,12 +21,12 @@ chain([
 	Integration,
 	IntegrationDefinition,
 	Organization,
-	StreamActivity,
-	StreamAddActivity,
 	Tag,
 	Ticket,
 	User,
 	Webhook,
+	StreamActivity,
+	StreamAddActivity,
 ]);
 
 schemaComposer.Query.addFields({
