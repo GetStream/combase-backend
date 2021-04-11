@@ -62,6 +62,7 @@ schemaComposer.Query.addFields({
 	 * @name Integration
 	 */
 	integration: schemaComposer.getOTC('Integration').getResolver('get'),
+	integrationLookup: schemaComposer.getOTC('Integration').getResolver('lookup'),
 	integrations: schemaComposer.getOTC('Integration').getResolver('list'),
 
 	/**
