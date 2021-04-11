@@ -130,6 +130,10 @@ const AgentSchema = new Schema(
 			default: true,
 			description: 'Status of the agent – an agent is never removed from history in order to preserve the timeline.',
 		},
+		meta: {
+			type: Schema.Types.Mixed,
+			description: 'Unstructured custom data associated with the agent.',
+		},
 	},
 	{ collection: 'agents' }
 );
