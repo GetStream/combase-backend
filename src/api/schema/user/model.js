@@ -25,6 +25,10 @@ const UserSchema = new Schema(
 			required: true,
 			description: 'The provided email of the user.',
 		},
+		meta: {
+			type: Schema.Types.Mixed,
+			description: 'Unstructured custom data associated with the ticket.',
+		},
 	},
 	{ collection: 'users' }
 );

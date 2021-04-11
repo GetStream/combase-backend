@@ -76,12 +76,10 @@ const TicketSchema = new Schema(
 			description: 'The status of the ticket.',
 			index: true,
 		},
-		meta: [
-			{
-				type: Schema.Types.Mixed,
-				description: 'Unstructured custom data associated with the ticket.',
-			},
-		],
+		meta: {
+			type: Schema.Types.Mixed,
+			description: 'Unstructured custom data associated with the ticket.',
+		},
 	},
 	{ collection: 'tickets' }
 );
