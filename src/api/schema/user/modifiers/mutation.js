@@ -1,4 +1,5 @@
 import { enrichWithAuthToken } from 'utils/resolverMiddlewares/auth';
+import { syncChatProfile } from 'utils/resolverMiddlewares/streamChat';
 import { UserModel } from '../model';
 
 export const getOrCreate = tc =>
@@ -45,6 +46,6 @@ export const getOrCreate = tc =>
 		.clone({ name: 'getOrCreate' });
 
 export const userCreate = tc => tc.mongooseResolvers.createOne().clone({ name: 'create' });
-export const userUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
+export const userUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChatProfile('User')]).clone({ name: 'update' });
 
 //TODO: ? deactivate/remove user resolver.

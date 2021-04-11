@@ -7,6 +7,7 @@ import { deepmerge } from 'graphql-compose';
 import { OrganizationTC } from 'api/schema/organization/model';
 
 import { streamCtx } from 'utils/streamCtx';
+import { syncChatProfile } from 'utils/resolverMiddlewares/streamChat';
 
 export const agentCreate = tc =>
 	tc.mongooseResolvers
@@ -43,7 +44,7 @@ export const agentCreate = tc =>
 			}
 		})
 		.clone({ name: 'create' });
-export const agentUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
+export const agentUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChatProfile('Agent')]).clone({ name: 'update' });
 
 export const agentDeactivate = tc =>
 	tc.mongooseResolvers

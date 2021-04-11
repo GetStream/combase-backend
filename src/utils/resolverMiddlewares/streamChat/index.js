@@ -1,3 +1,3 @@
 export * from './createOrgChatCustomizations';
-export * from './syncAgentProfile';
+export * from './syncChatProfile';
 export * from './syncOrganizationProfile';

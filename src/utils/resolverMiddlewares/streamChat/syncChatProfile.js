@@ -1,7 +1,7 @@
 /**
- * Keeps the StreamChat agent user data in sync with mongo.
+ * Keeps the StreamChat user data in sync with mongo.
  */
-export const syncAgentProfile = async (resolve, source, args, context, info) => {
+export const syncChatProfile = (entity = 'User') => async (resolve, source, args, context, info) => {
 	if (!context.organization) {
 		throw new Error('Unauthenticated.');
 	}
@@ -18,7 +18,8 @@ export const syncAgentProfile = async (resolve, source, args, context, info) => 
 			name: _doc.name.display,
 			organization: _doc.organization.toString(),
 			timezone: _doc.timezone,
-			entity: 'Agent',
+			entity,
+			meta: _doc.meta,
 		});
 	} catch (error) {
 		// eslint-disable-next-line no-console

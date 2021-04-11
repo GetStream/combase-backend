@@ -34,7 +34,7 @@ export const createChannel = () => async (resolve, source, args, context, info) 
 	return res;
 };
 
-export const syncChannel = (fields = ['priority', 'starred', 'tags', 'status']) => async (resolve, source, args, context, info) => {
+export const syncChannel = (fields = ['priority', 'starred', 'tags', 'status', 'meta']) => async (resolve, source, args, context, info) => {
 	if (!context.organization) {
 		throw new Error('Unauthenticated.');
 	}
