@@ -1,5 +1,6 @@
 import { OrganizationModel } from 'api/schema/organization/model';
 import { logger } from 'utils/logger';
+import { syncOrganizationProfile } from 'utils/resolverMiddlewares/streamChat';
 import { createMockDataResolver } from './createMockDataResolver';
 
 const chatCommands = [
@@ -44,6 +45,7 @@ const configureCombaseChatOrganization = async (tc, org, stream) => {
 		email: org.contact.email,
 		id: org._id.toString(),
 		name: org.name,
+		role: 'admin',
 		organization: org._id.toString(),
 		timezone: '',
 		entity: tc.getTypeName(),
@@ -111,7 +113,7 @@ export const organizationCreate = tc =>
 			}
 		})
 		.clone({ name: 'create' });
-export const organizationUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
+export const organizationUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncOrganizationProfile]).clone({ name: 'update' });
 
 // TODO: destroy org resolver
 export const organizationCreateApiCredentials = tc =>

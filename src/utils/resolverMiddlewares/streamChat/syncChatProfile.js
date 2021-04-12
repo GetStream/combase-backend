@@ -15,7 +15,7 @@ export const syncChatProfile = (entity = 'User') => async (resolve, source, args
 			avatar: _doc.avatar,
 			email: _doc.email,
 			id: _doc._id.toString(),
-			name: _doc.name.display,
+			name: typeof _doc.name === 'string' ? _doc.name : _doc.name.display,
 			organization: _doc.organization.toString(),
 			timezone: _doc.timezone,
 			entity,

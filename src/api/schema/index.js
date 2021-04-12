@@ -86,6 +86,7 @@ schemaComposer.Query.addFields({
 	 * @name Ticket
 	 */
 	ticket: schemaComposer.getOTC('Ticket').getResolver('get'),
+	ticketFind: schemaComposer.getOTC('Ticket').getResolver('find'),
 	tickets: schemaComposer.getOTC('Ticket').getResolver('list'),
 
 	/**
