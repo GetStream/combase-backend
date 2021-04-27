@@ -1,16 +1,12 @@
 import { IntegrationModel } from "../../model";
 
-export const integrationLookup = tc => tc.schemaComposer.createResolver({
-	name: 'lookup',
-	type: tc,
-	args: {
-		organization: 'MongoID!',
-		triggers: 'JSON!',
+export const integrationLookup = tc => tc.mongooseResolvers.findOne({
+	filter: {
+		operators: {
+			triggers: ['in'],
+		},
 	},
-	resolve: ({ args }) => {
-		return IntegrationModel.findOne(args);
-	}
-})
+}).clone({ name: 'lookup' })
 
 export const integration = tc => tc.mongooseResolvers.findById().clone({ name: 'get' });
 
