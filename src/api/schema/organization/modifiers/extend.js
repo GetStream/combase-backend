@@ -43,7 +43,7 @@ export const OrganizationSecrets = tc => {
 };
 
 export const extend = tc => {
-	tc.removeField('stream.secret');
+	// tc.removeField('stream.secret');
 
 	tc.addFields({
 		secret: {
@@ -55,6 +55,29 @@ export const extend = tc => {
 	});
 
 	tc.addNestedFields({
+		'stream.secret': {
+			type: 'String!',
+			args: {},
+			resolve: async (source, _, { organization }) => {
+				if (!organization) {
+					throw new Error('Unauthorized');
+				}
+
+				try {
+					const { stream } = await OrganizationModel.findById(organization, { 'stream.secret': true });
+
+					if (source.secret === stream?.secret) {
+						const decrypted = await OrganizationModel.findOne({ _id: organization }, { stream: true });
+
+						return decrypted?.stream?.secret;
+					}
+
+					return null;
+				} catch (error) {
+					throw new Error(error.message);
+				}
+			},
+		},
 		'stream.key': {
 			type: 'String!',
 			args: {},

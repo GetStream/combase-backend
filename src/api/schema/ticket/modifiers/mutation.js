@@ -196,3 +196,30 @@ export const ticketTransfer = tc =>
 export const ticketAddTag = tc => createAddTagResolver(tc);
 
 export const ticketRemoveTag = tc => createRemoveTagResolver(tc);
+
+export const ticketSendMessage = tc => tc.schemaComposer.createResolver({
+	name: 'sendMessage',
+	type: 'JSON',
+	args: { text: 'String!', ticket: 'MongoID!', agent: "MongoID" },
+	kind: 'mutation',
+	resolve: async ({ 
+		args: {
+			ticket,
+			text,
+			agent: argAgent,
+		}, 
+		context: {
+			agent,
+			stream: { chat },
+		}
+	}) => {
+		if (!agent && !argAgent) {
+			throw new Error("Unauthenticated");
+		}
+
+		return chat.channel('combase', ticket).sendMessage({
+			text,
+			user_id: agent || argAgent,
+		});
+	}
+})
