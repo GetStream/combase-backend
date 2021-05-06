@@ -74,7 +74,7 @@ export const createGroupsRelation = tc => {
 			filter: source => {
 				return {
 					_operators: {
-						groups: {
+						_id: {
 							in: source?.groups,
 						},
 					},
@@ -85,13 +85,6 @@ export const createGroupsRelation = tc => {
 		resolver: () =>
 			tc.schemaComposer.getOTC('Group').mongooseResolvers.connection({
 				name: 'AgentGroups',
-				findManyOpts: {
-					filter: {
-						operators: {
-							groups: ['in'],
-						},
-					},
-				},
 			}),
 	});
 };
