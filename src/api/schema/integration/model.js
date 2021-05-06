@@ -115,18 +115,18 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 			description:
 				'Stringified Markdown from the README of an Integration Definition. Used by remark-react in the frontend to build the Interation "About" pages.',
 			type: 'String',
-			resolve: source => {
-				/* eslint-disable no-sync */
-				const readme = slash(path.join(source.internal.path, 'about.md'));
-				let str = '';
+			// resolve: source => {
+			// 	/* eslint-disable no-sync */
+			// 	const readme = slash(path.join(source.internal.path, 'about.md'));
+			// 	let str = '';
+			// 	console.log(fs.existsSync(readme));
+			// 	if (fs.existsSync(readme)) {
+			// 		str = fs.readFileSync(readme).toString();
+			// 	}
 
-				if (fs.existsSync(readme)) {
-					str = fs.readFileSync(readme).toString();
-				}
-
-				return str;
-				/* eslint-enable no-sync */
-			},
+			// 	return str;
+			// 	/* eslint-enable no-sync */
+			// },
 		},
 		configuration: 'JSON!',
 		category: {
