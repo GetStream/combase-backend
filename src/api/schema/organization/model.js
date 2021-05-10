@@ -111,10 +111,17 @@ const OrganizationSchema = new Schema(
 				default: "auto",
 				description: 'The default theme for the widget when the embed code is generated client-side.',
 			},
+			unassignedMessages: [
+				{
+					type: String,
+					default: [`Sorry, all agents are currently unavailable.`, `Feel free to add additional information and we'll follow up as soon as an agent is available.`, `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`],
+					description: 'An array of message strings to be sent, in order, when a user opens a new conversation.',
+				},
+			],
 			welcomeMessages: [
 				{
 					type: String,
-					default: 'Hey! How can we help you today?',
+					default: ['Hey! How can we help you today?'],
 					description: 'An array of message strings to be sent, in order, when a user opens a new conversation.',
 				},
 			],

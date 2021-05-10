@@ -49,8 +49,6 @@ const authorizeRequest = async ({ req, connection }) => {
 			};
 		}
 
-		// TODO: User timezone
-
 		let orgData;
 		let access;
 

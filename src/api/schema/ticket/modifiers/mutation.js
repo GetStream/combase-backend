@@ -94,25 +94,16 @@ export const ticketAssign = tc =>
 				const channel = stream.chat.channel('combase', ticket.toString());
 
 				if (status === 'unassigned') {
-					// TODO: Agents/Orgs should be able to override the content of these initial messages when unassigned.
 					await channel.addModerators([organization]);
+					
+					// TODO: Fetch and replace below with the Org-level widget.unassignedMessages array.
+					const unassignedMessages = [
+						`Sorry, all agents are currently unavailable.`, 
+						`Feel free to add additional information and we'll follow up as soon as an agent is available.`,
+						`Don't worry if you can't stick around! We'll follow up by email if you leave the page.`
+					];
 
-					await channel.sendMessage({
-						text: `Sorry, all agents are currently unavailable.`,
-						user_id: organization,
-					});
-
-					await channel.sendMessage({
-						text: `Feel free to add additional information and we'll follow up as soon as an agent is available.`,
-						user_id: organization,
-					});
-
-					await channel.sendMessage({
-						text: `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
-						user_id: organization,
-					});
-
-					return Ticket.findByIdAndUpdate(
+					const response = await Ticket.findByIdAndUpdate(
 						channel.id,
 						{
 							agents: [],
@@ -120,6 +111,16 @@ export const ticketAssign = tc =>
 						},
 						{ new: true }
 					);
+
+					for await (const text of unassignedMessages) {
+						await channel.sendMessage({
+							text,
+							user_id: organization,
+						});
+						await new Promise(res => setTimeout(res, 1000));
+					}
+
+					return response;
 				}
 
 				// If agent is truthy and ticket is not being marked as unassigned.

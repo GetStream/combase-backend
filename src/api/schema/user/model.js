@@ -29,6 +29,10 @@ const UserSchema = new Schema(
 			type: Schema.Types.Mixed,
 			description: 'Unstructured custom data associated with the ticket.',
 		},
+		timezone: {
+			type: Schema.Types.String,
+			description: 'The timezone of the user. Updates (if changed) when a user creates a new ticket.',
+		}
 	},
 	{ collection: 'users' }
 );

@@ -9,7 +9,7 @@ export const getOrCreate = tc =>
 			description: 'Creates a new user, or returns existing user if the orgId & email match',
 			type: tc,
 			args: { record: tc.getInputTypeComposer().makeFieldNullable('organization') },
-			resolve: async ({ args: { record }, context: { stream } }) => {
+			resolve: async ({ args: { record }, context: { stream, timezone } }) => {
 				const { email, organization } = record;
 
 				const user = await UserModel.findOneAndUpdate(
@@ -18,7 +18,10 @@ export const getOrCreate = tc =>
 						organization,
 					},
 					{
-						$setOnInsert: record,
+						$setOnInsert: {
+							...record,
+							timezone,
+						},
 					},
 					{
 						new: true,
@@ -34,6 +37,7 @@ export const getOrCreate = tc =>
 					name: user._doc.name,
 					email: user._doc.email,
 					organization: orgId,
+					timezone: user._doc.timezone,
 					entity: tc.getTypeName(),
 				});
 
