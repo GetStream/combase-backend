@@ -44,6 +44,13 @@ const OrganizationSchema = new Schema(
 			type: String,
 			description: 'Display name of the organization.',
 		},
+		security: {
+			global2Fa: {
+				description: "Enforce two-factor authentication for the entire organization.",
+				type: Boolean,
+				default: false
+			}
+		},
 		contact: {
 			email: {
 				type: String,
@@ -98,6 +105,19 @@ const OrganizationSchema = new Schema(
 					description: 'The tageline message displayed beneath the title in the widget home screen',
 				},
 			},
+			defaultTheme: {
+				type: String,
+				trim: true,
+				default: "auto",
+				description: 'The default theme for the widget when the embed code is generated client-side.',
+			},
+			welcomeMessages: [
+				{
+					type: String,
+					default: 'Hey! How can we help you today?',
+					description: 'An array of message strings to be sent, in order, when a user opens a new conversation.',
+				},
+			],
 			domains: [
 				{
 					type: String,
