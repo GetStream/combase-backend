@@ -3,7 +3,7 @@ import { deepmerge } from 'graphql-compose';
 import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTaggableEntity';
 
 import { TicketModel as Ticket } from '../model';
-import { createChannel, syncChannel, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
+import { createChannel, syncChannel, syncChannelMany, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
 import { logger } from 'utils/logger';
 
 export const ticketCreate = tc =>
@@ -15,6 +15,7 @@ export const ticketCreate = tc =>
 		.clone({ name: 'create' });
 
 export const ticketUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]).clone({ name: 'update' });
+export const ticketUpdateMany = tc => tc.mongooseResolvers.updateMany().withMiddlewares([syncChannelMany()]).clone({ name: 'updateMany' });
 
 export const ticketMarkAs = tc =>
 	tc.mongooseResolvers
@@ -38,6 +39,19 @@ export const ticketStar = tc =>
 		.withMiddlewares([syncChannel()])
 		.clone({ name: 'star' });
 
+export const ticketStarMany = tc =>
+	tc.mongooseResolvers
+		.updateMany()
+		.removeArg('record')
+		.removeArg('filter')
+		.addArgs({
+			_ids: '[MongoID!]!',
+			starred: 'Boolean!',
+		})
+		.wrapResolve(next => rp => next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { starred: rp?.args.starred } } })))
+		.withMiddlewares([syncChannelMany('starred')])
+		.clone({ name: 'starMany' });
+
 export const ticketSetPriority = tc =>
 	tc.mongooseResolvers
 		.updateById()
@@ -48,6 +62,19 @@ export const ticketSetPriority = tc =>
 		.wrapResolve(next => rp => next(deepmerge(rp, { args: { record: { priority: rp?.args.level } } })))
 		.withMiddlewares([syncChannel()])
 		.clone({ name: 'setPriority' });
+
+export const ticketSetPriorityMany = tc =>
+	tc.mongooseResolvers
+		.updateMany()
+		.removeArg('record')
+		.removeArg('filter')
+		.addArgs({
+			_ids: '[MongoID!]!',
+			level: 'Int!',
+		})
+		.wrapResolve(next => rp => next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { priority: rp.args.level } } })))
+		.withMiddlewares([syncChannelMany('priority')])
+		.clone({ name: 'setPriorityMany' });
 
 export const ticketAssign = tc =>
 	tc.schemaComposer.createResolver({

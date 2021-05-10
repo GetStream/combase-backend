@@ -59,3 +59,38 @@ export const syncChannel = (fields = ['priority', 'starred', 'tags', 'status', '
 
 	return res;
 };
+
+export const syncChannelMany = (field) => async (resolve, source, args, context, info) => {
+	if (!field) {
+		throw new Error('No field provided from which to sync with Stream Chat. i.e. "priority"');
+	}
+
+	if (!context.organization) {
+		throw new Error('Unauthenticated.');
+	}
+
+	if (!context.stream.chat) {
+		throw new Error('No Stream Chat Client available on context object.');
+	}
+
+	const res = await resolve(source, args, context, info);
+	
+	const channelIdsToUpdate = args._ids;
+	
+	const { record: _doc } = args;
+	
+	// TODO: Not ideal - we can fix by changing the `level` arg to `priority` in the setPriority resolvers...
+	const fieldSelector = field === 'priority' ? 'level' : field;
+
+	const syncObj = {
+		[field]: args[fieldSelector],
+	};
+
+	await Promise.all(channelIdsToUpdate.map(_id => 
+		context.stream.chat.channel('combase', _id.toString()).updatePartial({
+			set: syncObj,
+		})
+	));
+
+	return res;
+};
