@@ -1,3 +1,4 @@
+import { AnyResource, AnyRole, Allow, Deny, Permission } from 'stream-chat';
 import { OrganizationModel } from 'api/schema/organization/model';
 import { logger } from 'utils/logger';
 import { syncOrganizationProfile } from 'utils/resolverMiddlewares/streamChat';
@@ -36,6 +37,15 @@ const chatCommands = [
 	},
 ];
 
+const permissions = [ 
+	new Permission("Admin Users", 600, AnyResource, ["admin"], false, Allow), 
+	new Permission("Users can modify their own messages", 500, AnyResource, ["user"], true, Allow), 
+	new Permission("End Users", 400, AnyResource, ["user"], false, Allow),
+	new Permission("Anonymous users", 300, AnyResource, ["anonymous"], true, Allow), 
+	new Permission("Channel Members", 200, ["ReadChannel", "CreateMessage"], ["channel_member"], false, Allow), 
+	new Permission("Discard all", 100, AnyResource, AnyRole, false, Deny), 
+];
+
 const configureCombaseChatOrganization = async (tc, org, stream) => {
 	/**
 	 * First create a StreamChat user for the Organization for sending system messages, handling unassigned etc.
@@ -54,7 +64,6 @@ const configureCombaseChatOrganization = async (tc, org, stream) => {
 	/**
 	 * Now create our custom chat commands
 	 */
-
 	// eslint-disable-next-line no-unused-vars
 	for await (const command of chatCommands) {
 		try {
@@ -65,12 +74,12 @@ const configureCombaseChatOrganization = async (tc, org, stream) => {
 	}
 
 	/**
-	 * Then create our custom channel type for Combase, and apply the custom commands from above.
+	 * Then create our custom channel type for Combase, and apply both the custom commands and permissions from above.
 	 */
-
 	await stream.chat.createChannelType({
 		name: 'combase',
 		commands: ['giphy', ...chatCommands.map(({ name }) => name)],
+		permissions,
 	});
 
 	/**

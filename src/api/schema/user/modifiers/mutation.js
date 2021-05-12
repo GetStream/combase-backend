@@ -37,6 +37,7 @@ export const getOrCreate = tc =>
 					name: user._doc.name,
 					email: user._doc.email,
 					organization: orgId,
+					role: 'user',
 					timezone: user._doc.timezone,
 					entity: tc.getTypeName(),
 				});

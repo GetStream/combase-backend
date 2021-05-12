@@ -14,20 +14,4 @@ export const tickets = tc =>
 				},
 			},
 		})
-		.wrapResolve(next => rp => {
-			if (rp.context.access !== 'super_admin' && rp.context.access !== 'admin') {
-				// eslint-disable-next-line no-param-reassign
-				rp.args = deepmerge(rp.args, {
-					filter: {
-						_operators: {
-							agents: {
-								in: [rp.context.agent],
-							},
-						},
-					},
-				});
-			}
-
-			return next(rp);
-		})
 		.clone({ name: 'list' });

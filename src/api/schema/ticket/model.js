@@ -69,6 +69,10 @@ const TicketSchema = new Schema(
 				default: false,
 			},
 		},
+		subject: {
+			type: String,
+			description: "The subject of the ticket, taken from the original message in the related conversation.",
+		},
 		status: {
 			type: String,
 			enum: ['open', 'closed', 'archived', 'unassigned', 'new'],

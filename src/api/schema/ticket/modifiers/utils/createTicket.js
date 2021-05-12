@@ -52,13 +52,15 @@ export const wrapTicketCreateResolve = next => async rp => {
 	}
 
 	if (!user) {
-		throw new Error('No user provided.');
+		throw new Error('userGetOrCreate failed.');
 	}
 
 	// eslint-disable-next-line no-param-reassign
 	rp.args.record.organization = rp.context.organization;
 	// eslint-disable-next-line no-param-reassign
 	rp.args.record.user = userId;
+	// eslint-disable-next-line no-param-reassign
+	rp.args.record.subject = rp.args.message;
 	// eslint-disable-next-line callback-return
 	const data = await next(rp);
 

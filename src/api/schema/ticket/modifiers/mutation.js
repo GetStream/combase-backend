@@ -112,6 +112,8 @@ export const ticketAssign = tc =>
 						{ new: true }
 					);
 
+					await channel.updatePartial({ set: { status } });
+
 					for await (const text of unassignedMessages) {
 						await channel.sendMessage({
 							text,
