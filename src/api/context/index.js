@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import { logger } from 'utils/logger';
 import { streamCtx } from 'utils/streamCtx';
 import s3 from 'utils/s3';
+import { meilisearch } from 'utils/search';
 
 import { OrganizationModel } from 'api/schema/organization/model';
 import { AgentModel } from 'api/schema/agent/model';
@@ -100,7 +101,7 @@ const authorizeRequest = async ({ req, connection }) => {
 	}
 };
 
-export default async ({ connection, req }) => {
+const createContext = async ({ connection, req }) => {
 	try {
 		const { stream, ...scopes } = await authorizeRequest({
 			connection,
@@ -109,6 +110,7 @@ export default async ({ connection, req }) => {
 
 		return {
 			...scopes,
+			meilisearch,
 			s3,
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
 		};
@@ -118,3 +120,5 @@ export default async ({ connection, req }) => {
 	}
 };
 /* eslint-enable multiline-comment-style */
+
+export default createContext;

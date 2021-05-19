@@ -36,6 +36,9 @@ apollo.applyMiddleware({
 			}
 		}),
 	path: '/graphql',
+	subscriptions: {
+		path: '/graphql',
+	},
 });
 
 app.use(cors());
@@ -51,7 +54,7 @@ apollo.installSubscriptionHandlers(httpServer);
 		const port = process.env.PORT;
 
 		httpServer.listen({ port }, () => {
-			logger.info(`🚀 //:${port}${apollo.graphqlPath} • Combase API 💬`);
+			logger.info(`🚀 //:${port}${apollo.graphqlPath} • 🔁 //:${port}${apollo.subscriptionsPath} • Combase API 💬`);
 		});
 	} catch (error) {
 		logger.error(error);

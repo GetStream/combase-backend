@@ -38,6 +38,7 @@ const createMockAgentData = (args = {}) => {
 		avatar: '',
 		organization: args.organization,
 		email,
+		access: 'admin',
 		password: 'password1',
 		timezone: args.timezone,
 		schedule: args.schedule,

@@ -60,7 +60,7 @@ export const wrapTicketCreateResolve = next => async rp => {
 	// eslint-disable-next-line no-param-reassign
 	rp.args.record.user = userId;
 	// eslint-disable-next-line no-param-reassign
-	rp.args.record.subject = rp.args.message;
+	rp.args.record.subject = rp.args.record.message;
 	// eslint-disable-next-line callback-return
 	const data = await next(rp);
 

@@ -2544,6 +2544,11 @@ chalk@^4.0.0, chalk@^4.1.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+changestream-iterator@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/changestream-iterator/-/changestream-iterator-0.1.6.tgz#378b11c9819b7c250dada219a2d034ac121ef66c"
+  integrity sha512-jq+iow0p4WJDdQ9OLg/favoL4BQfpNvedE97h8O9NrV5o5I669wk9HEjZJecO+wYz+NdheLjSMpk+nMSmlbsTQ==
+
 charm@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/charm/-/charm-0.1.2.tgz#06c21eed1a1b06aeb67553cdc53e23274bac2296"
@@ -2939,6 +2944,13 @@ cross-fetch@^3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.6.tgz#3a4040bc8941e653e0e9cf17f29ebcd177d3365c"
   integrity sha512-KBPUbqgFjzWlVcURG+Svp9TlhA5uliYtiNx/0r8nv0pdypeQCRJ9IaSIc3q/x3q8t3F75cHuwxVql1HFGHCNJQ==
+  dependencies:
+    node-fetch "2.6.1"
+
+cross-fetch@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.4.tgz#9723f3a3a247bf8b89039f3a380a9244e8fa2f39"
+  integrity sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==
   dependencies:
     node-fetch "2.6.1"
 
@@ -6040,6 +6052,13 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
   integrity sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
+
+meilisearch@^0.18.2:
+  version "0.18.2"
+  resolved "https://registry.yarnpkg.com/meilisearch/-/meilisearch-0.18.2.tgz#e26d33a4bf163b2d96b14015063ec5979a004793"
+  integrity sha512-L65u+yNNtIyai3V1XB7BOq+fAt6MzB2KtsqvaW6GNahPtWCZF9SKvWOl6fjhzH3KOHDyT++A65UoYJP4J7vnVA==
+  dependencies:
+    cross-fetch "^3.1.4"
 
 memory-pager@^1.0.2:
   version "1.5.0"

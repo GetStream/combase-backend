@@ -71,7 +71,7 @@ const TicketSchema = new Schema(
 		},
 		subject: {
 			type: String,
-			description: "The subject of the ticket, taken from the original message in the related conversation.",
+			description: 'The subject of the ticket, taken from the original message in the related conversation.',
 		},
 		status: {
 			type: String,

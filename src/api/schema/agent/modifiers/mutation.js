@@ -8,6 +8,9 @@ import { OrganizationTC } from 'api/schema/organization/model';
 
 import { streamCtx } from 'utils/streamCtx';
 import { syncChatProfile } from 'utils/resolverMiddlewares/streamChat';
+import { addMeiliDocument, updateMeiliDocument } from 'utils/resolverMiddlewares/search';
+
+const searchableFields = ['_id', 'name', 'role', 'email', 'timezone', 'organization'];
 
 export const agentCreate = tc =>
 	tc.mongooseResolvers
@@ -17,23 +20,27 @@ export const agentCreate = tc =>
 				throw new Error('Unauthorized.');
 			}
 
+			// Creates the agent in Mongo
 			// eslint-disable-next-line callback-return
 			const data = await next(rp);
 
+			// Syncs the Agent doc to StreamChat and MeiliSearch.
 			try {
-				const { stream } = rp.context;
+				const { stream, meilisearch } = rp.context;
 				const { _doc } = data.record;
 
 				await stream.chat.upsertUser({
 					avatar: _doc.avatar,
 					email: _doc.email,
-					role: 'admin',
+					role: _doc.access,
 					id: _doc._id.toString(),
 					name: _doc.name.display,
 					organization: _doc.organization.toString(),
 					timezone: _doc.timezone,
 					entity: tc.getTypeName(),
 				});
+
+				await meilisearch.index('agent').addDocuments([_doc]);
 
 				return data;
 			} catch (error) {
@@ -43,8 +50,14 @@ export const agentCreate = tc =>
 				return data;
 			}
 		})
+		.withMiddlewares([addMeiliDocument('agent', searchableFields)])
 		.clone({ name: 'create' });
-export const agentUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChatProfile('Agent')]).clone({ name: 'update' });
+
+export const agentUpdate = tc =>
+	tc.mongooseResolvers
+		.updateById()
+		.withMiddlewares([syncChatProfile('Agent'), updateMeiliDocument('agent', searchableFields)])
+		.clone({ name: 'update' });
 
 export const agentDeactivate = tc =>
 	tc.mongooseResolvers
