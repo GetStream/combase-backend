@@ -7,38 +7,24 @@ export const agent = tc => tc.mongooseResolvers.findById().clone({ name: 'get' }
 export const agents = tc => tc.mongooseResolvers.connection().clone({ name: 'list' });
 export const search = tc =>
 	tc.mongooseResolvers
-		.findMany()
+		.connection()
 		.wrap(resolve => {
-			resolve.addArgs({
+			// eslint-disable-next-line no-param-reassign
+			resolve.args = {
 				query: 'String!',
-				path: 'String',
-			});
+			};
 
 			return resolve;
 		})
 		// eslint-disable-next-line no-unused-vars
-		.wrapResolve(_ => rp =>
-			AgentModel.aggregate()
-				.search({
-					autocomplete: {
-						query: rp.args.query,
-						path: rp.args?.path || 'email',
-						fuzzy: {
-							maxEdits: 2,
-							prefixLength: 3,
-						},
-					},
-				})
-				// TODO: Below should be more reusable
-				.match(
-					rp.args.filter?.organization
-						? {
-								// eslint-disable-next-line new-cap
-								organization: mongoose.Types.ObjectId(rp.args.filter.organization),
-						  }
-						: {}
-				)
-		)
+		.wrapResolve(_ => async rp => {
+			const { hits, nbHits } = await rp.context.meilisearch.index(tc.getTypeName().toLowerCase()).search(rp.args.query);
+
+			return {
+				edges: hits.map(node => ({ node })),
+				count: nbHits,
+			};
+		})
 		.clone({ name: 'search' });
 
 export const availableAgents = tc =>
