@@ -1,15 +1,18 @@
 import { enrichWithAuthToken } from 'utils/resolverMiddlewares/auth';
+import { addMeiliDocument, updateMeiliDocument } from 'utils/resolverMiddlewares/search';
 import { syncChatProfile } from 'utils/resolverMiddlewares/streamChat';
 import { UserModel } from '../model';
+
+const searchableFields = ['_id', 'organization', 'name', 'email'];
 
 export const getOrCreate = tc =>
 	tc.schemaComposer
 		.createResolver({
 			name: 'getOrCreate',
 			description: 'Creates a new user, or returns existing user if the orgId & email match',
-			type: tc,
+			type: 'CreateOneUserPayload',
 			args: { record: tc.getInputTypeComposer().makeFieldNullable('organization') },
-			resolve: async ({ args: { record }, context: { stream, timezone } }) => {
+			resolve: async ({ args: { record }, context: { stream, timezone, ...context } }) => {
 				const { email, organization } = record;
 
 				const user = await UserModel.findOneAndUpdate(
@@ -30,7 +33,7 @@ export const getOrCreate = tc =>
 				);
 
 				const userId = user._id.toString();
-				const orgId = organization.toString();
+				const orgId = organization?.toString?.() || context.organization.toString();
 
 				await stream.chat.upsertUser({
 					id: userId,
@@ -47,10 +50,18 @@ export const getOrCreate = tc =>
 				};
 			},
 		})
-		.withMiddlewares([enrichWithAuthToken('user')])
+		.withMiddlewares([enrichWithAuthToken('user'), addMeiliDocument('user', searchableFields)])
 		.clone({ name: 'getOrCreate' });
 
-export const userCreate = tc => tc.mongooseResolvers.createOne().clone({ name: 'create' });
-export const userUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChatProfile('User')]).clone({ name: 'update' });
+export const userCreate = tc =>
+	tc.mongooseResolvers
+		.createOne()
+		.withMiddlewares([addMeiliDocument('user', searchableFields)])
+		.clone({ name: 'create' });
+export const userUpdate = tc =>
+	tc.mongooseResolvers
+		.updateById()
+		.withMiddlewares([syncChatProfile('User'), updateMeiliDocument('user', searchableFields)])
+		.clone({ name: 'update' });
 
 //TODO: ? deactivate/remove user resolver.
