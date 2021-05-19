@@ -5,13 +5,16 @@ import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTagga
 import { TicketModel as Ticket } from '../model';
 import { createChannel, syncChannel, syncChannelMany, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
 import { logger } from 'utils/logger';
+import { addMeiliDocument } from 'utils/resolverMiddlewares/search';
+
+const searchableFields = ['_id', 'organization', 'user', 'subject'];
 
 export const ticketCreate = tc =>
 	tc.mongooseResolvers
 		.createOne()
 		.wrap(wrapTicketCreate)
 		.wrapResolve(wrapTicketCreateResolve)
-		.withMiddlewares([createChannel()])
+		.withMiddlewares([createChannel(), addMeiliDocument('ticket', searchableFields)])
 		.clone({ name: 'create' });
 
 export const ticketUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]).clone({ name: 'update' });
@@ -48,7 +51,9 @@ export const ticketStarMany = tc =>
 			_ids: '[MongoID!]!',
 			starred: 'Boolean!',
 		})
-		.wrapResolve(next => rp => next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { starred: rp?.args.starred } } })))
+		.wrapResolve(next => rp =>
+			next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { starred: rp?.args.starred } } }))
+		)
 		.withMiddlewares([syncChannelMany('starred')])
 		.clone({ name: 'starMany' });
 
@@ -72,7 +77,9 @@ export const ticketSetPriorityMany = tc =>
 			_ids: '[MongoID!]!',
 			level: 'Int!',
 		})
-		.wrapResolve(next => rp => next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { priority: rp.args.level } } })))
+		.wrapResolve(next => rp =>
+			next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { priority: rp.args.level } } }))
+		)
 		.withMiddlewares([syncChannelMany('priority')])
 		.clone({ name: 'setPriorityMany' });
 
@@ -95,12 +102,12 @@ export const ticketAssign = tc =>
 
 				if (status === 'unassigned') {
 					await channel.addModerators([organization]);
-					
+
 					// TODO: Fetch and replace below with the Org-level widget.unassignedMessages array.
 					const unassignedMessages = [
-						`Sorry, all agents are currently unavailable.`, 
+						`Sorry, all agents are currently unavailable.`,
 						`Feel free to add additional information and we'll follow up as soon as an agent is available.`,
-						`Don't worry if you can't stick around! We'll follow up by email if you leave the page.`
+						`Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
 					];
 
 					const response = await Ticket.findByIdAndUpdate(
@@ -227,29 +234,26 @@ export const ticketAddTag = tc => createAddTagResolver(tc);
 
 export const ticketRemoveTag = tc => createRemoveTagResolver(tc);
 
-export const ticketSendMessage = tc => tc.schemaComposer.createResolver({
-	name: 'sendMessage',
-	type: 'JSON',
-	args: { text: 'String!', ticket: 'MongoID!', agent: "MongoID" },
-	kind: 'mutation',
-	resolve: async ({ 
-		args: {
-			ticket,
-			text,
-			agent: argAgent,
-		}, 
-		context: {
-			agent,
-			stream: { chat },
-		}
-	}) => {
-		if (!agent && !argAgent) {
-			throw new Error("Unauthenticated");
-		}
+export const ticketSendMessage = tc =>
+	tc.schemaComposer.createResolver({
+		name: 'sendMessage',
+		type: 'JSON',
+		args: { text: 'String!', ticket: 'MongoID!', agent: 'MongoID' },
+		kind: 'mutation',
+		resolve: async ({
+			args: { ticket, text, agent: argAgent },
+			context: {
+				agent,
+				stream: { chat },
+			},
+		}) => {
+			if (!agent && !argAgent) {
+				throw new Error('Unauthenticated');
+			}
 
-		return chat.channel('combase', ticket).sendMessage({
-			text,
-			user_id: agent || argAgent,
-		});
-	}
-})
+			return chat.channel('combase', ticket).sendMessage({
+				text,
+				user_id: agent || argAgent,
+			});
+		},
+	});
