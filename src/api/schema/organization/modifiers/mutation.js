@@ -37,13 +37,14 @@ const chatCommands = [
 	},
 ];
 
-const permissions = [ 
-	new Permission("Admin Users", 600, AnyResource, ["admin"], false, Allow), 
-	new Permission("Users can modify their own messages", 500, AnyResource, ["user"], true, Allow), 
-	new Permission("End Users", 400, AnyResource, ["user"], false, Allow),
-	new Permission("Anonymous users", 300, AnyResource, ["anonymous"], true, Allow), 
-	new Permission("Channel Members", 200, ["ReadChannel", "CreateMessage"], ["channel_member"], false, Allow), 
-	new Permission("Discard all", 100, AnyResource, AnyRole, false, Deny), 
+const permissions = [
+	new Permission('Admin Agents', 600, AnyResource, ['admin', 'moderator'], false, Allow),
+	new Permission('Guest Agents', 550, AnyResource, ['guest'], true, Allow), // TODO: This rule means we should probably hide the Unassigned inbox when authed as a guest.
+	new Permission('Users can modify their own messages', 500, AnyResource, ['user'], true, Allow),
+	new Permission('End Users', 400, AnyResource, ['user'], false, Allow),
+	new Permission('Anonymous users', 300, AnyResource, ['anonymous'], true, Allow),
+	new Permission('Channel Members', 200, ['ReadChannel', 'CreateMessage'], ['channel_member'], false, Allow),
+	new Permission('Discard all', 100, AnyResource, AnyRole, false, Deny),
 ];
 
 const configureCombaseChatOrganization = async (tc, org, stream) => {
