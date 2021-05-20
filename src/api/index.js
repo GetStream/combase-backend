@@ -11,6 +11,7 @@ import { logger } from '../utils/logger';
 
 import context from './context';
 import schema from './schema';
+import { meilisearch } from 'utils/search';
 
 const apollo = new ApolloServer({
 	cors: true,
@@ -50,6 +51,22 @@ apollo.installSubscriptionHandlers(httpServer);
 (async () => {
 	try {
 		await mongodb();
+
+		/* eslint-disable multiline-comment-style */
+		// Hacky synchronization to bulk add existing agents to meili to debug/test
+		// const agents = await mongo.model('Agent').find();
+
+		// const agentDocs = agents.map(({ _doc: agent }) => ({
+		// 	_id: agent._id.toString(),
+		// 	organization: agent.organization.toString(),
+		// 	name: agent.name,
+		// 	role: agent.role,
+		// 	email: agent.email,
+		// 	timezone: agent.timezone,
+		// }));
+
+		// await meilisearch.index('agent').addDocuments(agentDocs);
+		/* eslint-enable multiline-comment-style */
 
 		const port = process.env.PORT;
 

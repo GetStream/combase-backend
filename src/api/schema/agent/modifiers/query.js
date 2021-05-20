@@ -1,31 +1,13 @@
 import mongoose from 'mongoose';
+import { createSearchResolver } from 'utils/search';
 
 import { AgentModel } from '../model';
 
 export const agent = tc => tc.mongooseResolvers.findById().clone({ name: 'get' });
 
 export const agents = tc => tc.mongooseResolvers.connection().clone({ name: 'list' });
-export const search = tc =>
-	tc.mongooseResolvers
-		.connection()
-		.wrap(resolve => {
-			// eslint-disable-next-line no-param-reassign
-			resolve.args = {
-				query: 'String!',
-			};
 
-			return resolve;
-		})
-		// eslint-disable-next-line no-unused-vars
-		.wrapResolve(_ => async rp => {
-			const { hits, nbHits } = await rp.context.meilisearch.index(tc.getTypeName().toLowerCase()).search(rp.args.query);
-
-			return {
-				edges: hits.map(node => ({ node })),
-				count: nbHits,
-			};
-		})
-		.clone({ name: 'search' });
+export const search = createSearchResolver;
 
 export const availableAgents = tc =>
 	tc.schemaComposer.createResolver({
