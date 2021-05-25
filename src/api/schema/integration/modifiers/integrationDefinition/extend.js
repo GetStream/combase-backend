@@ -21,7 +21,12 @@ export const extend = tc => {
 					organization,
 				};
 
-				return IntegrationTC.getResolver('lookup').resolve({ source, args, context, info });
+				return IntegrationTC.getResolver('lookup').resolve({
+					source,
+					args,
+					context,
+					info,
+				});
 			},
 		},
 	});
