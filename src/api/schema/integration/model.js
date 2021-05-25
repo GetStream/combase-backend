@@ -1,8 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
-import path from 'path';
-import slash from 'slash';
-import fs from 'fs-extra';
 import { composeMongoose } from 'graphql-compose-mongoose';
 import { fieldEncryption } from 'mongoose-field-encryption';
 
@@ -36,26 +33,17 @@ IntegrationCredentialsSchema.plugin(fieldEncryption, {
 
 const IntegrationSchema = new Schema(
 	{
-		name: {
-			type: String,
-			required: true,
-			trim: true,
-			description: 'The name of this integration',
-		},
 		organization: {
 			type: Schema.Types.ObjectId,
 			ref: 'Organization',
 			required: true,
 			description: 'A reference to the organization the Integration is associated with.',
 		},
-		triggers: [
-			{
-				type: String,
-				required: true,
-				trim: true,
-				description: 'The trigger used to listen for event from this integration',
-			},
-		],
+		uid: {
+			type: String,
+			required: true,
+			description: 'The uid of the plugin package. Take from the name in package.json, without the "@combase.app/plugin-" prefix.',
+		},
 		credentials: [IntegrationCredentialsSchema],
 		enabled: {
 			type: Boolean,
@@ -87,27 +75,6 @@ export const IntegrationDefinitionFilterITC = schemaComposer.createInputTC({
 	},
 });
 
-export const IntegrationCategoryETC = schemaComposer.createEnumTC({
-	name: 'EnumIntegrationCategory',
-	values: {
-		calendar: {
-			value: 'calendar',
-		},
-		email: {
-			value: 'email',
-		},
-		enrich: {
-			value: 'enrich',
-		},
-		organization: {
-			value: 'organization',
-		},
-		organizational: {
-			value: 'organizational',
-		},
-	},
-});
-
 export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 	name: 'IntegrationDefinition',
 	fields: {
@@ -115,18 +82,6 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 			description:
 				'Stringified Markdown from the README of an Integration Definition. Used by remark-react in the frontend to build the Interation "About" pages.',
 			type: 'String',
-			// resolve: source => {
-			// 	/* eslint-disable no-sync */
-			// 	const readme = slash(path.join(source.internal.path, 'about.md'));
-			// 	let str = '';
-			// 	console.log(fs.existsSync(readme));
-			// 	if (fs.existsSync(readme)) {
-			// 		str = fs.readFileSync(readme).toString();
-			// 	}
-
-			// 	return str;
-			// 	/* eslint-enable no-sync */
-			// },
 		},
 		configuration: 'JSON!',
 		category: {
@@ -135,7 +90,7 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 		},
 		icon: 'String',
 		id: 'String!',
-		fields: 'JSON!',
+		actions: 'JSON',
 		name: 'String!',
 		triggers: 'JSON!',
 		internal: {

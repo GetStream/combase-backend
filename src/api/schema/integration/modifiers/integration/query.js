@@ -5,16 +5,21 @@ export const integrationLookup = tc =>
 		name: 'lookup',
 		type: tc,
 		args: {
-			organization: 'MongoID!',
-			triggers: '[String!]',
+			organization: 'MongoID',
+			uid: 'String!',
 		},
-		resolve: ({ args }) =>
-			IntegrationModel.findOne({
-				organization: args.organization,
-				triggers: {
-					$in: args.triggers,
-				},
-			}),
+		resolve: ({ args, context }) => {
+			const organization = args.organization || context.organization;
+
+			if (!organization) {
+				throw new Error('No organization provided.');
+			}
+
+			return IntegrationModel.findOne({
+				organization,
+				uid: args.uid,
+			});
+		},
 	});
 
 export const integration = tc => tc.mongooseResolvers.findById().clone({ name: 'get' });

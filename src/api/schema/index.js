@@ -152,6 +152,7 @@ schemaComposer.Mutation.addFields({
 	integrationUpdate: schemaComposer.getOTC('Integration').getResolver('update'),
 	integrationRemove: schemaComposer.getOTC('Integration').getResolver('remove'),
 	integrationRemoveMany: schemaComposer.getOTC('Integration').getResolver('removeMany'),
+	integrationToggle: schemaComposer.getOTC('Integration').getResolver('toggle'),
 
 	/**
 	 * @name Organization
