@@ -90,7 +90,18 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 		},
 		icon: 'String',
 		id: 'String!',
-		actions: 'JSON',
+		actions: [
+			schemaComposer.createObjectTC({
+				name: 'IntegrationAction',
+				fields: {
+					location: '[String!]',
+					label: 'String!',
+					description: 'String!',
+					trigger: '[String!]',
+					payload: 'JSON',
+				},
+			}),
+		],
 		name: 'String!',
 		triggers: 'JSON!',
 		internal: {
