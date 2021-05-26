@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'mongoose-bcrypt';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
+import { composeAlgoliaIndex } from 'graphql-compose-algolia';
 
 import schemaComposer from 'api/schema/composer';
 
@@ -170,8 +171,21 @@ AgentSchema.index(
 	}
 );
 
-export const AgentModel = mongoose.model('Agent', AgentSchema);
+const AgentModel = mongoose.model('Agent', AgentSchema);
 
-export const AgentTC = composeMongoose(AgentModel, {
+const composeAlgoliaOpts = {
+	indexName: 'TICKETS',
+	fields: ['name', 'role', 'email', 'timezone', 'organization'],
 	schemaComposer,
-});
+	appId: process.env.ALGOLIA_ID,
+	apiKey: process.env.ALGOLIA_KEY,
+};
+
+const AgentTC = composeAlgoliaIndex(
+	composeMongoose(AgentModel, {
+		schemaComposer,
+	}),
+	composeAlgoliaOpts
+);
+
+export { AgentModel, AgentTC };

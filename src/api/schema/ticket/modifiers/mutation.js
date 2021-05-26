@@ -5,19 +5,17 @@ import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTagga
 import { TicketModel as Ticket } from '../model';
 import { createChannel, syncChannel, syncChannelMany, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
 import { logger } from 'utils/logger';
-import { addMeiliDocument } from 'utils/resolverMiddlewares/search';
-
-const searchableFields = ['_id', 'organization', 'user', 'subject'];
 
 export const ticketCreate = tc =>
 	tc.mongooseResolvers
 		.createOne()
 		.wrap(wrapTicketCreate)
 		.wrapResolve(wrapTicketCreateResolve)
-		.withMiddlewares([createChannel(), addMeiliDocument('ticket', searchableFields)])
+		.withMiddlewares([createChannel(), tc.algoliaMiddlewares.sync])
 		.clone({ name: 'create' });
 
-export const ticketUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([syncChannel()]).clone({ name: 'update' });
+export const ticketUpdate = tc =>
+	tc.mongooseResolvers.updateById().withMiddlewares([syncChannel(), tc.algoliaMiddlewares.sync]).clone({ name: 'update' });
 export const ticketUpdateMany = tc => tc.mongooseResolvers.updateMany().withMiddlewares([syncChannelMany()]).clone({ name: 'updateMany' });
 
 export const ticketMarkAs = tc =>

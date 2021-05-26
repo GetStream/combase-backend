@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { createSearchResolver } from 'utils/search';
 
 import { AgentModel } from '../model';
 
@@ -7,7 +6,7 @@ export const agent = tc => tc.mongooseResolvers.findById().clone({ name: 'get' }
 
 export const agents = tc => tc.mongooseResolvers.connection().clone({ name: 'list' });
 
-export const search = createSearchResolver;
+export const search = tc => tc.algoliaResolvers.search();
 
 export const availableAgents = tc =>
 	tc.schemaComposer.createResolver({

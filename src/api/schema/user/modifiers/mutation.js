@@ -1,9 +1,6 @@
 import { enrichWithAuthToken } from 'utils/resolverMiddlewares/auth';
-import { addMeiliDocument, updateMeiliDocument } from 'utils/resolverMiddlewares/search';
 import { syncChatProfile } from 'utils/resolverMiddlewares/streamChat';
 import { UserModel } from '../model';
-
-const searchableFields = ['_id', 'organization', 'name', 'email'];
 
 export const getOrCreate = tc =>
 	tc.schemaComposer
@@ -50,18 +47,14 @@ export const getOrCreate = tc =>
 				};
 			},
 		})
-		.withMiddlewares([enrichWithAuthToken('user'), addMeiliDocument('user', searchableFields)])
+		.withMiddlewares([enrichWithAuthToken('user'), tc.algoliaMiddlewares.sync])
 		.clone({ name: 'getOrCreate' });
 
-export const userCreate = tc =>
-	tc.mongooseResolvers
-		.createOne()
-		.withMiddlewares([addMeiliDocument('user', searchableFields)])
-		.clone({ name: 'create' });
+export const userCreate = tc => tc.mongooseResolvers.createOne().withMiddlewares([tc.algoliaMiddlewares.sync]).clone({ name: 'create' });
 export const userUpdate = tc =>
 	tc.mongooseResolvers
 		.updateById()
-		.withMiddlewares([syncChatProfile('User'), updateMeiliDocument('user', searchableFields)])
+		.withMiddlewares([syncChatProfile('User'), tc.algoliaMiddlewares.sync])
 		.clone({ name: 'update' });
 
 //TODO: ? deactivate/remove user resolver.

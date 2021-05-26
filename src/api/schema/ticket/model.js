@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
+import { composeAlgoliaIndex } from 'graphql-compose-algolia';
 
 import schemaComposer from 'api/schema/composer';
 
@@ -95,5 +96,16 @@ TicketSchema.index({
 	updatedAt: 1,
 });
 
-export const TicketModel = mongoose.model('Ticket', TicketSchema);
-export const TicketTC = composeMongoose(TicketModel, { schemaComposer });
+const TicketModel = mongoose.model('Ticket', TicketSchema);
+
+const composeAlgoliaOpts = {
+	indexName: 'TICKETS',
+	fields: ['organization', 'user', 'subject'],
+	schemaComposer,
+	appId: process.env.ALGOLIA_ID,
+	apiKey: process.env.ALGOLIA_KEY,
+};
+
+const TicketTC = composeAlgoliaIndex(composeMongoose(TicketModel, { schemaComposer }), composeAlgoliaOpts);
+
+export { TicketModel, TicketTC };

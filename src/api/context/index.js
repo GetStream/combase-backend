@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import { logger } from 'utils/logger';
 import { streamCtx } from 'utils/streamCtx';
 import s3 from 'utils/s3';
-import { meilisearch } from 'utils/search';
+import { algolia } from 'utils/search';
 
 import { OrganizationModel } from 'api/schema/organization/model';
 import { AgentModel } from 'api/schema/agent/model';
@@ -110,7 +110,7 @@ const createContext = async ({ connection, req }) => {
 
 		return {
 			...scopes,
-			meilisearch,
+			algolia,
 			s3,
 			stream: streamCtx(stream?.key, stream?.secret, stream?.appId),
 		};

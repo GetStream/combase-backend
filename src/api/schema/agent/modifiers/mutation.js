@@ -8,9 +8,6 @@ import { OrganizationTC } from 'api/schema/organization/model';
 
 import { streamCtx } from 'utils/streamCtx';
 import { syncChatProfile } from 'utils/resolverMiddlewares/streamChat';
-import { addMeiliDocument, updateMeiliDocument } from 'utils/resolverMiddlewares/search';
-
-const searchableFields = ['_id', 'name', 'role', 'email', 'timezone', 'organization'];
 
 export const agentCreate = tc =>
 	tc.mongooseResolvers
@@ -24,9 +21,9 @@ export const agentCreate = tc =>
 			// eslint-disable-next-line callback-return
 			const data = await next(rp);
 
-			// Syncs the Agent doc to StreamChat and MeiliSearch.
+			// Syncs the Agent doc to StreamChat
 			try {
-				const { stream, meilisearch } = rp.context;
+				const { stream } = rp.context;
 				const { _doc } = data.record;
 
 				await stream.chat.upsertUser({
@@ -40,8 +37,6 @@ export const agentCreate = tc =>
 					entity: tc.getTypeName(),
 				});
 
-				await meilisearch.index('agent').addDocuments([_doc]);
-
 				return data;
 			} catch (error) {
 				// eslint-disable-next-line no-console
@@ -50,13 +45,13 @@ export const agentCreate = tc =>
 				return data;
 			}
 		})
-		.withMiddlewares([addMeiliDocument('agent', searchableFields)])
+		.withMiddlewares([tc.algoliaMiddlewares.sync])
 		.clone({ name: 'create' });
 
 export const agentUpdate = tc =>
 	tc.mongooseResolvers
 		.updateById()
-		.withMiddlewares([syncChatProfile('Agent'), updateMeiliDocument('agent', searchableFields)])
+		.withMiddlewares([syncChatProfile('Agent'), tc.algoliaMiddlewares.sync])
 		.clone({ name: 'update' });
 
 export const agentDeactivate = tc =>

@@ -1,3 +1,4 @@
+import p from 'phin';
 import { IntegrationModel } from '../../model';
 
 export const integrationCreate = tc =>
@@ -54,3 +55,41 @@ export const integrationToggle = tc =>
 	});
 export const integrationRemove = tc => tc.mongooseResolvers.removeById().clone({ name: 'remove' });
 export const integrationRemoveMany = tc => tc.mongooseResolvers.removeMany().clone({ name: 'removeMany' });
+
+export const integrationAction = tc =>
+	tc.schemaComposer.createResolver({
+		name: 'action',
+		type: 'Boolean',
+		args: {
+			trigger: 'String!',
+			payload: 'JSON',
+		},
+		kind: 'mutation',
+		resolve: async rp => {
+			try {
+				const { organization } = rp.context;
+				const { trigger, payload } = rp?.args || {};
+
+				if (!organization) {
+					throw new Error('Unauthorized');
+				}
+
+				const payloadMap = Object.entries(payload);
+
+				console.log(payloadMap);
+
+				await p({
+					method: 'post',
+					timeout: 3000,
+					url: `${process.env.INGRESS_URL}/webhook/?trigger=${trigger}&organization=${organization}`,
+					data: JSON.stringify({}),
+				});
+
+				return true;
+			} catch (error) {
+				console.log(error.message);
+
+				return false;
+			}
+		},
+	});

@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import { MeiliSearch } from 'meilisearch';
+import algoliasearch from 'algoliasearch';
 
-export const meilisearch = new MeiliSearch({ host: process.env.MEILI_HOST });
+export const algolia = algoliasearch(process.env.ALGOLIA_ID, process.env.ALGOLIA_KEY);
 
 export const createSearchResolver = tc =>
 	tc.mongooseResolvers
@@ -21,7 +21,7 @@ export const createSearchResolver = tc =>
 			 * we can pass the _ids from the found hits in Meili to the connection to enrich the full agent object incl. relations etc.
 			 */
 			const index = tc.getTypeName().toLowerCase();
-			const { hits } = await rp.context.meilisearch.index(index).search(rp.args.query);
+			const { hits } = await rp.context.algolia.index(index).search(rp.args.query);
 
 			const _ids = hits.map(hit => hit._id);
 

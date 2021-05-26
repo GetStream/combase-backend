@@ -52,11 +52,11 @@ apollo.installSubscriptionHandlers(httpServer);
 		await mongodb();
 
 		/* eslint-disable multiline-comment-style */
-		// Hacky synchronization to bulk add existing agents to meili to debug/test
+		// Hacky synchronization to bulk add existing agents to algolia to debug/test
 		// const agents = await mongo.model('Agent').find();
 
 		// const agentDocs = agents.map(({ _doc: agent }) => ({
-		// 	_id: agent._id.toString(),
+		// 	objectID: agent._id.toString(),
 		// 	organization: agent.organization.toString(),
 		// 	name: agent.name,
 		// 	role: agent.role,

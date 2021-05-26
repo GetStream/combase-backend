@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
+import { composeAlgoliaIndex } from 'graphql-compose-algolia';
 
 import schemaComposer from 'api/schema/composer';
 
@@ -32,7 +33,7 @@ const UserSchema = new Schema(
 		timezone: {
 			type: Schema.Types.String,
 			description: 'The timezone of the user. Updates (if changed) when a user creates a new ticket.',
-		}
+		},
 	},
 	{ collection: 'users' }
 );
@@ -53,6 +54,15 @@ UserSchema.index(
 );
 
 const UserModel = mongoose.model('User', UserSchema);
-const UserTC = composeMongoose(UserModel, { schemaComposer });
+
+const composeAlgoliaOpts = {
+	indexName: 'USERS',
+	fields: ['name', 'email', 'organization'],
+	schemaComposer,
+	appId: process.env.ALGOLIA_ID,
+	apiKey: process.env.ALGOLIA_KEY,
+};
+
+const UserTC = composeAlgoliaIndex(composeMongoose(UserModel, { schemaComposer }), composeAlgoliaOpts);
 
 export { UserModel, UserTC };
