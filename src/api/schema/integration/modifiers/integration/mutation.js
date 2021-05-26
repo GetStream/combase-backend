@@ -1,3 +1,4 @@
+import { deepmerge } from 'graphql-compose';
 import p from 'phin';
 import { IntegrationModel } from '../../model';
 
@@ -9,28 +10,34 @@ export const integrationCreate = tc =>
 			resolve.args = {
 				uid: 'String!',
 				credentials: '[IntegrationCredentialsInput!]',
+				enabled: 'Boolean',
 			};
 
 			return resolve;
 		})
 		.wrapResolve(next => rp => {
 			const { organization } = rp.context;
-			const { uid, credentials } = rp.args;
+			const { enabled, uid, credentials } = rp.args;
 
 			if (!organization) {
 				throw new Error('Unauthorized');
 			}
 
-			return next({
-				...rp,
-				args: {
-					record: {
-						credentials,
-						organization,
-						uid,
+			// eslint-disable-next-line no-param-reassign
+			delete rp.args;
+
+			return next(
+				deepmerge(rp, {
+					args: {
+						record: {
+							enabled,
+							credentials,
+							organization,
+							uid,
+						},
 					},
-				},
-			});
+				})
+			);
 		})
 		.clone({ name: 'create' });
 export const integrationUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
@@ -73,10 +80,6 @@ export const integrationAction = tc =>
 				if (!organization) {
 					throw new Error('Unauthorized');
 				}
-
-				const payloadMap = Object.entries(payload);
-
-				console.log(payloadMap);
 
 				await p({
 					method: 'post',

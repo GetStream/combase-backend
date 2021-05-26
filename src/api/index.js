@@ -11,6 +11,7 @@ import { logger } from '../utils/logger';
 
 import context from './context';
 import schema from './schema';
+import { algolia } from 'utils/search';
 
 const apollo = new ApolloServer({
 	cors: true,
@@ -64,7 +65,7 @@ apollo.installSubscriptionHandlers(httpServer);
 		// 	timezone: agent.timezone,
 		// }));
 
-		// await meilisearch.index('agent').addDocuments(agentDocs);
+		// await algolia.initIndex('AGENTS').saveObjects(agentDocs);
 		/* eslint-enable multiline-comment-style */
 
 		const port = process.env.PORT;
