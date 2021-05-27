@@ -60,7 +60,7 @@ export const syncChannel = (fields = ['priority', 'starred', 'tags', 'status', '
 	return res;
 };
 
-export const syncChannelMany = (field) => async (resolve, source, args, context, info) => {
+export const syncChannelMany = field => async (resolve, source, args, context, info) => {
 	if (!field) {
 		throw new Error('No field provided from which to sync with Stream Chat. i.e. "priority"');
 	}
@@ -74,11 +74,11 @@ export const syncChannelMany = (field) => async (resolve, source, args, context,
 	}
 
 	const res = await resolve(source, args, context, info);
-	
+
 	const channelIdsToUpdate = args._ids;
-	
-	const { record: _doc } = args;
-	
+
+	// const { record: _doc } = args;
+
 	// TODO: Not ideal - we can fix by changing the `level` arg to `priority` in the setPriority resolvers...
 	const fieldSelector = field === 'priority' ? 'level' : field;
 
@@ -86,11 +86,13 @@ export const syncChannelMany = (field) => async (resolve, source, args, context,
 		[field]: args[fieldSelector],
 	};
 
-	await Promise.all(channelIdsToUpdate.map(_id => 
-		context.stream.chat.channel('combase', _id.toString()).updatePartial({
-			set: syncObj,
-		})
-	));
+	await Promise.all(
+		channelIdsToUpdate.map(_id =>
+			context.stream.chat.channel('combase', _id.toString()).updatePartial({
+				set: syncObj,
+			})
+		)
+	);
 
 	return res;
 };

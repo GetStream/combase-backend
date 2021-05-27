@@ -46,10 +46,10 @@ const OrganizationSchema = new Schema(
 		},
 		security: {
 			global2Fa: {
-				description: "Enforce two-factor authentication for the entire organization.",
+				description: 'Enforce two-factor authentication for the entire organization.',
 				type: Boolean,
-				default: false
-			}
+				default: false,
+			},
 		},
 		contact: {
 			email: {
@@ -108,13 +108,17 @@ const OrganizationSchema = new Schema(
 			defaultTheme: {
 				type: String,
 				trim: true,
-				default: "auto",
+				default: 'auto',
 				description: 'The default theme for the widget when the embed code is generated client-side.',
 			},
 			unassignedMessages: [
 				{
 					type: String,
-					default: [`Sorry, all agents are currently unavailable.`, `Feel free to add additional information and we'll follow up as soon as an agent is available.`, `Don't worry if you can't stick around! We'll follow up by email if you leave the page.`],
+					default: [
+						`Sorry, all agents are currently unavailable.`,
+						`Feel free to add additional information and we'll follow up as soon as an agent is available.`,
+						`Don't worry if you can't stick around! We'll follow up by email if you leave the page.`,
+					],
 					description: 'An array of message strings to be sent, in order, when a user opens a new conversation.',
 				},
 			],

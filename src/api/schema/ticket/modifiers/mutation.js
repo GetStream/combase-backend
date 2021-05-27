@@ -50,7 +50,22 @@ export const ticketStarMany = tc =>
 			starred: 'Boolean!',
 		})
 		.wrapResolve(next => rp =>
-			next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { starred: rp?.args.starred } } }))
+			next(
+				deepmerge(rp, {
+					args: {
+						filter: {
+							_operators: {
+								_id: {
+									in: rp.args._ids,
+								},
+							},
+						},
+						record: {
+							starred: rp?.args.starred,
+						},
+					},
+				})
+			)
 		)
 		.withMiddlewares([syncChannelMany('starred')])
 		.clone({ name: 'starMany' });
@@ -76,7 +91,22 @@ export const ticketSetPriorityMany = tc =>
 			level: 'Int!',
 		})
 		.wrapResolve(next => rp =>
-			next(deepmerge(rp, { args: { filter: { _operators: { _id: { in: rp.args._ids } } }, record: { priority: rp.args.level } } }))
+			next(
+				deepmerge(rp, {
+					args: {
+						filter: {
+							_operators: {
+								_id: {
+									in: rp.args._ids,
+								},
+							},
+						},
+						record: {
+							priority: rp.args.level,
+						},
+					},
+				})
+			)
 		)
 		.withMiddlewares([syncChannelMany('priority')])
 		.clone({ name: 'setPriorityMany' });
@@ -119,6 +149,7 @@ export const ticketAssign = tc =>
 
 					await channel.updatePartial({ set: { status } });
 
+					// eslint-disable-next-line no-unused-vars
 					for await (const text of unassignedMessages) {
 						await channel.sendMessage({
 							text,
@@ -236,9 +267,13 @@ export const ticketSendMessage = tc =>
 	tc.schemaComposer.createResolver({
 		name: 'sendMessage',
 		type: 'JSON',
-		args: { text: 'String!', ticket: 'MongoID!', agent: 'MongoID' },
+		args: {
+			text: 'String!',
+			ticket: 'MongoID!',
+			agent: 'MongoID',
+		},
 		kind: 'mutation',
-		resolve: async ({
+		resolve: ({
 			args: { ticket, text, agent: argAgent },
 			context: {
 				agent,

@@ -11,7 +11,6 @@ import { logger } from '../utils/logger';
 
 import context from './context';
 import schema from './schema';
-import { algolia } from 'utils/search';
 
 const apollo = new ApolloServer({
 	cors: true,

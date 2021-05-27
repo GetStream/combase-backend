@@ -1,5 +1,6 @@
 import { deepmerge } from 'graphql-compose';
 import p from 'phin';
+import { logger } from 'utils/logger';
 import { IntegrationModel } from '../../model';
 
 export const integrationCreate = tc =>
@@ -75,7 +76,7 @@ export const integrationAction = tc =>
 		resolve: async rp => {
 			try {
 				const { organization } = rp.context;
-				const { trigger, payload } = rp?.args || {};
+				const { trigger, payload = {} } = rp?.args || {};
 
 				if (!organization) {
 					throw new Error('Unauthorized');
@@ -84,13 +85,19 @@ export const integrationAction = tc =>
 				await p({
 					method: 'post',
 					timeout: 3000,
+					headers: {
+						'Content-Type': 'application/json',
+					},
 					url: `${process.env.INGRESS_URL}/webhook/?trigger=${trigger}&organization=${organization}`,
-					data: JSON.stringify({}),
+					data: JSON.stringify({
+						...payload,
+						timestamp: Date.now(),
+					}),
 				});
 
 				return true;
 			} catch (error) {
-				console.log(error.message);
+				logger.error(error.message);
 
 				return false;
 			}

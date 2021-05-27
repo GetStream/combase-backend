@@ -1,4 +1,5 @@
 import schemaComposer from 'api/schema/composer';
+import { DateTimeResolver as DateTime } from 'graphql-scalars';
 import chain from 'utils/composer-chain';
 
 import { StreamActivity, StreamAddActivity } from './activity';
@@ -12,6 +13,10 @@ import Tag from './tag';
 import Ticket from './ticket';
 import User from './user';
 import Webhook from './webhook';
+
+if (!schemaComposer.has('DateTime')) {
+	schemaComposer.add(DateTime);
+}
 
 chain([
 	Agent,
