@@ -77,8 +77,6 @@ export const syncChannelMany = field => async (resolve, source, args, context, i
 
 	const channelIdsToUpdate = args._ids;
 
-	// const { record: _doc } = args;
-
 	// TODO: Not ideal - we can fix by changing the `level` arg to `priority` in the setPriority resolvers...
 	const fieldSelector = field === 'priority' ? 'level' : field;
 
