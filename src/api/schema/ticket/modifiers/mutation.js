@@ -273,20 +273,26 @@ export const ticketSendMessage = tc =>
 			agent: 'MongoID',
 		},
 		kind: 'mutation',
-		resolve: ({
+		resolve: async ({
 			args: { ticket, text, agent: argAgent },
 			context: {
 				agent,
 				stream: { chat },
 			},
 		}) => {
-			if (!agent && !argAgent) {
-				throw new Error('Unauthenticated');
-			}
+			try {
+				if (!agent && !argAgent) {
+					throw new Error('Unauthenticated');
+				}
 
-			return chat.channel('combase', ticket).sendMessage({
-				text,
-				user_id: agent || argAgent,
-			});
+				const data = await chat.channel('combase', ticket).sendMessage({
+					text,
+					user_id: agent || argAgent,
+				});
+
+				return data;
+			} catch (error) {
+				logger.error(error.message);
+			}
 		},
 	});
