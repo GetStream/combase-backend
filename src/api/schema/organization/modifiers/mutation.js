@@ -44,7 +44,7 @@ const permissions = [
 	new Permission('Users can modify their own messages', 500, AnyResource, ['user'], true, Allow),
 	new Permission('End Users', 400, AnyResource, ['user'], false, Allow),
 	new Permission('Anonymous users', 300, AnyResource, ['anonymous'], true, Allow),
-	new Permission('Channel Members', 200, ['ReadChannel', 'CreateMessage'], ['channel_member'], false, Allow),
+	new Permission('Channel Members', 200, ['ReadChannel', 'CreateMessage', 'UploadAttachment'], ['channel_member'], false, Allow),
 	new Permission('Discard all', 100, AnyResource, AnyRole, false, Deny),
 ];
 

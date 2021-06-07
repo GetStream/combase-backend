@@ -165,10 +165,15 @@ export const ticketAssign = tc =>
 				if (ticket && agent && status !== 'unassigned') {
 					const agentId = agent.toString();
 
-					const { members } = await channel.queryMembers({ id: { $in: [agentId] } });
+					const { members } = await channel.queryMembers({ id: { $in: [agentId, organization] } });
 
 					if (members[agentId]) {
 						throw new Error('That agent is already a member of this channel.');
+					}
+
+					if (members.find(({ user_id }) => organization === user_id)) {
+						await channel.demoteModerators([organization]);
+						await channel.removeMembers([organization]);
 					}
 
 					const addMember = channel.addMembers([agentId], {

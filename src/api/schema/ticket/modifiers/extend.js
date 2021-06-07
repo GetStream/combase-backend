@@ -1,5 +1,4 @@
 import { createChildTagRelationship } from 'utils/createTaggableEntity';
-import { logger } from 'utils/logger';
 
 export const extend = tc => {
 	tc.addRelation('userData', {
@@ -14,17 +13,19 @@ export const extend = tc => {
 		type: 'DateTime',
 	});
 
+	tc.setField('updatedAt', {
+		type: 'DateTime',
+	});
+
 	tc.addFields({
 		messages: tc.schemaComposer.createResolver({
-			name: 'getTicketChannel',
+			name: 'getTicketMessages',
 			type: 'JSON',
 			kind: 'query',
 			args: {},
 			resolve: async ({ source, context }) => {
 				const { _id: channelId } = source;
 				const { chat } = context.stream || {};
-
-				logger.info(`Channel ID: ${channelId}`);
 
 				if (!chat) {
 					throw new Error('Unauthorized');
