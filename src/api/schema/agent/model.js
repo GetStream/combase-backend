@@ -174,7 +174,7 @@ AgentSchema.index(
 const AgentModel = mongoose.model('Agent', AgentSchema);
 
 const composeAlgoliaOpts = {
-	indexName: 'TICKETS',
+	indexName: 'AGENTS',
 	fields: ['name', 'role', 'email', 'timezone', 'organization'],
 	schemaComposer,
 	appId: process.env.ALGOLIA_ID,
