@@ -46,9 +46,10 @@ export const tagCreate = tc =>
 
 			return next(newRp);
 		})
+		.withMiddlewares([tc.algoliaMiddlewares.sync])
 		.clone({ name: 'create' });
 
-export const tagUpdate = tc => tc.mongooseResolvers.updateById().clone({ name: 'update' });
+export const tagUpdate = tc => tc.mongooseResolvers.updateById().withMiddlewares([tc.algoliaMiddlewares.sync]).clone({ name: 'update' });
 
 export const tagRemove = tc =>
 	tc.mongooseResolvers
@@ -80,6 +81,7 @@ export const tagRemove = tc =>
 
 			return next(newRp);
 		})
+		.withMiddlewares([tc.algoliaMiddlewares.remove])
 		.clone({ name: 'remove' });
 
 export const tagRemoveMany = tc => tc.mongooseResolvers.removeMany().clone({ name: 'removeMany' });
