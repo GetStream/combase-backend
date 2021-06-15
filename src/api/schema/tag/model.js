@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeMongoose } from 'graphql-compose-mongoose';
+import { composeAlgoliaIndex } from 'graphql-compose-algolia';
 
 import schemaComposer from 'api/schema/composer';
 
@@ -44,5 +45,16 @@ TagSchema.index(
 	}
 );
 
-export const TagModel = mongoose.model('Tag', TagSchema);
-export const TagTC = composeMongoose(TagModel, { schemaComposer });
+const TagModel = mongoose.model('Tag', TagSchema);
+
+const composeAlgoliaOpts = {
+	indexName: 'TAGS',
+	fields: ['name', 'organization'],
+	schemaComposer,
+	appId: process.env.ALGOLIA_ID,
+	apiKey: process.env.ALGOLIA_KEY,
+};
+
+const TagTC = composeAlgoliaIndex(composeMongoose(TagModel, { schemaComposer }), composeAlgoliaOpts);
+
+export { TagModel, TagTC };
