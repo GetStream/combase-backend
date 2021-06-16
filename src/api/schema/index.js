@@ -9,6 +9,7 @@ import Faq from './faq';
 import Group from './group';
 import { Integration, IntegrationDefinition } from './integration';
 import Organization from './organization';
+import Invitation from './invitation';
 import Tag from './tag';
 import Ticket from './ticket';
 import User from './user';
@@ -25,6 +26,7 @@ chain([
 	Group,
 	Integration,
 	IntegrationDefinition,
+	Invitation,
 	Organization,
 	Tag,
 	Ticket,
@@ -75,6 +77,11 @@ schemaComposer.Query.addFields({
 	 */
 	integrationDefinition: schemaComposer.getOTC('IntegrationDefinition').getResolver('get'),
 	integrationDefinitions: schemaComposer.getOTC('IntegrationDefinition').getResolver('list'),
+
+	/**
+	 * @name Invitation
+	 */
+	invitation: schemaComposer.getOTC('Invitation').getResolver('get'),
 
 	/**
 	 * @name Organization
@@ -159,6 +166,12 @@ schemaComposer.Mutation.addFields({
 	integrationRemoveMany: schemaComposer.getOTC('Integration').getResolver('removeMany'),
 	integrationToggle: schemaComposer.getOTC('Integration').getResolver('toggle'),
 	integrationAction: schemaComposer.getOTC('Integration').getResolver('action'),
+
+	/**
+	 * @name Invitation
+	 */
+	invitationCreate: schemaComposer.getOTC('Invitation').getResolver('create'),
+	invitationRemove: schemaComposer.getOTC('Invitation').getResolver('remove'),
 
 	/**
 	 * @name Organization
