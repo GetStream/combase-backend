@@ -44,7 +44,7 @@ InvitationSchema.index({
 
 InvitationSchema.index(
 	{
-		email: 1,
+		to: 1,
 		organization: 1,
 	},
 	{ unique: true }
