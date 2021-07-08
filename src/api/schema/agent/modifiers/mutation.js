@@ -29,13 +29,18 @@ export const agentCreate = tc =>
 				await stream.chat.upsertUser({
 					avatar: _doc.avatar,
 					email: _doc.email,
-					role: _doc.access,
+					// role: _doc.access,
+					role: 'admin',
 					id: _doc._id.toString(),
 					name: _doc.name.display,
 					organization: _doc.organization.toString(),
 					timezone: _doc.timezone,
 					entity: tc.getTypeName(),
 				});
+
+				const token = jwt.sign(getTokenPayload(_doc, 'agent'), process.env.AUTH_SECRET);
+
+				data.record.token = token;
 
 				return data;
 			} catch (error) {
@@ -122,6 +127,7 @@ export const agentLogin = tc =>
 			}
 
 			delete data.password;
+
 			data.token = jwt.sign(getTokenPayload(data, 'agent'), process.env.AUTH_SECRET);
 
 			return data;
@@ -170,11 +176,6 @@ export const onboard = tc =>
 				})
 			);
 
-			const token = jwt.sign(getTokenPayload(agentDoc._doc, 'agent'), process.env.AUTH_SECRET);
-
-			return {
-				...agentDoc._doc,
-				token,
-			};
+			return agentDoc._doc;
 		},
 	});
