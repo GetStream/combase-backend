@@ -6,6 +6,9 @@ export const streamCtx = (appKey, appSecret, appId) => {
 	if (!appKey || !appSecret || !appId) return {};
 
 	const chat = new StreamChatClient(appKey, appSecret);
+
+	chat.setBaseURL('https://chat.stream-io-api.com');
+
 	const feeds = streamFeedsClient(appKey, appSecret, appId);
 
 	return {

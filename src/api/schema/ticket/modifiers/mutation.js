@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { deepmerge } from 'graphql-compose';
 import { createAddTagResolver, createRemoveTagResolver } from 'utils/createTaggableEntity';
 
-import { TicketModel as Ticket } from '../model';
+import { TicketModel as Ticket, TicketModel } from '../model';
 import { createChannel, syncChannel, syncChannelMany, wrapTicketCreate, wrapTicketCreateResolve } from './utils';
 import { logger } from 'utils/logger';
 
@@ -70,6 +70,17 @@ export const ticketStarMany = tc =>
 		.withMiddlewares([syncChannelMany('starred')])
 		.clone({ name: 'starMany' });
 
+export const ticketSetStatus = tc =>
+	tc.mongooseResolvers
+		.updateById()
+		.removeArg('record')
+		.addArgs({
+			status: 'EnumTicketStatus!',
+		})
+		.wrapResolve(next => rp => next(deepmerge(rp, { args: { record: { status: rp?.args.status } } })))
+		.withMiddlewares([syncChannel()])
+		.clone({ name: 'setStatus' });
+
 export const ticketSetPriority = tc =>
 	tc.mongooseResolvers
 		.updateById()
@@ -123,10 +134,14 @@ export const ticketAssign = tc =>
 			ticket: 'MongoID!',
 			status: 'EnumTicketStatus',
 		},
-		// TODO Show status has a default of open
+		// TODO Show status has a default of open in playground
 		resolve: async ({ args: { ticket, agent, status = 'open' }, context: { organization, stream } }) => {
 			try {
 				const channel = stream.chat.channel('combase', ticket.toString());
+
+				const ticketData = await TicketModel.findById(ticket, { user: 1 });
+
+				const userId = ticketData.user.toString();
 
 				if (status === 'unassigned') {
 					await channel.addModerators([organization]);
@@ -165,27 +180,29 @@ export const ticketAssign = tc =>
 				if (ticket && agent && status !== 'unassigned') {
 					const agentId = agent.toString();
 
-					const { members } = await channel.queryMembers({ id: { $in: [agentId, organization] } });
+					const { members } = await channel.queryMembers({});
 
 					if (members[agentId]) {
 						throw new Error('That agent is already a member of this channel.');
 					}
 
-					if (members.find(({ user_id }) => organization === user_id)) {
-						await channel.demoteModerators([organization]);
-						await channel.removeMembers([organization]);
-					}
+					const existingAgents = members.filter(({ user_id }) => userId !== user_id);
 
-					const addMember = channel.addMembers([agentId], {
+					await Promise.all(
+						existingAgents.map(async ({ user_id }) => {
+							await channel.demoteModerators([user_id]);
+							await channel.removeMembers([user_id]);
+						})
+					);
+
+					await channel.addMembers([agentId], {
 						text: 'An agent joined the chat.',
 						user_id: agentId,
 					});
 
-					const updateChannel = channel.updatePartial({ set: { status } });
+					await channel.updatePartial({ set: { status } });
 
-					await Promise.all([addMember, updateChannel]);
-
-					return await Ticket.findByIdAndUpdate(
+					return Ticket.findByIdAndUpdate(
 						ticket,
 						{
 							$addToSet: {

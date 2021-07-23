@@ -96,6 +96,9 @@ const AgentSchema = new Schema(
 			enum: ['super_admin', 'admin', 'moderator', 'guest'],
 			default: 'guest',
 		},
+		archived: {
+			type: Boolean,
+		},
 		title: {
 			type: String,
 			trim: true,
@@ -119,6 +122,11 @@ const AgentSchema = new Schema(
 			bcrypt: true,
 			required: true,
 			description: 'Password for the agent – bcrypted internally.',
+		},
+		theme: {
+			color: {
+				type: String,
+			},
 		},
 		schedule: [AgentScheduleEntrySchema],
 		timezone: {
@@ -175,7 +183,7 @@ const AgentModel = mongoose.model('Agent', AgentSchema);
 
 const composeAlgoliaOpts = {
 	indexName: 'AGENTS',
-	fields: ['name', 'role', 'email', 'timezone', 'organization'],
+	fields: ['name', 'role', 'email', 'timezone', 'organization', 'active', 'access'],
 	schemaComposer,
 	appId: process.env.ALGOLIA_ID,
 	apiKey: process.env.ALGOLIA_KEY,
