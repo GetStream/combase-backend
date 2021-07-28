@@ -72,6 +72,7 @@ export const IntegrationDefinitionFilterITC = schemaComposer.createInputTC({
 	fields: {
 		id: 'String',
 		name: 'String',
+		category: 'String',
 	},
 });
 

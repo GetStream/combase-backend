@@ -37,7 +37,7 @@ export const integrationDefinitions = tc =>
 			});
 
 			if (filter?.length) {
-				return integrationManifest.filter(original => filter.some(([key, value]) => original[key] === value));
+				return integrationManifest.filter(original => filter.some(([key, value]) => original[key].includes(value)));
 			}
 
 			return integrationManifest;

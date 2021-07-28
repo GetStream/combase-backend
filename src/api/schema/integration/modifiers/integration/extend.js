@@ -24,3 +24,13 @@ export const extend = tc => {
 		},
 	});
 };
+
+export const dateTimeFormatting = tc => {
+	tc.setField('createdAt', {
+		type: 'DateTime',
+	});
+
+	tc.setField('updatedAt', {
+		type: 'DateTime',
+	});
+};

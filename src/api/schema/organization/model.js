@@ -105,11 +105,16 @@ const OrganizationSchema = new Schema(
 					description: 'The tageline message displayed beneath the title in the widget home screen',
 				},
 			},
-			defaultTheme: {
+			uitheme: {
 				type: String,
 				trim: true,
-				default: 'auto',
+				default: 'system',
 				description: 'The default theme for the widget when the embed code is generated client-side.',
+			},
+			accent: {
+				type: String,
+				trim: true,
+				description: 'Override the accent color of the widget.',
 			},
 			unassignedMessages: [
 				{
@@ -134,6 +139,12 @@ const OrganizationSchema = new Schema(
 					type: String,
 					default: 'localhost',
 					description: 'Allowed root domain and path to display widget on.',
+				},
+			],
+			paths: [
+				{
+					type: String,
+					description: 'The list of accepted paths the widget should appear on when embedded.',
 				},
 			],
 		},
