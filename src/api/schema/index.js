@@ -125,6 +125,7 @@ schemaComposer.Mutation.addFields({
 	agentActivate: schemaComposer.getOTC('Agent').getResolver('activate'),
 	agentDeactivate: schemaComposer.getOTC('Agent').getResolver('deactivate'),
 	agentLogin: schemaComposer.getOTC('Agent').getResolver('login'),
+	agentRequestPasswordReset: schemaComposer.getOTC('Agent').getResolver('requestPasswordReset'),
 	agentOnboard: schemaComposer.getOTC('Agent').getResolver('onboard'),
 	agentAddToGroup: schemaComposer.getOTC('Agent').getResolver('addToGroup'),
 	agentRemoveFromGroup: schemaComposer.getOTC('Agent').getResolver('removeFromGroup'),

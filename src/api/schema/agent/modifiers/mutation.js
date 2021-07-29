@@ -29,7 +29,6 @@ export const agentCreate = tc =>
 				await stream.chat.upsertUser({
 					avatar: _doc.avatar,
 					email: _doc.email,
-					// role: _doc.access,
 					role: 'admin',
 					id: _doc._id.toString(),
 					name: _doc.name.display,
@@ -179,3 +178,47 @@ export const onboard = tc =>
 			return agentDoc._doc;
 		},
 	});
+
+export const agentRequestPasswordReset = tc =>
+	tc.mongooseResolvers
+		.findOne()
+		.removeArg('filter')
+		.addArgs({
+			email: 'String!',
+		})
+		.wrapResolve(next => async rp => {
+			// eslint-disable-next-line callback-return
+			const data = await next(
+				deepmerge(rp, {
+					args: {
+						filter: {
+							email: rp.args.email,
+						},
+					},
+					projection: {
+						_id: true,
+						name: true,
+						email: true,
+						organization: true,
+					},
+				})
+			);
+
+			if (!data) {
+				throw new Error('User not found.');
+			}
+
+			await tc.schemaComposer
+				.getOTC('Integration')
+				.getResolver('action')
+				.resolve({
+					...rp,
+					args: {
+						trigger: 'email.requestPasswordReset',
+						payload: data._doc,
+					},
+				});
+
+			return true;
+		})
+		.clone({ name: 'requestPasswordReset' });

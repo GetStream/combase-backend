@@ -78,7 +78,7 @@ export const integrationAction = tc =>
 				const { organization } = rp.context;
 				const { trigger, payload = {} } = rp?.args || {};
 
-				if (!organization) {
+				if (!organization && trigger !== 'email.requestPasswordReset') {
 					throw new Error('Unauthorized');
 				}
 
@@ -88,7 +88,7 @@ export const integrationAction = tc =>
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					url: `${process.env.INGRESS_URL}/webhook/?trigger=${trigger}&organization=${organization}`,
+					url: `${process.env.INGRESS_URL}/webhook/?trigger=${trigger}&organization=${payload?.organization ?? organization}`,
 					data: JSON.stringify({
 						...payload,
 						timestamp: Date.now(),
