@@ -219,6 +219,6 @@ export const agentRequestPasswordReset = tc =>
 					},
 				});
 
-			return true;
+			return data;
 		})
 		.clone({ name: 'requestPasswordReset' });

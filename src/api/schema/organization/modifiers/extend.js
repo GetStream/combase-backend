@@ -113,21 +113,18 @@ export const extend = tc => {
 		resolver: () => tc.schemaComposer.getOTC('Agent').getResolver('getAvailable'),
 	});
 
-	/*
-	 * tc.addRelation('activity', {
-	 * 	prepareArgs: {
-	 * 		filter: ({ _id }) => ({
-	 * 			id: `organization:${_id.toString()}`,
-	 * 		}),
-	 * 	},
-	 * 	projection: { _id: true },
-	 * 	resolver: () => {
-	 * 		tc.schame
-	 * 		return tc.schemaComposer.createResolver({
-	 * 		})
-	 * 	},
-	 * });
-	 */
+	// eslint-disable-next-line multiline-comment-style
+	// tc.addRelation('activity', {
+	// 	prepareArgs: {
+	// 		filter: ({ _id }) => ({
+	// 			id: `organization:${_id.toString()}`,
+	// 		}),
+	// 	},
+	// 	projection: { _id: true },
+	// 	resolver: () => {
+	// 		return [];
+	// 	},
+	// });
 };
 
 export const relateAgents = tc => createPermissionAwareRelationship(tc, tc.schemaComposer.getOTC('Agent'), { search: true });
