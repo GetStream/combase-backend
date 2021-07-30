@@ -179,6 +179,26 @@ export const onboard = tc =>
 		},
 	});
 
+export const resetPassword = tc =>
+	tc.mongooseResolvers
+		.updateById()
+		.removeArg('record')
+		.addArgs({
+			password: 'String!',
+		})
+		.wrapResolve(next => rp => {
+			return next({
+				...rp,
+				args: {
+					_id: rp.args._id,
+					record: {
+						password: rp.args.password,
+					},
+				},
+			});
+		})
+		.clone({ name: 'resetPassword' });
+
 export const agentRequestPasswordReset = tc =>
 	tc.mongooseResolvers
 		.findOne()
