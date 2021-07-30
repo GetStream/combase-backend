@@ -16,5 +16,6 @@ COPY . .
 RUN yarn
 
 EXPOSE 8080
+EXPOSE 9229
 
 CMD [ "yarn", "dev" ]

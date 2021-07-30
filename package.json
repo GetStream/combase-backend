@@ -12,7 +12,7 @@
 		"clean": "rm -rf .data",
 		"start": "pm2-runtime start pm2prod.config.js",
 		"start:dev": "pm2-runtime start pm2dev.config.js",
-		"dev": "nodemon --exec npx babel-node ./src/api/index.js --inspect",
+		"dev": "nodemon --exec 'npx babel-node --inspect=0.0.0.0 ./src/api/index.js'",
 		"lint": "eslint . --ext .js"
 	},
 	"author": "Stream.io, Inc. <support@getstream.io>",
