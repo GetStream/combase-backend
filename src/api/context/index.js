@@ -16,17 +16,18 @@ import { AgentModel } from 'api/schema/agent/model';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {
-		let token, organization, timezone;
+		let token, organization, timezone, protocol, domain;
 
 		if (connection) {
 			token = connection.context.Authorization ? connection.context.Authorization.replace(/^Bearer\s/u, '') : '';
 			organization = connection.context['combase-organization'] ? connection.context['combase-organization'] : '';
 		} else {
-			// const { protocol } = req;
+			protocol = req.protocol;
+			domain = req.hostname;
 
-			// if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
-			// 	throw new Error('Unauthorized domain.');
-			// }
+			if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
+				throw new Error('Connection is insecure');
+			}
 
 			token = req.headers.authorization ? req.headers.authorization.replace(/^Bearer\s/u, '') : '';
 			organization = req.headers['combase-organization'] ? req.headers['combase-organization'] : '';
@@ -67,22 +68,22 @@ const authorizeRequest = async ({ req, connection }) => {
 		}
 
 		if (scopes?.organization) {
-			// const orgQuery = {
-			// 	_id: scopes.organization,
-			// };
-
-			// if (process.env.NODE_ENV === 'production') {
-			// 	orgQuery['widget.domains'] = {
-			// 		$in: [domain],
-			// 	};
-			// }
-
 			orgData = await OrganizationModel.findOne(
 				{
 					_id: scopes.organization,
 				},
-				{ stream: true }
+				{
+					'widget.domains': true,
+					stream: true,
+				}
 			);
+
+			const { widget } = orgData;
+			const whitelist = [...widget.domains, 'localhost', 'support.combase.app']; //? remove localhost and only check in prod?
+
+			if (!whitelist.includes(domain)) {
+				throw new Error('Unauthorized Domain');
+			}
 
 			if (!orgData) {
 				throw new Error('Unauthorized');
