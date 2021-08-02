@@ -16,18 +16,18 @@ import { AgentModel } from 'api/schema/agent/model';
 
 const authorizeRequest = async ({ req, connection }) => {
 	try {
-		let token, organization, timezone, protocol, domain;
+		let token, organization, timezone, domain;
 
 		if (connection) {
 			token = connection.context.Authorization ? connection.context.Authorization.replace(/^Bearer\s/u, '') : '';
 			organization = connection.context['combase-organization'] ? connection.context['combase-organization'] : '';
 		} else {
-			protocol = req.protocol;
+			// protocol = req.protocol;
 			domain = req.hostname;
 
-			if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
-				throw new Error('Connection is insecure');
-			}
+			// if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
+			// 	throw new Error('Connection is insecure');
+			// }
 
 			token = req.headers.authorization ? req.headers.authorization.replace(/^Bearer\s/u, '') : '';
 			organization = req.headers['combase-organization'] ? req.headers['combase-organization'] : '';
