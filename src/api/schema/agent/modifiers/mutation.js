@@ -166,6 +166,7 @@ export const onboard = tc =>
 					args: {
 						record: {
 							...args.agent,
+							access: 'admin',
 							organization: orgDoc._id,
 						},
 					},
