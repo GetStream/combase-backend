@@ -39,7 +39,7 @@ export const agentCreate = tc =>
 
 				const token = jwt.sign(getTokenPayload(_doc, 'agent'), process.env.AUTH_SECRET);
 
-				data.record.token = token;
+				data.token = token;
 
 				return data;
 			} catch (error) {
