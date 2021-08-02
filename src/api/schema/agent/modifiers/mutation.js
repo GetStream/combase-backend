@@ -170,6 +170,7 @@ export const onboard = tc =>
 						},
 					},
 					context: {
+						organization: orgDoc._id,
 						stream: streamContext,
 					},
 				})
