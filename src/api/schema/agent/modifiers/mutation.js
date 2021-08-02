@@ -36,10 +36,9 @@ export const agentCreate = tc =>
 					timezone: _doc.timezone,
 					entity: tc.getTypeName(),
 				});
-
 				const token = jwt.sign(getTokenPayload(_doc, 'agent'), process.env.AUTH_SECRET);
 
-				data.token = token;
+				data.record._doc.token = token;
 
 				return data;
 			} catch (error) {
