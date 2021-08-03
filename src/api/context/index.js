@@ -26,8 +26,7 @@ const authorizeRequest = async ({ req, connection }) => {
 			const [protocol, domainAndPort] = req.headers?.origin?.split('://') || [];
 
 			domain = domainAndPort?.split(':')[0];
-			// eslint-disable-next-line no-console
-			console.log('HERE', protocol, domainAndPort);
+
 			// if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
 			// 	throw new Error('Unauthorized domain.');
 			// }
@@ -82,7 +81,7 @@ const authorizeRequest = async ({ req, connection }) => {
 			);
 
 			const { widget } = orgData;
-			const whitelist = [...widget.domains, 'localhost', 'support.combase.app', 'webhooks.combase.app', 'api.combase.app'];
+			const whitelist = [...widget.domains, 'localhost', 'support.combase.app', 'webhooks.combase.app', 'api.combase.app', undefined]; // TODO: Remove undefined, check headers - domain & protocol is undefined when event come in from the worker
 
 			if (process.env.NODE_ENV === 'production' && !whitelist.includes(domain)) {
 				throw new Error('Unauthorized Domain');
