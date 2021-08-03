@@ -84,7 +84,7 @@ const authorizeRequest = async ({ req, connection }) => {
 			const whitelist = [...widget.domains, 'localhost', 'support.combase.app', 'webhooks.combase.app', 'api.combase.app'];
 
 			// eslint-disable-next-line no-console
-			console.log(domain);
+			console.log('DOMAIN', domain);
 
 			if (process.env.NODE_ENV === 'production' && !whitelist.includes(domain)) {
 				throw new Error('Unauthorized Domain');
