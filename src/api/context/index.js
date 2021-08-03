@@ -22,13 +22,14 @@ const authorizeRequest = async ({ req, connection }) => {
 			token = connection.context.Authorization ? connection.context.Authorization.replace(/^Bearer\s/u, '') : '';
 			organization = connection.context['combase-organization'] ? connection.context['combase-organization'] : '';
 		} else {
+			// eslint-disable-next-line no-unused-vars
 			const [protocol, domainAndPort] = req.headers?.origin?.split('://') || [];
 
 			domain = domainAndPort?.split(':')[0];
 
-			if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
-				throw new Error('Unauthorized domain.');
-			}
+			// if (process.env.NODE_ENV === 'production' && !protocol?.endsWith('s')) {
+			// 	throw new Error('Unauthorized domain.');
+			// }
 
 			token = req.headers.authorization ? req.headers.authorization.replace(/^Bearer\s/u, '') : '';
 			organization = req.headers['combase-organization'] ? req.headers['combase-organization'] : '';
