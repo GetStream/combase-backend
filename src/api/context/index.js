@@ -81,7 +81,15 @@ const authorizeRequest = async ({ req, connection }) => {
 			);
 
 			const { widget } = orgData;
-			const whitelist = [...widget.domains, 'localhost', 'support.combase.app', 'webhooks.combase.app', 'api.combase.app', undefined]; // TODO: Remove undefined, check headers - domain & protocol is undefined when event come in from the worker
+			const whitelist = [
+				...widget.domains,
+				'localhost',
+				'support.combase.app',
+				'webhooks.combase.app',
+				'api.combase.app',
+				'combase-demo-widget.netlify.app',
+				undefined,
+			]; // TODO: Remove undefined, check headers - domain & protocol is undefined when event come in from the worker
 
 			if (process.env.NODE_ENV === 'production' && !whitelist.includes(domain)) {
 				throw new Error('Unauthorized Domain');
