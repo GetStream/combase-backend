@@ -161,22 +161,10 @@ AgentSchema.index({
 
 AgentSchema.index(
 	{
-		'name.full': 'text',
-		'name.display': 'text',
-		email: 'text',
-		role: 'text',
+		organization: 1,
+		email: 1,
 	},
-	{
-		name: 'AgentTextIndex',
-		default_language: 'english',
-		weights: {
-			'name.full': 10,
-			'name.display': 10,
-			email: 5,
-			role: 2,
-			// rest fields get weight equals to 1
-		},
-	}
+	{ unique: true }
 );
 
 const AgentModel = mongoose.model('Agent', AgentSchema);
