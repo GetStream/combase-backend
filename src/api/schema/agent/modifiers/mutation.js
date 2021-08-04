@@ -38,7 +38,10 @@ export const agentCreate = tc =>
 				});
 				const token = jwt.sign(getTokenPayload(_doc, 'agent'), process.env.AUTH_SECRET);
 
-				// TODO.
+				/*
+				 * TODO: Onboard resolver returns _doc so we need to set the token in both places.
+				 * This is a temporary fix, we should rework the agentOnboard resolver so that it return the record instead of record._doc
+				 */
 				data.record.token = token;
 				data.record._doc.token = token;
 
