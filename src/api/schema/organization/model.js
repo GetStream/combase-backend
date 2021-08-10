@@ -91,20 +91,6 @@ const OrganizationSchema = new Schema(
 			type: JSON,
 		},
 		widget: {
-			home: {
-				title: {
-					type: String,
-					trim: true,
-					default: 'Welcome 👋',
-					description: 'The title message of displayed on the widget home screen.',
-				},
-				tagline: {
-					type: String,
-					trim: true,
-					default: "We're here to help! Let us know if you have any questions",
-					description: 'The tageline message displayed beneath the title in the widget home screen',
-				},
-			},
 			uitheme: {
 				type: String,
 				trim: true,
