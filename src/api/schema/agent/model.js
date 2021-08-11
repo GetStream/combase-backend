@@ -129,6 +129,13 @@ const AgentSchema = new Schema(
 			},
 		},
 		schedule: [AgentScheduleEntrySchema],
+		preferences: {
+			uitheme: {
+				type: String,
+				trim: true,
+				default: 'system',
+			},
+		},
 		timezone: {
 			type: String,
 			default: 'Europe/London',
