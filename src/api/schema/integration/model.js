@@ -84,6 +84,7 @@ export const IntegrationDefinitionTC = schemaComposer.createObjectTC({
 				'Stringified Markdown from the README of an Integration Definition. Used by remark-react in the frontend to build the Interation "About" pages.',
 			type: 'String',
 		},
+		description: 'String!',
 		configuration: 'JSON!',
 		category: {
 			description: 'Categories for this Integration',
